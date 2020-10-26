@@ -45,4 +45,12 @@ module Http
     token_hash['token']
   end
   module_function :get_token
+
+  def make_params(uri, limit, offset)
+    uri = "#{uri}?limit=#{limit}" unless limit.zero?
+    uri = "#{uri}&offset=#{offset}" unless offset.zero? && limit
+    uri = "#{uri}?offset=#{offset}" unless offset.zero? && limit.zero?
+    uri
+  end
+  module_function :make_params
 end
