@@ -4,6 +4,7 @@ require 'json'
 require 'openssl'
 # module Http contains the http utilties for the common gem
 module Http
+  # post_request takes a hash body and optional headers hash.
   def post_request(hostname, port, uri, body, headers = {})
     headers['Content-Type'] = 'application/json' unless headers.key? 'Content-Type'
     uri = URI.parse("https://#{hostname}:#{port}/#{uri}")
@@ -53,4 +54,10 @@ module Http
     uri
   end
   module_function :make_params
+
+  def response_to_hash(response)
+    raise "Response has no body #{response}" unless response.respond_to? 'body'
+    JSON.parse(response.body)
+  end
+  module_function :response_to_hash
 end
