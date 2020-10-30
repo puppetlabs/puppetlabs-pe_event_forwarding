@@ -1,4 +1,4 @@
-require_relative '../lib/puppet/api/orchestrator'
+require_relative '../lib/common_events_library/api/orchestrator'
 
 require 'benchmark'
 

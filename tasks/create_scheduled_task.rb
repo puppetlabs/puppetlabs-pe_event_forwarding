@@ -7,6 +7,7 @@ require 'openssl'
 require 'json'
 require 'time'
 
+# CreateScheduledTask will construct a scheduled task in PE
 class CreateScheduledTask < TaskHelper
   def task(
     task:            nil,
@@ -19,7 +20,7 @@ class CreateScheduledTask < TaskHelper
     password:        nil,
     ca_cert_path:    nil,
     skip_cert_check: false,
-    **kwargs
+    **_kwargs
   )
 
     scheduled_time = scheduled_time.nil? ? Time.now + 30 : Time.parse(scheduled_time)
@@ -28,15 +29,16 @@ class CreateScheduledTask < TaskHelper
     ssl_verify = !skip_cert_check
 
     if auth_token.nil?
-        auth_token = Http.get_token(
-          puppetserver,
-          username,
-          password,
-          ssl_verify: ssl_verify,
-          ca_cert_path: ca_cert_path)
+      auth_token = Http.get_token(
+        puppetserver,
+        username,
+        password,
+        ssl_verify: ssl_verify,
+        ca_cert_path: ca_cert_path,
+      )
     end
 
-    headers = {'X-Authentication' => auth_token, 'Content-Type' => 'application/json'}
+    headers = { 'X-Authentication' => auth_token, 'Content-Type' => 'application/json' }
 
     data = {
       environment: environment,
@@ -44,16 +46,16 @@ class CreateScheduledTask < TaskHelper
       params: {},
       scope: {
         nodes: [
-          puppetserver.prepend(puppetserver.start_with?('https://') ? '' : 'https://')
-        ]
+          puppetserver.prepend(puppetserver.start_with?('https://') ? '' : 'https://'),
+        ],
       },
       scheduled_time: scheduled_time,
       schedule_options: {
         interval: {
-          units: "seconds",
-          value: interval
-        }
-      }
+          units: 'seconds',
+          value: interval,
+        },
+      },
     }
 
     response = Http.post_request(
@@ -63,7 +65,7 @@ class CreateScheduledTask < TaskHelper
       data,
       headers,
       ssl_verify: ssl_verify,
-      ca_cert_path: ca_cert_path
+      ca_cert_path: ca_cert_path,
     )
 
     if response.code == '202'
@@ -76,13 +78,15 @@ class CreateScheduledTask < TaskHelper
       additional_info = {
         body: JSON.parse(response.body),
         http_status: response.code,
-        message: response.message
+        message: response.message,
       }
 
       raise TaskHelper::Error.new(
         "Failed to create scheduled task: #{JSON.parse(response.body)['msg']}",
-        "common_integration_events/task-create-failure",
-        additional_info)
+        'common_integration_events/task-create-failure',
+        additional_info,
+      )
+
     end
   end
 end
