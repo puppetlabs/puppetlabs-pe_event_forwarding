@@ -6,7 +6,6 @@ require 'openssl'
 module Http
   # post_request takes a hash body and optional headers hash.
   def post_request(hostname, port, uri, body, headers = {}, ssl_verify: true, ca_cert_path: nil)
-
     headers['Content-Type'] = 'application/json' unless headers.key? 'Content-Type'
     hostname = hostname.prepend(hostname.start_with?('https://') ? '' : 'https://')
     uri = URI.parse("#{hostname}:#{port}/#{uri}")
@@ -53,7 +52,7 @@ module Http
     response = post_request(
       pe_console, 4433,
       'rbac-api/v1/auth/token',
-      {'login' => username, 'password' => password},
+      { 'login' => username, 'password' => password },
       ssl_verify: ssl_verify,
       ca_cert_path: ca_cert_path
     )
