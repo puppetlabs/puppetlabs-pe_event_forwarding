@@ -2,15 +2,13 @@ require_relative '../util/http'
 
 # module Orchestrator this module provides the API specific code for accessing the orchestrator
 module Orchestrator
-  def get_all_jobs(token, pe_console)
-    auth_header = { 'X-Authentication' => token.to_s }
-    Http.get_request(pe_console, 8143, 'orchestrator/v1/jobs', auth_header)
+  def get_all_jobs(token, pe_console, ssl_verify: true)
+    Http.get_request(pe_console, 8143, 'orchestrator/v1/jobs', token: token, destination: 'pe', ssl_verify: ssl_verify)
   end
   module_function :get_all_jobs
 
-  def run_facts_task(token, pe_console, nodes, headers = {})
+  def run_facts_task(token, pe_console, nodes, ssl_verify: true)
     raise 'run_fact_tasks nodes param requires an array to be specified' unless nodes.is_a? Array
-    headers['X-Authentication'] = token.to_s
     body = {}
     body['environment'] = 'production'
     body['task'] = 'facts'
@@ -18,19 +16,17 @@ module Orchestrator
     body['scope'] = {}
     body['scope']['nodes'] = nodes
 
-    Http.post_request(pe_console, 8143, 'orchestrator/v1/command/task', body, headers)
+    Http.post_request(pe_console, 8143, 'orchestrator/v1/command/task', body, token: token, destination: 'pe', ssl_verify: ssl_verify)
   end
   module_function :run_facts_task
 
-  def run_job(token, pe_console, body, headers = {})
-    headers['X-Authentication'] = token.to_s
-    Http.post_request(pe_console, 8143, '/command/task', body, auth_header)
+  def run_job(token, pe_console, body, ssl_verify: true)
+    Http.post_request(pe_console, 8143, '/command/task', body, token: token, destination: 'pe', ssl_verify: ssl_verify)
   end
   module_function :run_job
 
-  def get_job(token, pe_console, job_id, limit = 0, offset = 0)
-    auth_header = { 'X-Authentication' => token.to_s }
-    Http.get_request(pe_console, 8143, Http.make_params("orchestrator/v1/jobs/#{job_id}", limit, offset), auth_header)
+  def get_job(token, pe_console, job_id, limit = 0, offset = 0, ssl_verify: true)
+    Http.get_request(pe_console, 8143, Http.make_params("orchestrator/v1/jobs/#{job_id}", limit, offset), token: token, destination: 'pe', ssl_verify: ssl_verify)
   end
   module_function :get_job
 
