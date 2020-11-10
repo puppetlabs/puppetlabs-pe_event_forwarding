@@ -22,14 +22,14 @@ module Http
                    timeout: 60)
 
     headers['Content-Type'] = 'application/json' unless headers.key? 'Content-Type'
-    hostname = hostname.prepend(hostname.start_with?('https://') ? '' : 'https://')
-    uri = URI.parse("#{hostname}:#{port}/#{uri}")
+    nodename = hostname.start_with?('https://') ? '' : 'https://' + hostname
+    url = URI.parse("#{nodename}:#{port}/#{uri}")
     verify_mode = ssl_verify ? OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE
 
     http = Net::HTTP.start(
-      uri.host,
-      uri.port,
-      use_ssl: uri.scheme == 'https',
+      url.host,
+      url.port,
+      use_ssl: url.scheme == 'https',
       verify_mode: verify_mode,
       ca_file: ca_cert_path,
       read_timeout:    timeout,
@@ -38,7 +38,8 @@ module Http
       write_timeout:   timeout,
     )
 
-    request = Net::HTTP::Post.new(uri.request_uri, headers)
+    request = Net::HTTP::Post.new(url.request_uri, headers)
+    request.body = body.to_json
 
     # The PE token endpoint expects the password in the body
     if body['password'].nil?
@@ -73,14 +74,14 @@ module Http
                   timeout: 60)
 
     headers['Content-Type'] = 'application/json' unless headers.key? 'Content-Type'
-    hostname = hostname.prepend(hostname.start_with?('https://') ? '' : 'https://')
-    uri = URI.parse("#{hostname}:#{port}/#{uri}")
+    nodename = hostname.start_with?('https://') ? '' : 'https://' + hostname
+    url = URI.parse("#{nodename}:#{port}/#{uri}")
     verify_mode = ssl_verify ? OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE
 
     http = Net::HTTP.start(
-      uri.host,
-      uri.port,
-      use_ssl: uri.scheme == 'https',
+      url.host,
+      url.port,
+      use_ssl: url.scheme == 'https',
       verify_mode: verify_mode,
       ca_cert: ca_cert_path,
       read_timeout:    timeout,
@@ -89,13 +90,13 @@ module Http
       write_timeout:   timeout,
     )
 
-    request = Net::HTTP::Get.new(uri.request_uri, headers)
+    request = Net::HTTP::Get.new(url.request_uri, headers)
 
     # prioritize OAuth
     if token
       oauth_header = make_oauth_header(destination, token)
       request[oauth_header.keys.first] = oauth_header.values.first
-    else
+    elsif ssl_verify
       # We use the basic_auth method to take advantage of the built in Base64 encoder.
       request.basic_auth(user, password)
     end

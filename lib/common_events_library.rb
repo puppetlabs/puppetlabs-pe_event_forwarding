@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 
 # Helper methods for testing puppet content
 module CommonEventsLibrary; end

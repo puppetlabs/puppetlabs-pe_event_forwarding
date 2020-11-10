@@ -8,17 +8,17 @@ PASSWORD = ENV['PT_PE_PASSWORD'] || 'pie'
 
 raise 'usage: PT_PE_CONSOLE=<fqdn> events.rb' if PE_CONSOLE.nil?
 
-token = Http.get_token(PE_CONSOLE, USERNAME, PASSWORD)
-batch = 1..100
+token = Http.get_pe_token(PE_CONSOLE, USERNAME, PASSWORD, ssl_verify: false)
+batch = 1..10
 batch.each do
   response = ''
 
-  r = 1..20
+  r = 1..2
   puts 'Sending batch tasks to PE'
   time = Benchmark.realtime do
     r.each do |x|
       puts "Injecting task [#{x}]"
-      response = Orchestrator.run_facts_task(token, PE_CONSOLE, [PE_CONSOLE])
+      response = Orchestrator.run_facts_task(token, PE_CONSOLE, [PE_CONSOLE], ssl_verify: false)
     end
   end
 
