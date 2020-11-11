@@ -1,5 +1,5 @@
-require_relative '../lib/common_events_library/api/orchestrator'
-require_relative '../lib/common_events_library/api/events'
+require_relative '../lib/common-events_library/api/orchestrator'
+require_relative '../lib/common-events_library/api/events'
 
 require 'benchmark'
 
