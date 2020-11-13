@@ -52,7 +52,7 @@
   },
   "files": [
     "ruby_task_helper/files/task_helper.rb",
-    "common-events_library/lib/common-events_library/util/http.rb"
+    "common_events_library/lib/common_events_library/util/http.rb"
   ],
   "input_method": "stdin"
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 require_relative '../../ruby_task_helper/files/task_helper.rb'
-require_relative '../lib/common-events_library/util/http'
+require_relative '../lib/common_events_library/util/http'
 require 'uri'
 require 'net/http'
 require 'openssl'
