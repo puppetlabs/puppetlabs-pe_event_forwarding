@@ -1,11 +1,11 @@
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'common-events_library/version'
+require 'common_events_library/version'
 
 Gem::Specification.new do |spec|
   spec.name = 'common_events_library'
   spec.version     = CommonEventsLibrary::VERSION
-  spec.homepage    = 'https://github.com/puppetlabs/common-events_library'
+  spec.homepage    = 'https://github.com/puppetlabs/common_events_library'
   spec.license     = 'Apache-2.0'
   spec.authors     = ['Puppet, Inc.']
   spec.email       = ['info@puppet.com']

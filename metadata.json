@@ -1,12 +1,12 @@
 {
-  "name": "common-events_library",
+  "name": "common_events_library",
   "version": "0.0.1",
   "author": "Puppet, Inc.",
   "summary": "A module that contains support for integration event reporting",
   "license": "Apache-2.0",
-  "source": "http://github.com/puppetlabs/common-events_library",
-  "project_page": "http://github.com/puppetlabs/common-events_library",
-  "issues_url": "http://github.com/puppetlabs/common-events_library/issues",
+  "source": "http://github.com/puppetlabs/common_events_library",
+  "project_page": "http://github.com/puppetlabs/common_events_library",
+  "issues_url": "http://github.com/puppetlabs/common_events_library/issues",
   "dependencies": [
     {
       "name": "puppetlabs/inifile",
