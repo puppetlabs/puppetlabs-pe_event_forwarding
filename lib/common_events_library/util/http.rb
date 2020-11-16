@@ -22,7 +22,7 @@ module Http
                    timeout: 60)
 
     headers['Content-Type'] = 'application/json' unless headers.key? 'Content-Type'
-    nodename = hostname.start_with?('https://') ? '' : 'https://' + hostname
+    nodename = hostname.start_with?('https://') ? hostname : "https://#{hostname}"
     url = URI.parse("#{nodename}:#{port}/#{uri}")
     verify_mode = ssl_verify ? OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE
 
@@ -74,7 +74,7 @@ module Http
                   timeout: 60)
 
     headers['Content-Type'] = 'application/json' unless headers.key? 'Content-Type'
-    nodename = hostname.start_with?('https://') ? '' : 'https://' + hostname
+    nodename = hostname.start_with?('https://') ? hostname : "https://#{hostname}"
     url = URI.parse("#{nodename}:#{port}/#{uri}")
     verify_mode = ssl_verify ? OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE
 
