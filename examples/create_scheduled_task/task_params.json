@@ -1,0 +1,13 @@
+{
+  "task": "enterprise_tasks::verify_node",
+  "task_params": {
+    "certname": "<Puppetserver name>",
+    "expected_type": "master",
+    "allow_failure": true
+  },
+  "description": "Bolt Created Task Schedule",
+  "username": "admin",
+  "password": "pie",
+  "puppetserver": "<Puppetserver name>",
+  "skip_cert_check": true
+}

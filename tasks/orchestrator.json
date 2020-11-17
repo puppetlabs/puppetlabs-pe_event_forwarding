@@ -1,0 +1,25 @@
+{
+  "puppet_task_version": 1,
+  "supports_noop": false,
+  "description": "This task scrapes the orchestrator for jobs",
+  "parameters": {
+      "pe_console": {
+        "description": "The FQDN of the PE console",
+        "type": "String[1]"
+      },
+      "pe_username": {
+        "description": "A PE user name",
+        "type": "Optional[String[1]]"
+      },
+      "pe_password": {
+        "description": "The PE console password",
+        "type": "Optional[String[1]]"
+      }
+  },
+  "input_method": "environment",
+  "files": [
+    "common_events_library/lib/common_events_library/util/pe_http.rb",
+    "common_events_library/lib/common_events_library/util/common_events_http.rb",
+    "common_events_library/lib/common_events_library/api/orchestrator.rb"
+  ]
+}
