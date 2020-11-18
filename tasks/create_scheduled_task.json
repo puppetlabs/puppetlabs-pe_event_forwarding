@@ -1,0 +1,67 @@
+{
+  "puppet_task_version": 1,
+  "supports_noop": false,
+  "description": "Create a task schedule to run the collector script",
+  "parameters": {
+    "task": {
+      "description": "Name of the task to run.",
+      "default": "facts",
+      "type": "String"
+    },
+    "task_params": {
+      "description": "Parameters to set for the task to be run.",
+      "type": "Optional[Hash]"
+    },
+    "description": {
+      "description": "The description for the task schedule",
+      "type": "Optional[String]"
+    },
+    "interval": {
+      "description": "Run interval in seconds.",
+      "type": "Integer",
+      "default": 60
+    },
+    "scheduled_time":{
+      "description": "Time to start running.",
+      "type": "Optional[String]"
+    },
+    "environment": {
+      "description": "The Puppet environment the Puppet server is in.",
+      "type": "String",
+      "default": "production"
+    },
+    "puppetserver": {
+      "description": "FQDN of the Puppet server to run the task on.",
+      "type": "String"
+    },
+    "auth_token": {
+      "description": "Puppet API auth token. If you don't have one, use username and password instead, and the task will obtain one for you.",
+      "type": "Optional[String]",
+      "sensitive": true
+    },
+    "username": {
+      "description": "A valid Puppet server username to create the schedule.",
+      "type": "Optional[String]"
+    },
+    "password":{
+      "description": "The password for the user to authorize to the Puppet api",
+      "type": "Optional[String]",
+      "sensitive": true
+    },
+    "ca_cert_path": {
+      "description": "The path to the ca certificate to trust the cert from the Puppet server.",
+      "type": "Optional[String]"
+    },
+    "skip_cert_check":{
+      "description": "Trust the Puppetserver ssl certificate without verification.",
+      "type": "Boolean",
+      "default": false
+    }
+  },
+  "files": [
+    "ruby_task_helper/files/task_helper.rb",
+    "common_events_library/lib/common_events_library/util/pe_http.rb",
+    "common_events_library/lib/common_events_library/util/common_events_http.rb"
+  ],
+  "input_method": "stdin"
+}
