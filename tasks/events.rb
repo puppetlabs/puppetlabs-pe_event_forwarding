@@ -6,6 +6,7 @@ PASSWORD = ENV['PT_pe_password'] || 'pie'
 
 raise 'usage: PT_PE_CONSOLE=<fqdn> events.rb' if PE_CONSOLE.nil?
 
-response = Events.get_all_events(PE_CONSOLE, USERNAME, PASSWORD, ssl_verify: false)
+events_client = Events.new(PE_CONSOLE, USERNAME, PASSWORD, ssl_verify: false)
+response = events_client.get_all_events
 
 puts JSON.pretty_generate(JSON.parse(response.body))

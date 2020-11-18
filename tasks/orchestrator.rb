@@ -7,6 +7,7 @@ PASSWORD = ENV['PT_pe_password'] || 'pie'
 
 raise 'usage: PT_PE_CONSOLE=<fqdn> events.rb' if PE_CONSOLE.nil?
 
-response = Orchestrator.get_all_jobs(PE_CONSOLE, USERNAME, PASSWORD, ssl_verify: false)
+orchestrator_client = Orchestrator.new(PE_CONSOLE, USERNAME, PASSWORD, ssl_verify: false)
+response = orchestrator_client.get_all_jobs
 
 puts response.body

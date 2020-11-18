@@ -56,14 +56,12 @@ class CreateScheduledTask < TaskHelper
       password:     password,
       token:        auth_token,
       ca_cert_path: ca_cert_path,
-      ssl_verify:   ssl_verify
+      ssl_verify:   ssl_verify,
     )
-
-    # raise "#{data}"
 
     response = pe_client.pe_post_request(
       'orchestrator/v1/command/schedule_task',
-      data
+      data,
     )
 
     if response.code == '202'
