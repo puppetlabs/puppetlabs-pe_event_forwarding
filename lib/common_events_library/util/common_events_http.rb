@@ -79,7 +79,7 @@ class CommonEventsHttp
   # Makes a hash of the limit and offset, and filters the zeros.
   def self.make_pagination_hash(limit, offset)
     pagination_hash = { 'limit' => limit, 'offset' => offset }
-    pagination_hash.select {|name, value| value > 0}
+    pagination_hash.select { |_, value| value > 0 }
   end
 
   def self.make_pagination_params(uri, limit, offset)
@@ -87,7 +87,7 @@ class CommonEventsHttp
   end
 
   def self.response_to_hash(response)
-    raise "Response has no body #{response}" unless response.respond_to? 'body'
+    raise "Response has no body: #{response}" unless response.respond_to? 'body'
     JSON.parse(response.body)
   end
 end
