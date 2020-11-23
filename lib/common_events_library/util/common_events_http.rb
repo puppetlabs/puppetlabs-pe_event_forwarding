@@ -79,7 +79,7 @@ class CommonEventsHttp
   # Makes a hash of the limit and offset, and filters the zeros.
   def self.make_pagination_hash(limit, offset)
     pagination_hash = { 'limit' => limit, 'offset' => offset }
-    pagination_hash.select {|name, value| value > 0}
+    pagination_hash.select { |_, value| value > 0 }
   end
 
   def self.make_pagination_params(uri, limit, offset)
