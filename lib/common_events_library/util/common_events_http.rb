@@ -9,7 +9,7 @@ class CommonEventsHttp
 
   # Query specific data like headers, bodies, and uri's are passed into each method.
   def initialize(hostname, port: nil, username: nil, password: nil, ssl_verify: true, ca_cert_path: nil)
-    @hostname     = hostname.start_with?('https://') ? hostname : 'https://' + hostname
+    @hostname     = hostname
     @port         = port
     @username     = username
     @password     = password
