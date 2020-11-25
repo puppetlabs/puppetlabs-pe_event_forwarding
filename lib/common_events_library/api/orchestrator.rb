@@ -32,7 +32,7 @@ class Orchestrator
   end
 
   def get_job(job_id, limit = 0, offset = 0)
-    uri = PeHttp.make_params("orchestrator/v1/jobs/#{job_id}", limit, offset)
+    uri = PeHttp.make_pagination_params("orchestrator/v1/jobs/#{job_id}", limit, offset)
     pe_client.pe_get_request(uri)
   end
 

@@ -9,7 +9,7 @@ class Events
   end
 
   def get_all_events(service: 'classifier', offset: 0, limit: 0)
-    uri = PeHttp.make_params("activity-api/v1/events?service_id=#{service}", limit, offset)
+    uri = PeHttp.make_pagination_params("activity-api/v1/events?service_id=#{service}", limit, offset)
     pe_client.pe_get_request(uri)
   end
 end

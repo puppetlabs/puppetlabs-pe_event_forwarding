@@ -70,12 +70,20 @@ class CommonEventsHttp
     port ? "#{hostname}:#{port}" : hostname
   end
 
-  def self.make_params(uri, limit, offset)
-    return_uri = "#{uri}?limit=#{limit}" unless limit.zero?
-    return_uri = "#{uri}&offset=#{offset}" unless offset.zero? && limit
-    return_uri = "#{uri}?offset=#{offset}" unless offset.zero? && limit.zero?
-    return_uri = uri if return_uri.nil?
-    return_uri
+  # Takes the uri and a hash of param names like { param_name => param_value }.
+  # Returns a formatted uri string with params.
+  def self.make_params(uri, params)
+    uri + '?' + params.map { |name, value| "#{name}=#{value}" }.join('&')
+  end
+
+  # Makes a hash of the limit and offset, and filters the zeros.
+  def self.make_pagination_hash(limit, offset)
+    pagination_hash = { 'limit' => limit, 'offset' => offset }
+    pagination_hash.select {|name, value| value > 0}
+  end
+
+  def self.make_pagination_params(uri, limit, offset)
+    make_params(uri, make_pagination_hash(limit, offset))
   end
 
   def self.response_to_hash(response)
