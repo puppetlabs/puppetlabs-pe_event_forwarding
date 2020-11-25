@@ -12,6 +12,7 @@ class PeHttp < CommonEventsHttp
           password: nil,
           ssl_verify: ssl_verify,
           ca_cert_path: ca_cert_path)
+    @hostname = hostname.start_with?('https://') ? hostname : 'https://' + hostname
     # These instance variables are used to re-generate a token.
     # This allows us to nil out the more generic username and password from the superclass so that basic auth will not be used.
     @pe_username = username
