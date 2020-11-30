@@ -87,7 +87,7 @@ class CommonEventsHttp
   end
 
   def self.response_to_hash(response)
-    raise "Response has no body #{response}" unless response.respond_to? 'body'
+    raise "Response has no body: #{response}" unless response.respond_to? 'body'
     JSON.parse(response.body)
   end
 end
