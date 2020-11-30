@@ -19,7 +19,7 @@ class CommonEventsHttp
 
   # post_request takes a uri(string), body(hash), headers(optional(hash)), and a timeout(optional(int)).
   # Basic auth will be used if provided.
-  def post_request(uri, body, headers = {}, timeout = 60)
+  def post_request(uri, body, headers = {}, timeout = 60, use_raw_body: false)
     headers['Content-Type'] = 'application/json' unless headers.key? 'Content-Type'
     url = URI.parse("#{hostname_with_port}/#{uri}")
     verify_mode = ssl_verify ? OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE
@@ -35,7 +35,7 @@ class CommonEventsHttp
       write_timeout:   timeout,
     )
     request = Net::HTTP::Post.new(url.request_uri, headers)
-    request.body = body.to_json
+    request.body = use_raw_body ? body : body.to_json
 
     request.basic_auth(username, password) if username && password
 
@@ -79,7 +79,7 @@ class CommonEventsHttp
   # Makes a hash of the limit and offset, and filters the zeros.
   def self.make_pagination_hash(limit, offset)
     pagination_hash = { 'limit' => limit, 'offset' => offset }
-    pagination_hash.select {|name, value| value > 0}
+    pagination_hash.select { |_, value| value > 0 }
   end
 
   def self.make_pagination_params(uri, limit, offset)
