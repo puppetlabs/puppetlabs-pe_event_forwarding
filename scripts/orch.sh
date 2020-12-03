@@ -47,7 +47,7 @@ response=$(curl -s --insecure --header "$type_header" --request POST "$uri" --da
 token=$(echo $response | cut -d\" -f4)
 
 type_header='Content-Type: application/json'
-uri="https://${PE_CONSOLE}:8143/orchestrator/v1/jobs/1/jobs?limit=20&offset=20"
+uri="https://${PE_CONSOLE}:8143/orchestrator/v1/jobs?limit=1&offset=2"
 data='X-Authentication:'"$token"
 echo $data
 
