@@ -64,3 +64,9 @@ Create Tag on target version:
 git tag -a v0.1.0 -m "0.1.0 Feature Release"
 git push upstream --tags
 ```
+
+You'll also need to build and push the gem (since this is both a module and gem) to artifactory. User and password are your ldap credentials.
+```
+gem build common_events_library
+gem push common_events_library --host https://<USERNAME>:<PASSWORD>artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems
+```
