@@ -6,6 +6,7 @@ require 'puppet-syntax/tasks/puppet-syntax'
 require 'puppet_blacksmith/rake_tasks' if Bundler.rubygems.find_name('puppet-blacksmith').any?
 require 'github_changelog_generator/task' if Bundler.rubygems.find_name('github_changelog_generator').any?
 require 'puppet-strings/tasks' if Bundler.rubygems.find_name('puppet-strings').any?
+require_relative 'lib/common_events_library/version.rb'
 
 def changelog_user
   return unless Rake.application.top_level_tasks.include? "changelog"
@@ -342,7 +343,7 @@ end
 # Build the gem
 desc 'Build the gem'
 task :build do
-  gemspec_path = File.join(Dir.pwd, 'ruby-pwsh.gemspec')
+  gemspec_path = File.join(Dir.pwd, 'common_events_library.gemspec')
   run_local_command("bundle exec gem build '#{gemspec_path}'")
 end
 
@@ -364,9 +365,29 @@ end
 # @param :path [String] optional, the full or relative path to the built gem to be pushed
 desc 'Push to RubyGems'
 task :push, [:path] do |_task, args|
-  raise 'No discoverable gem for pushing' if Dir.glob("ruby-pwsh*\.gem").empty? && args[:path].nil?
+  raise 'No discoverable gem for pushing' if Dir.glob("common_events_library*\.gem").empty? && args[:path].nil?
   raise "No file found at specified path: '#{args[:path]}'" unless File.exist?(args[:path])
 
-  path = args[:path] || File.join(Dir.pwd, Dir.glob("ruby-pwsh*\.gem")[0])
+  path = args[:path] || File.join(Dir.pwd, Dir.glob("common_events_library*\.gem")[0])
   run_local_command("bundle exec gem push #{path}")
+end
+
+# Create a file at ~/.gem/credentials with artifactory credentials
+#
+# Requires environment variables LDAP_USERNAME, and LDAP_PASSWORD to create the credentials file.
+desc 'Set up Artifactory Credentials'
+task :artifactory_creds do
+  run_local_command("mkdir -p ~/.gem")
+  run_local_command("touch ~/.gem/credentials")
+  run_local_command("chmod 0600 ~/.gem/credentials")
+  run_local_command("curl -u#{ENV["LDAP_USERNAME"]}:#{ENV["LDAP_PASSWORD"]} https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems/api/v1/api_key.yaml > ~/.gem/credentials")
+end
+
+# Push the built gem to Artifactory using credentials in ~/.gem/credentials
+desc 'Push to Artifactory'
+task :push_to_artifactory do
+  raise 'No discoverable gem for pushing' if Dir.glob("common_events_library*\.gem").empty? && args[:path].nil?
+
+  path = File.join(Dir.pwd, Dir.glob("common_events_library-#{CommonEventsLibrary::VERSION}.gem")[0])
+  run_local_command("gem push #{path} --host https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems")
 end
