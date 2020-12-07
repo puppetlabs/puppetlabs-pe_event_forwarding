@@ -29,9 +29,12 @@ jobs:
       #with:
       #  ref: ${{ env.RELEASE_VERSION }}
     - name: Build and Push Gem
+      shell: bash
+      env:
+        ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
       run: | 
         bundle install --with release
         bundle exec gem build common_events_library
         'echo "$ARTIFACTORY_TOKEN"' > ~/.gem/credentials
         cat ~/.gem/credentials
-        bundle exec gem push common_events_library-${{ env.RELEASE_VERSION }}.gem --key ${{ secrets.ARTIFACTORY_TOKEN }} --host https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems
+        bundle exec gem push common_events_library --host https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems
