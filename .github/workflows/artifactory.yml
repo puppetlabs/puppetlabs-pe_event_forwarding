@@ -1,14 +1,17 @@
 name: artifactory
 
+#on:
+# push:
+#  tags:
+#    - v[0-9]+.[0-9]+.[0-9]+
+
 on:
- push:
-  tags:
-    - v[0-9]+.[0-9]+.[0-9]+
+  pull_request:
+    branches:
+      - main
 
 jobs:
   artifactory:
-    env:
-      ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
     runs-on: ubuntu-latest
     steps:
     - name: Set up Ruby
