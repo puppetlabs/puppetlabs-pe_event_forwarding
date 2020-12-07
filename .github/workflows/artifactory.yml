@@ -24,8 +24,8 @@ jobs:
       run: echo "RELEASE_VERSION=$(echo ${GITHUB_REF:10})" >> $GITHUB_ENV
     - name: Clone Repository
       uses: actions/checkout@v2
-      with:
-        ref: ${{ env.RELEASE_VERSION }}
+      #with:
+      #  ref: ${{ env.RELEASE_VERSION }}
     - name: Build and Push Gem
       run: | 
         bundle install --with release
