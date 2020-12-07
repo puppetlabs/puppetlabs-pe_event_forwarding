@@ -31,4 +31,5 @@ jobs:
         bundle install --with release
         bundle exec gem build common_events_library
         echo ${{ secrets.ARTIFACTORY_TOKEN }} > ~/.gem/credentials
+        cat ~/.gem/credentials
         bundle exec gem push common_events_library-${{ env.RELEASE_VERSION }}.gem --host https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems
