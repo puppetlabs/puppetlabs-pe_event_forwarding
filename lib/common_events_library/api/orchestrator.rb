@@ -8,9 +8,9 @@ class Orchestrator
     @pe_client = PeHttp.new(pe_console, port: 8143, username: username, password: password, ssl_verify: ssl_verify)
   end
 
-  # rubocop:disable Style/AccessorMethodName
-  def get_all_jobs
-    pe_client.pe_get_request('orchestrator/v1/jobs')
+  def get_all_jobs(limit: 0, offset: 0)
+    uri = PeHttp.make_pagination_params('orchestrator/v1/jobs', limit, offset)
+    pe_client.pe_get_request(uri)
   end
 
   def run_facts_task(nodes)
@@ -22,7 +22,7 @@ class Orchestrator
     body['scope'] = {}
     body['scope']['nodes'] = nodes
 
-    uri = 'orchestrator/v1/jobs'
+    uri = 'orchestrator/v1/command/task'
     pe_client.pe_post_request(uri, body)
   end
 
@@ -39,18 +39,5 @@ class Orchestrator
   def self.get_id_from_response(response)
     res = CommonEventsHttp.response_to_hash(response)
     res['job']['name']
-  end
-
-  def wait_until_finished(job_id)
-    finished = false
-
-    until finished
-      puts "\tWaiting for job=#{job_id} to finish"
-      response = get_job(job_id)
-      puts response.message
-      raise "Job #{job_id} not found." if response.message == 'Not Found'
-      res = CommonEventsHttp.response_to_hash(response)
-      finished = true unless res['status'].select { |x| x['state'] == 'finished' }.empty?
-    end
   end
 end

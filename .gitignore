@@ -25,4 +25,4 @@
 .project
 .envrc
 /inventory.yaml
-common-events_library-*.gem
+common_events_library-*.gem
