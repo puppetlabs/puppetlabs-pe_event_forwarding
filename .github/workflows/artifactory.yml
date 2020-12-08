@@ -31,7 +31,7 @@ jobs:
         mkdir -p $HOME/.gem
         touch $HOME/.gem/credentials
         chmod 0600 $HOME/.gem/credentials
-        printf -- "---\n:github: Basic ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+        printf -- "---\n:github: Bearer ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
         bundle config timeout 60
         gem build *.gemspec
         gem push --KEY github --host https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems *.gem
