@@ -12,8 +12,6 @@ on:
 
 jobs:
   artifactory:
-    env:
-      ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
     runs-on: ubuntu-latest
     steps:
     - name: Set up Ruby
@@ -29,14 +27,12 @@ jobs:
       #with:
       #  ref: ${{ env.RELEASE_VERSION }}
     - name: Build and Push Gem
-      shell: bash
+      run: |
+        mkdir -p $HOME/.gem
+        touch $HOME/.gem/credentials
+        chmod 0600 $HOME/.gem/credentials
+        printf -- "---\n:github: Bearer ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+        gem build *.gemspec
+        gem push --KEY github --host https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems *.gem
       env:
-        ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
-      run: | 
-        bundle install --with release
-        bundle exec gem build common_events_library
-        mkdir -p ~/.gem
-        touch ~/.gem/credentials
-        'echo "$ARTIFACTORY_TOKEN" > ~/.gem/credentials'
-        cat ~/.gem/credentials
-        bundle exec gem push common_events_library --host https://artifactory.delivery.puppetlabs.net/artifactory/api/gems/rubygems
+        GEM_HOST_API_KEY: ${{ secrets.ARTIFACTORY_TOKEN }}
