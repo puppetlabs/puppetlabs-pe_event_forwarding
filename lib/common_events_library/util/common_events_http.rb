@@ -72,18 +72,18 @@ class CommonEventsHttp
 
   # Takes the uri and a hash of param names like { param_name => param_value }.
   # Returns a formatted uri string with params.
-  def self.make_params(uri, params)
-    params.empty? ? uri : uri + '?' + params.map { |name, value| "#{name}=#{value}" }.join('&')
-  end
-
-  # Makes a hash of the limit and offset, and filters the zeros.
-  def self.make_pagination_hash(limit, offset)
-    pagination_hash = { 'limit' => limit, 'offset' => offset }
-    pagination_hash.select { |_, value| value > 0 }
+  def self.make_params(uri, params = {})
+    uri = URI.parse(uri)
+    new_query_ar = URI.decode_www_form(uri.query || '')
+    params.each do |key, value|
+      new_query_ar << [key.to_s, value.to_s] unless value.zero?
+    end
+    uri.query = URI.encode_www_form(new_query_ar)
+    uri.to_s
   end
 
   def self.make_pagination_params(uri, limit, offset)
-    make_params(uri, make_pagination_hash(limit, offset))
+    make_params(uri, limit: limit, offset: offset)
   end
 
   def self.response_to_hash(response)
