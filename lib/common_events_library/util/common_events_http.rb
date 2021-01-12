@@ -73,7 +73,7 @@ class CommonEventsHttp
   # Takes the uri and a hash of param names like { param_name => param_value }.
   # Returns a formatted uri string with params.
   def self.make_params(uri, params)
-    params.empty? ? uri : uri + '?' + params.map { |name, value| "#{name}=#{value}" }.join('&')
+    params.empty? ? uri : uri + '&' + params.map { |name, value| "#{name}=#{value}" }.join('&')
   end
 
   # Makes a hash of the limit and offset, and filters the zeros.
