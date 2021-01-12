@@ -10,9 +10,9 @@ describe 'Common Events Http' do
   end
 
   it 'makes pagination params correctly' do
-    expect(CommonEventsHttp.make_pagination_params('orchestrator/v1/jobs', 5, 2)).to eq('orchestrator/v1/jobs?limit=5&offset=2')
-    expect(CommonEventsHttp.make_pagination_params('orchestrator/v1/jobs', 0, 2)).to eq('orchestrator/v1/jobs?offset=2')
-    expect(CommonEventsHttp.make_pagination_params('orchestrator/v1/jobs', 5, 0)).to eq('orchestrator/v1/jobs?limit=5')
+    expect(CommonEventsHttp.make_pagination_params('orchestrator/v1/jobs', 5, 2)).to eq('orchestrator/v1/jobs&limit=5&offset=2')
+    expect(CommonEventsHttp.make_pagination_params('orchestrator/v1/jobs', 0, 2)).to eq('orchestrator/v1/jobs&offset=2')
+    expect(CommonEventsHttp.make_pagination_params('orchestrator/v1/jobs', 5, 0)).to eq('orchestrator/v1/jobs&limit=5')
     expect(CommonEventsHttp.make_pagination_params('orchestrator/v1/jobs', 0, 0)).to eq('orchestrator/v1/jobs')
   end
 
