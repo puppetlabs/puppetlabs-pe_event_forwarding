@@ -1,6 +1,6 @@
 {
   "name": "puppetlabs-common_events",
-  "version": "0.0.1",
+  "version": "0.0.1-beta",
   "author": "Puppet, Inc.",
   "summary": "A module that contains support for integration event reporting",
   "license": "Apache-2.0",
