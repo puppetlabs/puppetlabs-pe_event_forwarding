@@ -8,8 +8,15 @@ class Events
     @pe_client = PeHttp.new(pe_console, port: 4433, username: username, password: password, ssl_verify: ssl_verify)
   end
 
-  def get_all_events(service: 'classifier', offset: 0, limit: 0)
-    uri = PeHttp.make_pagination_params("activity-api/v1/events?service_id=#{service}", limit, offset)
-    pe_client.pe_get_request(uri)
+  def get_events(service: nil, offset: nil, limit: nil)
+    params = {
+      service_id: service,
+      limit:      limit,
+      offset:     offset,
+    }
+    uri = PeHttp.make_params('activity-api/v1/events', params)
+    response = pe_client.pe_get_request(uri)
+    raise 'Events API request failed' unless response.code == '200'
+    CommonEvents::ActivityServiceResult.new(response)
   end
 end

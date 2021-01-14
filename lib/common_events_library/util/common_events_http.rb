@@ -76,14 +76,10 @@ class CommonEventsHttp
     uri = URI.parse(uri)
     new_query_ar = URI.decode_www_form(uri.query || '')
     params.each do |key, value|
-      new_query_ar << [key.to_s, value.to_s] unless value.zero?
+      new_query_ar << [key.to_s, value.to_s] unless value.nil? || value.to_s.empty?
     end
     uri.query = URI.encode_www_form(new_query_ar)
     uri.to_s
-  end
-
-  def self.make_pagination_params(uri, limit, offset)
-    make_params(uri, limit: limit, offset: offset)
   end
 
   def self.response_to_hash(response)
