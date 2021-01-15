@@ -8,9 +8,18 @@ class Orchestrator
     @pe_client = PeHttp.new(pe_console, port: 8143, username: username, password: password, ssl_verify: ssl_verify)
   end
 
-  def get_all_jobs(limit: 0, offset: 0)
-    uri = PeHttp.make_pagination_params('orchestrator/v1/jobs', limit, offset)
-    pe_client.pe_get_request(uri)
+  def get_jobs(limit: nil, offset: nil, order: nil, order_by: nil)
+    params = {
+      limit:    limit,
+      offset:   offset,
+      order:    order,
+      order_by: order_by,
+    }
+
+    uri = PeHttp.make_params('orchestrator/v1/jobs', params)
+    response = pe_client.pe_get_request(uri)
+    raise 'Orchestrator API request failed' unless response.code == '200'
+    CommonEvents::OrchestratorResult.new(response)
   end
 
   def run_facts_task(nodes)
@@ -31,9 +40,9 @@ class Orchestrator
     pe_client.pe_post_request(uri, body)
   end
 
-  def get_job(job_id, limit = 0, offset = 0)
-    uri = PeHttp.make_pagination_params("orchestrator/v1/jobs/#{job_id}", limit, offset)
-    pe_client.pe_get_request(uri)
+  def get_job(job_id)
+    response = pe_client.pe_get_request("orchestrator/v1/jobs/#{job_id}")
+    JSON.parse(response.body)
   end
 
   def self.get_id_from_response(response)
