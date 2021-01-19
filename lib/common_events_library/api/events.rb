@@ -4,8 +4,8 @@ require_relative '../util/pe_http'
 class Events
   attr_accessor :pe_client
 
-  def initialize(pe_console, username, password, ssl_verify: true)
-    @pe_client = PeHttp.new(pe_console, port: 4433, username: username, password: password, ssl_verify: ssl_verify)
+  def initialize(pe_console, username: nil, password: nil, token: nil, ssl_verify: true)
+    @pe_client = PeHttp.new(pe_console, port: 4433, username: username, password: password, token: token, ssl_verify: ssl_verify)
   end
 
   def get_events(service: nil, offset: nil, limit: nil)
