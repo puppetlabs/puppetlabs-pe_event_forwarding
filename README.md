@@ -22,7 +22,7 @@ The common events library is a module makes it easier to gather events from Pupp
 
 ```ruby
 require 'common_events_library'
-orchestrator  = Orchestrator.new(pe_console_url, pe_username, pe_password, ssl_verify: false)
+orchestrator  = Orchestrator.new(pe_console_url, username: pe_username, password: pe_password, ssl_verify: false)
 
 # Get the last ten orchestrator jobs
 response = orchestrator.get_all_jobs(offset: 0, limit: 10)
@@ -34,13 +34,15 @@ The code above will create an orchestrator client that can get all available job
 
 ```ruby
 require 'common_events_library'
-events = Events.new(pe_console_url, pe_username, pe_password, ssl_verify: false)
+events = Events.new(pe_console_url, username: pe_username, password: pe_password, ssl_verify: false)
+# Alternatively, if you wish to authenticate with a token:
+events = Events.new(pe_console_url, token: pe_token, ssl_verify: false)
 
 # Get the last ten rbac service events
 response = events.get_all_events(service: 'rbac', limit: 10)
 ```
 
-The code above will create an Activity Service API client that can get events from the `activity-api/v1/events` end point. The `service` parameter is the name of an Activity API `service_id` which can be any of `classifier`, `rbac`, `pe-console` or `code-manager`.
+The code above will create an Activity Service API client that can get events from the `activity-api/v1/events` end point. The `service` parameter is the name of an Activity API `service_id` which can be any of `classifier`, `rbac`, `pe-console` or `code-manager`. If you provide a username, password, and token, the token will be used.
 
 ### Create a General Purpose HTTP Client for Sending Data
 
