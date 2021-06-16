@@ -1,0 +1,11 @@
+# managed by common_events module
+---
+<% if $common_events::pe_username{ -%>
+"pe_username" : "<%= $common_events::pe_username %>"
+<% } -%>
+<% if $common_events::pe_password{ -%>
+"pe_password" : "<%= $common_events::pe_password.unwrap %>"
+<% } -%>
+<% if $common_events::pe_token{ -%>
+"pe_token" : "<%= $common_events::pe_token %>"
+<% } -%>
