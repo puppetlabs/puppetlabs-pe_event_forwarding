@@ -6,7 +6,7 @@ def require_classes(modulepaths)
   catch :done do
     modulepaths.split(':').each do |modulepath|
       Find.find(modulepath) do |path|
-        if path =~ %r{common_events_library.gemspec}
+        if path.match?(%r{common_events_library.gemspec})
           $LOAD_PATH.unshift("#{File.dirname(path)}/lib")
           throw :done
         end

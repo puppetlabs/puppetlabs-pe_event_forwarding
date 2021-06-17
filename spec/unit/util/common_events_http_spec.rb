@@ -1,4 +1,4 @@
-require_relative '../../../lib/common_events_library/util/common_events_http'
+require_relative '../../../lib/util/common_events_http'
 
 describe 'Common Events Http' do
   it 'fails without a hostname' do

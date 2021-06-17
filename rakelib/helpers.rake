@@ -1,0 +1,116 @@
+require_relative '../spec/support/acceptance/helpers'
+
+include TargetHelpers
+
+def servicenow_params(args)
+  args.names.map do |name|
+    args[name] || ENV[name.to_s.upcase]
+  end
+end
+
+# Executes a command locally.
+#
+# @param command [String] command to execute.
+# @return [Object] the standard out stream.
+def run_local_command(command)
+  stdout, stderr, status = Open3.capture3(command)
+  error_message = "Attempted to run\ncommand:'#{command}'\nstdout:#{stdout}\nstderr:#{stderr}"
+  raise error_message unless status.to_i.zero?
+
+  stdout
+end
+
+def task_prefix(hostname)
+  "bundle exec bolt task run --modulepath spec/fixtures/modules --target #{hostname}"
+end
+
+namespace :acceptance do
+  desc 'Provisions the VMs. This is currently just the master'
+  task :provision_vms do
+    if File.exist?('../spec/fixtures/litmus_inventory.yaml')
+      # Check if a master VM's already been setup
+      begin
+        uri = master.uri
+        puts("A master VM at '#{uri}' has already been set up")
+        next
+      rescue TargetNotFoundError
+        puts 'Master VM not yet set up.' # Pass-thru, this means that we haven't set up the master VM
+      end
+    end
+
+    provision_list = ENV['PROVISION_LIST'] || 'acceptance'
+    Rake::Task['litmus:provision_list'].invoke(provision_list)
+  end
+
+  # TODO: This should be refactored to use the https://github.com/puppetlabs/puppetlabs-peadm
+  # module for PE setup
+  desc 'Sets up PE on the master'
+  task :setup_pe do
+    master.bolt_run_script('../spec/support/acceptance/install_pe.sh')
+  end
+
+  desc 'Installs the module on the master'
+  task :install_module do
+    Rake::Task['litmus:install_module'].invoke(master.uri)
+  end
+
+  desc 'Reloads puppetserver on the master'
+  task :reload_module do
+    result = master.run_shell('/opt/puppetlabs/bin/puppetserver reload').stdout.chomp
+    puts "Error: #{result}" unless result.nil?
+  end
+
+  desc 'Gets the puppetserver logs for service now'
+  task :get_logs do
+    puts master.run_shell('tail -500 /var/log/puppetlabs/puppetserver/puppetserver.log').stdout.chomp
+  end
+
+  desc 'Do an agent run'
+  task :agent_run do
+    puts master.run_shell('puppet agent -t').stdout.chomp
+  end
+
+  desc 'Runs the tests'
+  task :run_tests do
+    rspec_command  = 'bundle exec rspec ./spec/acceptance --format documentation'
+    rspec_command += ' --format RspecJunitFormatter --out rspec_junit_results.xml' if ENV['CI'] == 'true'
+    puts("Running the tests ...\n")
+    unless system(rspec_command)
+      # system returned false which means rspec failed. So exit 1 here
+      exit 1
+    end
+  end
+
+  desc 'Set up the test infrastructure'
+  task :setup do
+    tasks = [
+      :provision_vms,
+      :setup_pe,
+      :install_module,
+    ]
+
+    tasks.each do |task|
+      task = "acceptance:#{task}"
+      puts("Invoking #{task}")
+      Rake::Task[task].invoke
+      puts("\n")
+    end
+  end
+
+  desc 'Teardown the setup'
+  task :tear_down do
+    puts("Tearing down the test infrastructure ...\n")
+    Rake::Task['litmus:tear_down'].invoke(master.uri)
+    FileUtils.rm_f('inventory.yaml')
+  end
+
+  desc 'Task for CI'
+  task :ci_run_tests do
+    begin
+      Rake::Task['acceptance:setup'].invoke
+      Rake::Task['acceptance:run_tests'].invoke
+    ensure
+      Rake::Task['acceptance:tear_down'].invoke
+    end
+  end
+end

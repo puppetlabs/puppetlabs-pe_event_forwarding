@@ -1,0 +1,6 @@
+.github/workflows/spec.yml:
+  unmanaged: false
+.travis.yml:
+  delete: true
+.gitlab-ci.yml:
+  delete: true
