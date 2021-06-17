@@ -41,6 +41,7 @@ class Target
 end
 
 class TargetNotFoundError < StandardError; end
+
 module TargetHelpers
   def master
     target('master', 'launch:provision_vms', 'master')
@@ -51,11 +52,6 @@ module TargetHelpers
     target('agent', 'launch:provision_vms', 'agent')
   end
   module_function :agent
-
-  def servicenow_instance
-    target('ServiceNow instance', 'acceptance:setup_servicenow_instance', 'servicenow_instance')
-  end
-  module_function :servicenow_instance
 
   def target(name, setup_task, role)
     @targets ||= {}
@@ -82,51 +78,4 @@ end
 
 module LitmusHelpers
   extend PuppetLitmus
-end
-
-module Helpers
-  def get_records(table, query)
-    params = {
-      'table' => table,
-      'url_params' => {
-        'sysparm_query' => query,
-        'sysparm_exclude_reference_link' => true,
-      },
-    }
-
-    task_result = servicenow_instance.run_bolt_task('servicenow_tasks::get_records', params)
-    task_result.result['result']
-  end
-  module_function :get_records
-
-  def get_single_record(table, query)
-    snow_err_msg_prefix = "On ServiceNow instance #{servicenow_instance.uri} with table '#{table}', query '#{query}'"
-
-    records = Helpers.get_records(table, query)
-    raise "#{snow_err_msg_prefix} expected record matching query but none was found" if records.empty?
-    if records.length > 1
-      sys_ids = records.map { |record| record['sys_id'] }
-      raise "#{snow_err_msg_prefix}: found multiple matching records. sys_ids: #{sys_ids.join(', ')}"
-    end
-
-    records[0]
-  end
-  module_function :get_single_record
-
-  def delete_record(table, sys_id)
-    params = {
-      'table' => table,
-      'sys_id' => sys_id,
-    }
-
-    servicenow_instance.run_bolt_task('servicenow_tasks::delete_record', params)
-  end
-  module_function :delete_record
-
-  def delete_records(table, query)
-    get_records(table, query).each do |record|
-      delete_record(table, record['sys_id'])
-    end
-  end
-  module_function :delete_records
 end

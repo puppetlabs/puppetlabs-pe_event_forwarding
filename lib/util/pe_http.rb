@@ -36,7 +36,6 @@ class PeHttp < CommonEventsHttp
     post_request(uri, body, headers.merge(pe_auth_header), timeout)
   end
 
-  # rubocop:disable Style/AccessorMethodName
   def get_pe_token
     # Preserve the object's port while we substitute 4433 for getting a token.
     temp_port = port

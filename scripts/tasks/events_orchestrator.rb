@@ -25,10 +25,10 @@ time = Benchmark.realtime do
     parent_event['events'].each do |event|
       next unless event['message'].include? 'Request task run'
       job_id = event['message'].split.last.gsub!(%r{^\"|\"?$}, '')
-      printf "\tGetting job %s ", job_id
+      puts "\tGetting job #{job_id} "
       response = Orchestrator.get_job(token, PE_CONSOLE, job_id, 2, 2)
       job = JSON.parse(response.body)
-      printf "type=%s state=%s %s\n", job['type'], job['state'], job['timestamp']
+      puts "type=#{job['type']} state=#{job['state']} #{job['timestamp']}\n"
 
       count += 1
     end
