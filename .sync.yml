@@ -4,3 +4,6 @@
   delete: true
 .gitlab-ci.yml:
   delete: true
+.gitignore:
+  required: &ignorepaths
+    - '**/litmus_inventory.yaml'
