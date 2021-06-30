@@ -5,7 +5,7 @@ version=`puppet --version`
 if [ -z "$version" ]; then
   PE_RELEASE=2019.8.1
   PE_LATEST=$(curl https://artifactory.delivery.puppetlabs.net/artifactory/generic_enterprise__local/archives/releases/${PE_RELEASE}/LATEST)
-  PE_FILE_NAME=puppet-enterprise-${PE_LATEST}-el-7-x86_64
+  PE_FILE_NAME=puppet-enterprise-${PE_LATEST}-ubuntu-18.04-amd64
   TAR_FILE=${PE_FILE_NAME}.tar
   DOWNLOAD_URL=https://artifactory.delivery.puppetlabs.net/artifactory/generic_enterprise__local/archives/releases/${PE_RELEASE}/${TAR_FILE}
 
