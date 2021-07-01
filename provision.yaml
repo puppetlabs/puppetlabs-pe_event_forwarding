@@ -1,15 +1,15 @@
 acceptance:
-  provisioner: vmpooler
+  provisioner: abs
   images: ['centos-7-x86_64']
   vars: |
-    roles: ['master']
+    role: server
 master:
-  provisioner: vmpooler
+  provisioner: abs
   images: ['centos-7-x86_64']
   vars: |
-    roles: ['master']
+    role: server
 agent:
-  provisioner: vmpooler
+  provisioner: abs
   images: ['centos-7-x86_64']
   vars: |
-    roles: ['agent']
+    role: agent

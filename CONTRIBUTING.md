@@ -7,22 +7,39 @@ CONTRIBUTING
 ## Development
 
 ### Setup
-
+For setting up the local testing environment, run the following commands:
 ```bash
 bundle install
 bundle exec rake spec_prep
 ```
 
 ### Launching the dev framework
+Run the command:
+```bash
+bundle exec rake acceptance:setup
+```
+and it will create the inventory file, provision a vm, install pe and the module on the server. If preferred, one can run each of the rake tasks manually with the following commands:
 
 ```bash
-bundle exec rake launch:provision_vms
-bundle exec rake launch:setup_pe
-bundle exec rake launch:reload_pe
-bundle exec rake launch:install_agent
-bundle exec rake launch:puppet_agent_run
+bundle exec rake acceptance:provision_vms
+bundle exec rake acceptance:setup_pe
+bundle exec rake acceptance:install_module
 ```
 
+Other available rake tasks:
+```bash
+bundle exec rake acceptance:reload_module
+bundle exec rake acceptance:get_logs
+bundle exec rake acceptance:agent_run
+```
+### Tearing down the dev framework
+If you don't tear down the machines, the setup will continuously add to the existing inventory file.
+
+Run the command:
+```bash
+bundle exec rake acceptance:teardown
+```
+This will delete your machine and clear the inventory file.
 ### Scraping the orchestrator API
 
 First some jobs/tasks must be executed on the PE console that was created in the launch step. Do this by going to the tasks sub menu and running something simple on all nodes like "facts".

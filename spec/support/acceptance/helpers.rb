@@ -43,10 +43,10 @@ end
 class TargetNotFoundError < StandardError; end
 
 module TargetHelpers
-  def master
-    target('master', 'launch:provision_vms', 'master')
+  def server
+    target('server', 'launch:provision_vms', 'server')
   end
-  module_function :master
+  module_function :server
 
   def agent
     target('agent', 'launch:provision_vms', 'agent')
@@ -62,8 +62,7 @@ module TargetHelpers
       targets = LitmusHelpers.find_targets(inventory_hash, nil)
       target_uri = targets.find do |target|
         vars = LitmusHelpers.vars_from_node(inventory_hash, target) || {}
-        roles = vars['roles'] || []
-        roles.include?(role)
+        (vars['role'] || []) == role
       end
       unless target_uri
         raise TargetNotFoundError, "none of the targets in 'inventory.yaml' have the '#{role}' role set. Did you forget to run 'rake #{setup_task}'?"
