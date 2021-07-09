@@ -1,4 +1,4 @@
-require_relative '../../../lib/events_collection/lockfile'
+require_relative '../../../files/lib/events_collection/lockfile'
 
 describe 'Lockfile' do
   let(:basepath) { '/tmp' }

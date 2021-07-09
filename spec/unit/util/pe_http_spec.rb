@@ -1,4 +1,4 @@
-require_relative '../../../lib/util/pe_http'
+require_relative '../../../files/lib/util/pe_http'
 
 describe 'PE Http' do
   it 'fails without a username/password or token' do
