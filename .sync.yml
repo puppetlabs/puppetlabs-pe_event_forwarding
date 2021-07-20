@@ -7,3 +7,8 @@
 .gitignore:
   required: &ignorepaths
     - '**/litmus_inventory.yaml'
+.rubocop.yml:
+  default_configs:
+   Style/ClassAndModuleChildren:
+     Description: Nested Style Allows Namespaced Classes.
+     EnforcedStyle: nested
