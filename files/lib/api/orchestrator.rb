@@ -1,4 +1,5 @@
 require_relative '../util/pe_http'
+require_relative '../util/common_events_index'
 
 # module Orchestrator this module provides the API specific code for accessing the orchestrator
 class Orchestrator
@@ -48,5 +49,10 @@ class Orchestrator
   def self.get_id_from_response(response)
     res = CommonEventsHttp.response_to_hash(response)
     res['job']['name']
+  end
+
+  def current_job_count
+    jobs = get_jobs(limit: 1)
+    JSON.parse(jobs)['pagination']['total'] || 0
   end
 end

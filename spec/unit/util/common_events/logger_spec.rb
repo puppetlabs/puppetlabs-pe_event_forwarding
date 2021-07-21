@@ -1,7 +1,7 @@
-require_relative '../../../files/lib/util/logger'
+require_relative '../../../../files/lib/util/logger'
 
-describe 'CommonEvents::Logger' do
-  subject(:io_logger) { CommonEvents::Logger.new(io) }
+describe CommonEvents::Logger do
+  subject(:io_logger) { described_class.new(io) }
 
   let(:io) { StringIO.new }
 
