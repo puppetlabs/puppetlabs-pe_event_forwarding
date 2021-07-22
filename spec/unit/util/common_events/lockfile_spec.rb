@@ -1,9 +1,9 @@
-require_relative '../../../files/lib/events_collection/lockfile'
+require_relative '../../../../files/util/lockfile'
 
-describe 'Lockfile' do
+describe CommonEvents::Lockfile do
   let(:basepath) { '/tmp' }
   let(:path) { File.join('/tmp', 'events_collection_run.lock') }
-  let(:new_lockfile) { CommonEvents::Lockfile.new(basepath) }
+  let(:new_lockfile) { described_class.new(basepath) }
 
   before(:each) do
     File.delete(path) if File.exist?(path)
@@ -12,13 +12,13 @@ describe 'Lockfile' do
   it 'sets the correct lockfile path' do
     filepaths = ['/path/path', '/path/', '/path', 'path', '']
     filepaths.each do |filepath|
-      expect(CommonEvents::Lockfile.new(filepath).filepath).to eq(File.join(filepath, '/events_collection_run.lock'))
+      expect(described_class.new(filepath).filepath).to eq(File.join(filepath, '/events_collection_run.lock'))
       File.delete(filepath) if File.exist?(filepath)
     end
   end
 
   it 'requires a lockfile path' do
-    expect { CommonEvents::Lockfile.new }.to raise_error(ArgumentError)
+    expect { described_class.new }.to raise_error(ArgumentError)
   end
 
   it 'creates the lockfile with the correct format' do
