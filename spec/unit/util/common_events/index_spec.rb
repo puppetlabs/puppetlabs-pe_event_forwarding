@@ -1,4 +1,4 @@
-require_relative '../../../../files/lib/util/common_events_index'
+require_relative '../../../../files/util/index'
 
 describe CommonEvents::Index do
   subject(:index) { described_class.new(statedir, index_type) }

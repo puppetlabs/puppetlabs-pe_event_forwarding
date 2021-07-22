@@ -1,4 +1,4 @@
-require_relative '../../../../files/lib/util/logger'
+require_relative '../../../../files/util/logger'
 
 describe CommonEvents::Logger do
   subject(:io_logger) { described_class.new(io) }

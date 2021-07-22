@@ -4,10 +4,10 @@ require 'yaml'
 
 require_relative 'api/events'
 require_relative 'api/orchestrator'
-require_relative 'events_collection/lockfile'
-require_relative 'util/common_events_http'
+require_relative 'util/lockfile'
+require_relative 'util/http'
 require_relative 'util/pe_http'
-require_relative 'util/common_events_index'
+require_relative 'util/index'
 
 def main(confdir, _modulepaths, statedir)
   lockfile = CommonEvents::Lockfile.new(statedir)
@@ -16,7 +16,7 @@ def main(confdir, _modulepaths, statedir)
     puts 'already running'
   else
     lockfile.write_lockfile
-    orchestrator_client = Orchestrator.new('localhost', username: settings['pe_username'], password: settings['pe_password'], token: settings['pe_token'], ssl_verify: false)
+    orchestrator_client = CommonEvents::Orchestrator.new('localhost', username: settings['pe_username'], password: settings['pe_password'], token: settings['pe_token'], ssl_verify: false)
     orchestrator_index = CommonEvents::Index.new(statedir, 'orchestrator')
     current_count = orchestrator_client.current_job_count
 

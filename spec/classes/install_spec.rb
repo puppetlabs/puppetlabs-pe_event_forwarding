@@ -25,14 +25,6 @@ describe 'common_events::install' do
       }
 
       it {
-        is_expected.to contain_file("#{confdir}/common_events/collect_api_events.rb")
-          .with(
-          ensure: 'file',
-          require: "File[#{confdir}/common_events]",
-        )
-      }
-
-      it {
         is_expected.to contain_file("#{confdir}/common_events/events_collection.yaml")
           .with(
           ensure: 'file',
