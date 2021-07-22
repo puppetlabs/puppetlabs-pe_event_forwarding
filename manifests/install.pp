@@ -42,11 +42,25 @@ class common_events::install {
   }
 
   file { $confdir:
+    ensure => directory,
+    owner  => $owner,
+    group  => $group,
+  }
+
+  file { "${confdir}/api":
     ensure  => directory,
     owner   => $owner,
     group   => $group,
     recurse => 'remote',
-    source  => 'puppet:///modules/common_events',
+    source  => 'puppet:///modules/common_events/api',
+  }
+
+  file { "${confdir}/util":
+    ensure  => directory,
+    owner   => $owner,
+    group   => $group,
+    recurse => 'remote',
+    source  => 'puppet:///modules/common_events/util',
   }
 
   file { "${confdir}/events_collection.yaml":
@@ -56,5 +70,14 @@ class common_events::install {
     mode    => '0640',
     require => File[$confdir],
     content => epp('common_events/events_collection.yaml'),
+  }
+
+  file { "${confdir}/collect_api_events.rb":
+    ensure  => file,
+    owner   => $owner,
+    group   => $group,
+    mode    => '0755',
+    require => File[$confdir],
+    source  => 'puppet:///modules/common_events/collect_api_events.rb',
   }
 }
