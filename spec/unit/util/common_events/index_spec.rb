@@ -1,7 +1,7 @@
 require_relative '../../../../files/util/index'
 
 describe CommonEvents::Index do
-  subject(:index) { described_class.new(statedir, index_type) }
+  subject(:index) { described_class.new(statedir) }
 
   let(:statedir)   { 'blah' }
   let(:index_type) { 'foo' }
@@ -9,7 +9,7 @@ describe CommonEvents::Index do
   let(:yaml) do
     <<~YAML
       ---
-      foo: 10
+      :foo: 10
     YAML
   end
 
@@ -25,7 +25,7 @@ describe CommonEvents::Index do
       end
 
       it 'creates a new file with correct content' do
-        expect(File).to receive(:write).with(filepath, "---\nfoo: 0\n")
+        expect(File).to receive(:write).with(filepath, "---\n:classifier: 0\n:rbac: 0\n:pe_console: 0\n:code_manager: 0\n:orchestrator: 0\n")
         index
       end
     end
@@ -41,27 +41,27 @@ describe CommonEvents::Index do
   context '.create_new_index_file' do
     before(:each) { allow(File).to receive(:write) }
     it 'creates the correct file' do
-      expect(File).to receive(:write).with(filepath, "---\nfoo: 0\n")
+      expect(File).to receive(:write).with(filepath, "---\n:classifier: 0\n:rbac: 0\n:pe_console: 0\n:code_manager: 0\n:orchestrator: 0\n")
       index.create_new_index_file
     end
 
     it 'sets current count to zero' do
       index.create_new_index_file
-      expect(index.count).to be(0)
+      expect(index.counts).to eq(foo: 10)
     end
   end
 
-  context '.count' do
+  context '.counts' do
     it 'retreives current count' do
-      index.instance_variable_set(:@count, 5)
-      expect(index.count).to be(5)
+      index.instance_variable_set(:@counts, 5)
+      expect(index.counts).to eq(5)
     end
   end
 
   context '.read_count' do
     context 'with valid yaml' do
       it 'retreives correct count' do
-        expect(index.read_count).to be(10)
+        expect(index.read_count(:foo)).to be(10)
       end
     end
 
@@ -75,19 +75,19 @@ describe CommonEvents::Index do
       end
 
       it 'throw an error for invalid yaml' do
-        expect { index.read_count }.to raise_error(Psych::SyntaxError)
+        expect { index.read_count(:foo) }.to raise_error(Psych::SyntaxError)
       end
     end
   end
 
   context '.save_latest_index' do
     before(:each) do
-      allow(File).to receive(:read).and_return({ 'foo' => 15 }.to_yaml)
+      allow(File).to receive(:read).and_return({ foo: 15 }.to_yaml)
     end
 
     it 'writes correct yaml' do
       expect(File).to receive(:write).with(filepath, yaml)
-      index.save_latest_index(10)
+      index.save_latest_index(:foo, 10)
     end
   end
 end

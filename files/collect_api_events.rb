@@ -17,21 +17,23 @@ def main(confdir, _modulepaths, statedir)
   else
     lockfile.write_lockfile
     orchestrator_client = CommonEvents::Orchestrator.new('localhost', username: settings['pe_username'], password: settings['pe_password'], token: settings['pe_token'], ssl_verify: false)
-    orchestrator_index = CommonEvents::Index.new(statedir, 'orchestrator')
+    everything_index = CommonEvents::Index.new(statedir)
     current_count = orchestrator_client.current_job_count
 
-    puts orchestrator_index.count
+    puts everything_index.read_count(:orchestrator)
     puts current_count
-    new_count = orchestrator_index.new_items(current_count)
+    new_count = everything_index.new_items(:orchestrator, current_count)
     puts new_count
-    orchestrator_index.save_latest_index(current_count)
+    everything_index.save_latest_index(:orchestrator, current_count)
 
-    events_index = CommonEvents::Index.new(statedir, 'events')
-    puts "events count: #{events_index.count}"
-    events_index.save_latest_index(15)
-    puts "events count 2: #{events_index.count}"
+    puts "classifier count: #{everything_index.read_count(:classifier)}"
+    everything_index.save_latest_index(:classifier, 15)
+    everything_index.save_latest_index(:rbac, 3)
+    everything_index.save_latest_index(:pe_console, 5)
+    everything_index.save_latest_index(:code_manager, 7)
+    puts "classifier count 2: #{everything_index.read_count(:classifier)}"
 
-    puts File.read(events_index.filepath)
+    puts File.read(everything_index.filepath)
 
     # Find any compatible reports
     # Reports should be in /lib/reports/common_events
