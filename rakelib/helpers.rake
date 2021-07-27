@@ -25,6 +25,17 @@ def task_prefix(hostname)
 end
 
 namespace :acceptance do
+  desc 'Upload Test Processors'
+  task :upload_processors do
+    ['proc1.sh', 'proc2.rb'].each do |processor|
+      proc_path = "spec/support/acceptance/#{processor}"
+      folder = '/etc/puppetlabs/puppet/common_events/processors.d'
+      server.run_shell("mkdir -p #{folder}")
+      server.bolt_upload_file(proc_path, folder)
+      server.run_shell("chmod +x #{folder}/#{processor}")
+    end
+  end
+
   desc 'Provisions the VMs. This is currently just the server'
   task :provision_vms do
     if File.exist?('../spec/fixtures/litmus_inventory.yaml')
