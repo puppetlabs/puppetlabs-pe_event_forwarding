@@ -16,27 +16,31 @@ def main(confdir, _modulepaths, statedir)
     puts 'already running'
   else
     lockfile.write_lockfile
+    index = CommonEvents::Index.new(statedir)
+    data = {}
+
     orchestrator_client = CommonEvents::Orchestrator.new('localhost', username: settings['pe_username'], password: settings['pe_password'], token: settings['pe_token'], ssl_verify: false)
-    everything_index = CommonEvents::Index.new(statedir)
-    current_count = orchestrator_client.current_job_count
+    current_count       = orchestrator_client.current_job_count
+    # puts "current_count: #{puts current_count}"
+    new_count           = index.new_items(:orchestrator, current_count)
+    # puts "new_count: #{new_count}"
+    if new_count > 0
+      data[:orchestrator] = orchestrator_client.get_jobs(limit: new_count, offset: index.count(:orchestrator), order: 'asc', order_by: 'name')
+      index.save(orchestrator: current_count)
+    end
+    services = [:classifier, :rbac, :'pe-console', :'code-manager' ]
 
-    puts everything_index.read_count(:orchestrator)
-    puts current_count
-    new_count = everything_index.new_items(:orchestrator, current_count)
-    puts new_count
-    everything_index.save_latest_index(:orchestrator, current_count)
+    events_client = CommonEvents::Events.new('localhost', username: settings['pe_username'], password: settings['pe_password'], token: settings['pe_token'], ssl_verify: false)
+    services.each do |service|
+      current_count = events_client.current_event_count(service)
+      last_count = index.count(service)
+      new_count = index.new_items(service, current_count)
+      next unless new_count > 0
+      data[service] = events_client.get_events(service: service, offset: last_count, limit: new_count)
+      index.save(service => current_count)
+    end
 
-    puts "classifier count: #{everything_index.read_count(:classifier)}"
-    everything_index.save_latest_index(:classifier, 15)
-    everything_index.save_latest_index(:rbac, 3)
-    everything_index.save_latest_index(:pe_console, 5)
-    everything_index.save_latest_index(:code_manager, 7)
-    puts "classifier count 2: #{everything_index.read_count(:classifier)}"
-
-    puts File.read(everything_index.filepath)
-
-    # Find any compatible reports
-    # Reports should be in /lib/reports/common_events
+    puts data.to_json
   end
 rescue => exception
   puts exception

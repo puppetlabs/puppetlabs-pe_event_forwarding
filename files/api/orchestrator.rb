@@ -21,7 +21,7 @@ module CommonEvents
       uri = CommonEvents::PeHttp.make_params('orchestrator/v1/jobs', params)
       response = pe_client.pe_get_request(uri)
       raise 'Orchestrator API request failed' unless response.code == '200'
-      response.body
+      JSON.parse(response.body)
     end
 
     def run_facts_task(nodes)
@@ -54,7 +54,7 @@ module CommonEvents
 
     def current_job_count
       jobs = get_jobs(limit: 1)
-      JSON.parse(jobs)['pagination']['total'] || 0
+      jobs['pagination']['total'] || 0
     end
   end
 end
