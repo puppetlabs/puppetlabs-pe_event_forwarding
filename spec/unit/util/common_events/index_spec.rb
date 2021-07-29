@@ -25,7 +25,7 @@ describe CommonEvents::Index do
       end
 
       it 'creates a new file with correct content' do
-        expect(File).to receive(:write).with(filepath, "---\n:classifier: 0\n:rbac: 0\n:pe_console: 0\n:code_manager: 0\n:orchestrator: 0\n")
+        expect(File).to receive(:write).with(filepath, "---\n:classifier: 0\n:rbac: 0\n:pe-console: 0\n:code-manager: 0\n:orchestrator: 0\n")
         index
       end
     end
@@ -41,7 +41,7 @@ describe CommonEvents::Index do
   context '.create_new_index_file' do
     before(:each) { allow(File).to receive(:write) }
     it 'creates the correct file' do
-      expect(File).to receive(:write).with(filepath, "---\n:classifier: 0\n:rbac: 0\n:pe_console: 0\n:code_manager: 0\n:orchestrator: 0\n")
+      expect(File).to receive(:write).with(filepath, "---\n:classifier: 0\n:rbac: 0\n:pe-console: 0\n:code-manager: 0\n:orchestrator: 0\n")
       index.create_new_index_file
     end
 
