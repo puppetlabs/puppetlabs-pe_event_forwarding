@@ -10,11 +10,11 @@ module CommonEvents
     end
 
     def create_new_index_file
-      tracker = { classifier:   0,
-                  rbac:         0,
-                  pe_console:   0,
-                  code_manager: 0,
-                  orchestrator: 0, }
+      tracker = { classifier:     0,
+                  rbac:           0,
+                  'pe-console':   0,
+                  'code-manager': 0,
+                  orchestrator:   0, }
       File.write(filepath, tracker.to_yaml)
     end
 

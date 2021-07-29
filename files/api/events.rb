@@ -20,5 +20,10 @@ module CommonEvents
       raise 'Events API request failed' unless response.code == '200'
       response.body
     end
+
+    def current_event_count(service_name)
+      events_count_for_service = get_events(service: service_name, limit: 1)
+      JSON.parse(events_count_for_service)['total-rows'] || 0
+    end
   end
 end
