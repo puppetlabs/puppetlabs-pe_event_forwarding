@@ -6,10 +6,10 @@ module CommonEvents
       require 'yaml'
       @filepath = "#{statedir}/common_events_indexes.yaml"
 
-      create_new_index_file unless File.exist? @filepath
+      new_index_file unless File.exist? @filepath
     end
 
-    def create_new_index_file
+    def new_index_file
       tracker = { classifier:     0,
                   rbac:           0,
                   'pe-console':   0,
@@ -18,28 +18,28 @@ module CommonEvents
       File.write(filepath, tracker.to_yaml)
     end
 
-    def counts
-      @counts ||= YAML.safe_load(File.read('tracker.yaml'), [Symbol])
+    def counts(refresh: false)
+      if refresh
+        @counts = YAML.safe_load(File.read(filepath), [Symbol])
+      end
+      @counts ||= YAML.safe_load(File.read(filepath), [Symbol])
     end
 
-    def read_count(index_type)
-      tracker = YAML.safe_load(File.read(filepath), [Symbol])
-      tracker[index_type] || 0
+    def count(service)
+      counts[service] || 0
     end
 
-    def new_items(index_type, latest_count)
-      diff = latest_count - read_count(index_type)
+    def new_items(service, latest_count)
+      diff = latest_count - count(service)
       raise 'Got negative value for new_items' unless diff >= 0
       diff
     end
 
-    def index_hash
-      YAML.safe_load(File.read(filepath), [Symbol])
-    end
-
-    def save_latest_index(index_type, latest)
-      data = index_hash
-      data[index_type] = latest
+    def save(**service)
+      data = counts(refresh: true)
+      service.each do |key, value|
+        data[key] = value
+      end
       File.write(filepath, data.to_yaml)
       @counts = data
     end
