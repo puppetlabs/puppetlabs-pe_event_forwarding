@@ -6,9 +6,15 @@
 # @example
 #   include common_events
 class common_events (
-  Optional[String]            $pe_username = undef,
-  Optional[Sensitive[String]] $pe_password = undef,
-  Optional[String]            $pe_token    = undef,
+  Optional[String]             $pe_username   = undef,
+  Optional[Sensitive[String]]  $pe_password   = undef,
+  Optional[String]             $pe_token      = undef,
+  Optional[Boolean]            $disabled      = false,
+  Optional[String]             $cron_minute   = '*/2',
+  Optional[String]             $cron_hour     = '*',
+  Optional[String]             $cron_weekday  = '*',
+  Optional[String]             $cron_month    = '*',
+  Optional[String]             $cron_monthday = '*',
 ){
   include common_events::install
 }

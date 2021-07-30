@@ -31,12 +31,22 @@ class common_events::install {
     }
   }
 
+  unless $common_events::disabled {
+    $cron_ensure = present
+  } else {
+    $cron_ensure = absent
+  }
+
   cron { 'collect_common_events':
-    ensure  => 'present',
-    command => "${confdir}/collect_api_events.rb ${confdir} ${modulepath} ${confdir}",
-    user    => 'root',
-    minute  => '*/2',
-    require => [
+    ensure   => $cron_ensure,
+    command  => "${confdir}/collect_api_events.rb ${confdir} ${modulepath} ${confdir}",
+    user     => 'root',
+    minute   => $common_events::cron_minute,
+    hour     => $common_events::cron_hour,
+    weekday  => $common_events::cron_weekday,
+    month    => $common_events::cron_month,
+    monthday => $common_events::cron_monthday,
+    require  => [
       File["${confdir}/events_collection.yaml"]
     ],
   }
