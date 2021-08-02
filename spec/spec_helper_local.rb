@@ -24,3 +24,33 @@ end
 def index_yaml(**custom_count)
   index_data(custom_count).to_yaml
 end
+
+def events_data(**extra_data)
+  require 'json'
+  template = {
+    rbac: {
+      event1: {
+        foo: 'bar'
+      }
+    },
+    classifier: {
+      event1: {
+        foo: 'bar'
+      }
+    },
+    orchestrator: {
+      jobs: [
+        {
+          name: 1,
+          description: 'job1'
+        },
+        {
+          name: 2,
+          description: 'job2'
+        },
+      ]
+    }
+  }
+
+  template.merge(extra_data).to_json
+end

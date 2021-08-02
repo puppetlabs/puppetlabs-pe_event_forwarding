@@ -11,19 +11,23 @@ module CommonEvents
       @name = path.split('/')[-1]
     end
 
-    def invoke
-      @stdout, @stderr, @status = Open3.capture3(@path)
+    def invoke(data)
+      require 'tempfile'
+      Tempfile.create(name) do |f|
+        f.write(data.to_json)
+        f.flush
+        @stdout, @stderr, @status = Open3.capture3("#{path} #{f.path}")
+      end
     end
 
     def self.find_each(dir)
       return [] unless File.exist? dir
-      processors = Find.find(dir).map do |path|
+      Find.find(dir).select do |path|
         unless FileTest.directory?(path)
-          CommonEvents::Processor.new(path)
+          processor = CommonEvents::Processor.new(path)
+          block_given? ? yield(processor) : processor
         end
       end
-
-      processors.compact
     end
   end
 end

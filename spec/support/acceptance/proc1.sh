@@ -1,6 +1,6 @@
 #! /bin/bash
 
-echo 'hello world!' > /tmp/proc1
+cat $1 > /tmp/proc1
 
 echo 'stdoutstreamhere'
 

@@ -2,19 +2,26 @@ require 'spec_helper_local'
 require_relative '../../../../files/util/processor'
 require 'open3'
 require 'find'
+require 'tempfile'
 
 describe CommonEvents::Processor do
   subject(:processor) { described_class.new(path) }
 
-  let(:path)      { '/tmp/blah/processors.d/proc1.sh' }
-  let(:procs_dir) { '/tmp/blah/processors.d' }
+  let(:path)           { '/tmp/blah/processors.d/proc1.sh' }
+  let(:procs_dir)      { '/tmp/blah/processors.d' }
+  let(:temp_file_path) { '/tmp/proc1-temp-file' }
 
   let(:invoke_result) do
     return 'stdout_message', 'stderr_message', 0
   end
 
   before(:each) do
-    allow(Open3).to receive(:capture3).with(path).and_return(invoke_result)
+    f = instance_double(File)
+    allow(f).to receive(:write)
+    allow(f).to receive(:flush)
+    allow(f).to receive(:path).and_return(temp_file_path)
+    allow(Tempfile).to receive(:create).and_yield(f)
+    allow(Open3).to receive(:capture3).with("#{path} #{temp_file_path}").and_return(invoke_result)
   end
 
   context '#find_each' do
@@ -33,8 +40,8 @@ describe CommonEvents::Processor do
         end
 
         it 'returns correct object types' do
-          described_class.find_each(procs_dir).each do |processor|
-            expect(processor.class).to be(described_class)
+          described_class.find_each(procs_dir) do |yielded_processor|
+            expect(yielded_processor.class).to be(described_class)
           end
         end
       end
@@ -62,7 +69,7 @@ describe CommonEvents::Processor do
   end
 
   context '.invoke' do
-    before(:each) { processor.invoke }
+    before(:each) { processor.invoke(events_data) }
 
     it 'populates stdout' do
       expect(processor.stdout).to eq('stdout_message')
