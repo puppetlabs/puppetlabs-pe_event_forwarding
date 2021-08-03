@@ -28,7 +28,7 @@ def main(confdir, _modulepaths, statedir)
     new_count           = index.new_items(:orchestrator, current_count)
     # puts "new_count: #{new_count}"
     if new_count > 0
-      data[:orchestrator] = orchestrator_client.get_jobs(limit: new_count, offset: index.count(:orchestrator), order: 'asc', order_by: 'name')
+      data[:orchestrator] = orchestrator_client.get_jobs(limit: new_count, offset: index.count(:orchestrator))
       index.save(orchestrator: current_count)
     end
     services = [:classifier, :rbac, :'pe-console', :'code-manager' ]

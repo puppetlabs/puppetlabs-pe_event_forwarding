@@ -10,7 +10,7 @@ module CommonEvents
       @pe_client = CommonEvents::PeHttp.new(pe_console, port: 8143, username: username, password: password, token: token, ssl_verify: ssl_verify)
     end
 
-    def get_jobs(limit: nil, offset: nil, order: nil, order_by: nil)
+    def get_jobs(limit: nil, offset: nil, order: 'asc', order_by: 'name')
       params = {
         limit:    limit,
         offset:   offset,
