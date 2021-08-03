@@ -10,6 +10,19 @@ def procs_paths
     Dir.children('spec/support/acceptance').map { |p| "#{base_path}#{p}" }
 end
 
+def capture3_mocks
+  f = instance_double(File)
+  allow(f).to receive(:write)
+  allow(f).to receive(:flush)
+  allow(f).to receive(:path).and_return(temp_file_path)
+  allow(Tempfile).to receive(:create).and_yield(f)
+
+  exit_status = instance_double(Process::Status)
+  allow(exit_status).to receive(:exitstatus).and_return(0)
+  invoke_result = ['stdout_message', 'stderr_message', exit_status]
+  allow(Open3).to receive(:capture3).with("#{path} #{temp_file_path}").and_return(invoke_result)
+end
+
 def index_data(**custom_count)
   template = {
     classifier:     0,
