@@ -1,6 +1,6 @@
 #!/opt/puppetlabs/puppet/bin/ruby
 
-File.write('/tmp/proc2', 'hello world!')
+File.write('/tmp/proc2', File.read(ARGV[0]))
 
 puts 'done processing'
 

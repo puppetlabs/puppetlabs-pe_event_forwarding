@@ -8,8 +8,11 @@ require_relative 'util/lockfile'
 require_relative 'util/http'
 require_relative 'util/pe_http'
 require_relative 'util/index'
+require_relative 'util/processor'
+require_relative 'util/logger'
 
 def main(confdir, _modulepaths, statedir)
+  log = CommonEvents::Logger.new('/tmp/common_events.log')
   lockfile = CommonEvents::Lockfile.new(statedir)
   settings = YAML.safe_load(File.read("#{confdir}/events_collection.yaml"))
   if lockfile.already_running?
@@ -40,7 +43,11 @@ def main(confdir, _modulepaths, statedir)
       index.save(service => current_count)
     end
 
-    puts data.to_json
+    CommonEvents::Processor.find_each("#{confdir}/processors.d") do |processor|
+      processor.invoke(data)
+      log.info(processor.stdout, source: processor.name)
+      log.warn(processor.stderr, source: processor.name) unless processor.stderr.length.zero?
+    end
   end
 rescue => exception
   puts exception
