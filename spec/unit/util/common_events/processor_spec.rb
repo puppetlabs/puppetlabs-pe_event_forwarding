@@ -11,17 +11,8 @@ describe CommonEvents::Processor do
   let(:procs_dir)      { '/tmp/blah/processors.d' }
   let(:temp_file_path) { '/tmp/proc1-temp-file' }
 
-  let(:invoke_result) do
-    return 'stdout_message', 'stderr_message', 0
-  end
-
   before(:each) do
-    f = instance_double(File)
-    allow(f).to receive(:write)
-    allow(f).to receive(:flush)
-    allow(f).to receive(:path).and_return(temp_file_path)
-    allow(Tempfile).to receive(:create).and_yield(f)
-    allow(Open3).to receive(:capture3).with("#{path} #{temp_file_path}").and_return(invoke_result)
+    capture3_mocks
   end
 
   context '#find_each' do
@@ -80,7 +71,7 @@ describe CommonEvents::Processor do
     end
 
     it 'populates exit code' do
-      expect(processor.status).to eq(0)
+      expect(processor.exitcode).to eq(0)
     end
   end
 end

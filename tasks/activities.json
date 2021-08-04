@@ -20,6 +20,6 @@
   "files": [
     "common_events_library/lib/common_events_library/util/pe_http.rb",
     "common_events_library/lib/common_events_library/util/common_events_http.rb",
-    "common_events_library/lib/common_events_library/api/events.rb"
+    "common_events_library/lib/common_events_library/api/activity.rb"
   ]
 }

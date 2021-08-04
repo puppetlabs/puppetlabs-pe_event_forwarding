@@ -5,7 +5,7 @@ module CommonEvents
     require 'find'
     require 'open3'
 
-    attr_accessor :path, :stdout, :stderr, :status, :name
+    attr_accessor :path, :stdout, :stderr, :status, :name, :exitcode
     def initialize(path)
       @path = path
       @name = path.split('/')[-1]
@@ -17,6 +17,7 @@ module CommonEvents
         f.write(data.to_json)
         f.flush
         @stdout, @stderr, @status = Open3.capture3("#{path} #{f.path}")
+        @exitcode = status.exitstatus
       end
     end
 

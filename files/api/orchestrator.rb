@@ -56,5 +56,11 @@ module CommonEvents
       jobs = get_jobs(limit: 1)
       jobs['pagination']['total'] || 0
     end
+
+    def new_data(last_count)
+      new_job_count = current_job_count - last_count
+      return unless new_job_count > 0
+      get_jobs(limit: new_job_count, offset: last_count)
+    end
   end
 end

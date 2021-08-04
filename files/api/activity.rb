@@ -2,7 +2,9 @@ require_relative '../util/pe_http'
 
 module CommonEvents
   # module Events This contains the API specific code for the events API
-  class Events
+  class Activity
+    SERVICE_NAMES = [:classifier, :rbac, :'pe-console', :'code-manager' ].freeze
+
     attr_accessor :pe_client
 
     def initialize(pe_console, username: nil, password: nil, token: nil, ssl_verify: true)
@@ -25,6 +27,12 @@ module CommonEvents
     def current_event_count(service_name)
       events_count_for_service = get_events(service: service_name, limit: 1)
       events_count_for_service['pagination']['total'] || 0
+    end
+
+    def new_data(service, last_count)
+      new_count = current_event_count(service) - last_count
+      return unless new_count > 0
+      get_events(service: service, offset: last_count, limit: new_count)
     end
   end
 end

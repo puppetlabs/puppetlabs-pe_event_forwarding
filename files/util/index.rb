@@ -38,10 +38,16 @@ module CommonEvents
     def save(**service)
       data = counts(refresh: true)
       service.each do |key, value|
-        data[key] = value
+        next if value.nil?
+        data[key] = value.is_a?(Integer) ? value : value['pagination']['total']
       end
       File.write(filepath, data.to_yaml)
       @counts = data
+    end
+
+    def add(service, increment)
+      total = count(service) + increment
+      save(service => total)
     end
   end
 end
