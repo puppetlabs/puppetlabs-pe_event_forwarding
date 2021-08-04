@@ -5,7 +5,9 @@ require 'spec_helper'
 describe 'common_events::install' do
   on_supported_os.each do |os, facts|
     context "on #{os}" do
-      let(:confdir) { Puppet.settings.setting('confdir').value }
+      let(:confdir) { 'bluh' }
+      let(:confdir_expectation) { File.join(Dir.pwd, 'bluh') }
+      let(:logdir) { "#{Puppet.settings.setting('logdir').value}/common_events/common_events.log" }
       let(:facts) do
         facts.merge(pe_server_version: '2019.8.7')
       end
@@ -20,49 +22,48 @@ describe 'common_events::install' do
         end
 
         it {
-          is_expected.to contain_file("#{confdir}/common_events")
+          is_expected.to contain_file("#{confdir_expectation}/common_events")
             .with(
             ensure: 'directory',
           )
         }
 
         it {
-          is_expected.to contain_file("#{confdir}/common_events/api")
+          is_expected.to contain_file("#{confdir_expectation}/common_events/api")
             .with(
             ensure: 'directory',
           )
         }
 
         it {
-          is_expected.to contain_file("#{confdir}/common_events/util")
+          is_expected.to contain_file("#{confdir_expectation}/common_events/util")
             .with(
             ensure: 'directory',
           )
         }
 
         it {
-          is_expected.to contain_file("#{confdir}/common_events/events_collection.yaml")
+          is_expected.to contain_file("#{confdir_expectation}/common_events/events_collection.yaml")
             .with(
             ensure: 'file',
-            require: "File[#{confdir}/common_events]",
+            require: "File[#{confdir_expectation}/common_events]",
           )
         }
 
         it {
-          is_expected.to contain_file("#{confdir}/common_events/collect_api_events.rb")
+          is_expected.to contain_file("#{confdir_expectation}/common_events/collect_api_events.rb")
             .with(
             ensure: 'file',
             mode: '0755',
-            require: "File[#{confdir}/common_events]",
+            require: "File[#{confdir_expectation}/common_events]",
           )
         }
 
         it {
           is_expected.to contain_cron('collect_common_events')
-            .with_command("#{confdir}/common_events/collect_api_events.rb" \
-            " #{confdir}/common_events" \
-            " #{FULL_MODULE_PATH}" \
-            " #{confdir}/common_events")
+            .with_command("#{confdir_expectation}/common_events/collect_api_events.rb" \
+            " #{confdir_expectation}/common_events" \
+            " #{logdir}")
         }
       end
 

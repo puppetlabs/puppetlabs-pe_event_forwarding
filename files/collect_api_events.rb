@@ -11,13 +11,12 @@ require_relative 'util/index'
 require_relative 'util/processor'
 require_relative 'util/logger'
 
-confdir     = ARGV[0] || '/etc/puppetlabs/puppet/common_events'
-modulepaths = ARGV[1] || '/etc/puppetlabs/code/environments/production/modules:/etc/puppetlabs/code/environments/production/site:/etc/puppetlabs/code/modules:/opt/puppetlabs/puppet/modules'
-statedir    = ARGV[2] || '/etc/puppetlabs/puppet/common_events'
+confdir = ARGV[0] || '/etc/puppetlabs/puppet/common_events'
+logpath = ARGV[1] || '/var/log/puppetlabs/common_events/common_events.log'
 
-def main(confdir, _modulepaths, statedir)
-  log      = CommonEvents::Logger.new('/tmp/common_events.log')
-  lockfile = CommonEvents::Lockfile.new(statedir)
+def main(confdir, logpath)
+  log = CommonEvents::Logger.new(logpath)
+  lockfile = CommonEvents::Lockfile.new(confdir)
 
   if lockfile.already_running?
     log.warn('previous run is not complete')
@@ -26,7 +25,7 @@ def main(confdir, _modulepaths, statedir)
 
   lockfile.write_lockfile
   settings = YAML.safe_load(File.read("#{confdir}/events_collection.yaml"))
-  index = CommonEvents::Index.new(statedir)
+  index = CommonEvents::Index.new(confdir)
   data = {}
 
   client_options = {
@@ -37,7 +36,7 @@ def main(confdir, _modulepaths, statedir)
   }
 
   orchestrator = CommonEvents::Orchestrator.new('localhost', client_options)
-  activities   = CommonEvents::Activity.new('localhost', client_options)
+  activities = CommonEvents::Activity.new('localhost', client_options)
 
   if index.first_run?
     data[:orchestrator] = orchestrator.current_job_count
@@ -71,5 +70,5 @@ ensure
 end
 
 if $PROGRAM_NAME == __FILE__
-  main(confdir, modulepaths, statedir)
+  main(confdir, logpath)
 end

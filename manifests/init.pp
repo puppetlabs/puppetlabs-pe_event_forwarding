@@ -15,6 +15,7 @@ class common_events (
   Optional[String]             $cron_weekday  = '*',
   Optional[String]             $cron_month    = '*',
   Optional[String]             $cron_monthday = '*',
+  Optional[String]             $log_path      = undef,
 ){
   include common_events::install
 }
