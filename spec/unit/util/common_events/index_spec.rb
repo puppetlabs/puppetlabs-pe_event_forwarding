@@ -30,6 +30,10 @@ describe CommonEvents::Index do
         expect(File).not_to receive(:write)
         index
       end
+
+      it 'returns false on first_run? call' do
+        expect(index.first_run?).to be false
+      end
     end
   end
 
@@ -43,6 +47,11 @@ describe CommonEvents::Index do
     it 'sets current count to zero' do
       index.new_index_file
       expect(index.counts).to eq(index_data)
+    end
+
+    it 'sets first_run to false' do
+      index.new_index_file
+      expect(index.first_run?).to be true
     end
   end
 

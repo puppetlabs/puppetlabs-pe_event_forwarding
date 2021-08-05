@@ -5,6 +5,7 @@ module CommonEvents
     def initialize(statedir)
       require 'yaml'
       @filepath = "#{statedir}/common_events_indexes.yaml"
+      @first_run = false
 
       new_index_file unless File.exist? @filepath
     end
@@ -16,6 +17,11 @@ module CommonEvents
                   'code-manager': 0,
                   orchestrator:   0, }
       File.write(filepath, tracker.to_yaml)
+      @first_run = true
+    end
+
+    def first_run?
+      @first_run
     end
 
     def counts(refresh: false)

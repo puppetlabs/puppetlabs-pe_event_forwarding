@@ -39,19 +39,30 @@ def main(confdir, _modulepaths, statedir)
   orchestrator = CommonEvents::Orchestrator.new('localhost', client_options)
   activities   = CommonEvents::Activity.new('localhost', client_options)
 
+  if index.first_run?
+    data[:orchestrator] = orchestrator.current_job_count
+    CommonEvents::Activity::SERVICE_NAMES.each do |service|
+      data[service] = activities.current_event_count(service)
+    end
+    index.save(data)
+    log.warn('First run. Recorded event count and now exiting.')
+    exit
+  end
+
   data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator))
 
   CommonEvents::Activity::SERVICE_NAMES.each do |service|
     data[service] = activities.new_data(service, index.count(service))
   end
 
-  CommonEvents::Processor.find_each("#{confdir}/processors.d") do |processor|
-    processor.invoke(data)
-    log.info(processor.stdout, source: processor.name)
-    log.warn(processor.stderr, source: processor.name, exit_code: processor.exitcode) unless processor.stderr.length.zero? && processor.exitcode == 0
+  if data.any? { |_k, v| !v.nil? }
+    CommonEvents::Processor.find_each("#{confdir}/processors.d") do |processor|
+      processor.invoke(data)
+      log.info(processor.stdout, source: processor.name)
+      log.warn(processor.stderr, source: processor.name, exit_code: processor.exitcode) unless processor.stderr.length.zero? && processor.exitcode == 0
+    end
+    index.save(data)
   end
-
-  index.save(data)
 rescue => exception
   puts exception
   puts exception.backtrace
