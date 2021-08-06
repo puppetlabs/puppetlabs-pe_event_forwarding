@@ -17,9 +17,7 @@ module CommonEvents
         order:    order,
         order_by: order_by,
       }
-
-      uri = CommonEvents::PeHttp.make_params('orchestrator/v1/jobs', params)
-      response = pe_client.pe_get_request(uri)
+      response = pe_client.pe_get_request('orchestrator/v1/jobs', params)
       raise 'Orchestrator API request failed' unless response.code == '200'
       JSON.parse(response.body)
     end
