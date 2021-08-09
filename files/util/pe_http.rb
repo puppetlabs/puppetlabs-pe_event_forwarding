@@ -28,7 +28,8 @@ module CommonEvents
     end
 
     # Wrapper method for get_request that includes a token auth header for PE.
-    def pe_get_request(uri, headers = {}, timeout = 60)
+    def pe_get_request(uri, params, headers = {}, timeout = 60)
+      uri = Http.make_params(uri, params)
       get_request(uri, headers.merge(pe_auth_header), timeout)
     end
 

@@ -18,8 +18,7 @@ module CommonEvents
         offset:     offset,
         order:      order,
       }
-      uri = CommonEvents::PeHttp.make_params('activity-api/v2/events', params)
-      response = pe_client.pe_get_request(uri)
+      response = pe_client.pe_get_request('activity-api/v2/events', params)
       raise 'Events API request failed' unless response.code == '200'
       JSON.parse(response.body)
     end
