@@ -11,6 +11,8 @@ describe 'common_events' do
 
   on_supported_os.each do |os, facts|
     context "on #{os}" do
+      let(:confdir) { 'bluh' }
+      let(:confdir_expectation) { File.join(Dir.pwd, 'bluh') }
       let(:facts) do
         facts.merge(pe_server_version: '2019.8.7')
       end

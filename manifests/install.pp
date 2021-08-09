@@ -4,7 +4,7 @@
 # It also creates the event management script in the required directory.
 #
 class common_events::install {
-
+  $base_path = common_events::base_path($settings::logdir, $common_events::log_path)
   if (
     ($common_events::pe_token == undef)
     and
@@ -23,7 +23,6 @@ class common_events::install {
     $owner          = 'pe-puppet'
     $group          = 'pe-puppet'
     $confdir        = "${settings::confdir}/common_events"
-    $modulepath     = $settings::modulepath
   }
   else {
     notify { 'Non-PE':
@@ -39,7 +38,7 @@ class common_events::install {
 
   cron { 'collect_common_events':
     ensure   => $cron_ensure,
-    command  => "${confdir}/collect_api_events.rb ${confdir} ${modulepath} ${confdir}",
+    command  => "${confdir}/collect_api_events.rb ${confdir} ${base_path}/common_events/common_events.log",
     user     => 'root',
     minute   => $common_events::cron_minute,
     hour     => $common_events::cron_hour,
@@ -89,5 +88,11 @@ class common_events::install {
     mode    => '0755',
     require => File[$confdir],
     source  => 'puppet:///modules/common_events/collect_api_events.rb',
+  }
+
+  file {"${base_path}/common_events":
+    ensure  => directory,
+    owner   => $owner,
+    group   => $group,
   }
 }
