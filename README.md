@@ -14,7 +14,7 @@ PROTOTYPE!
 
 ## Intro
 
-The common events library is a module makes it easier to gather events from Puppet API end points and send them to other platforms. Once the module is installed in your environment, you can create classes that wrap the API calls for you to gather the events you need.
+The common events library is a module makes it easier to gather events from [Puppet API end points](https://puppet.com/docs/pe/2021.2/orchestrator_api_jobs_endpoint.html#orchestrator_api_jobs_endpoint) and send them to other platforms. Once the module is installed in your environment, you can create classes that wrap the API calls for you to gather the events you need.
 
 ## Usage
 
