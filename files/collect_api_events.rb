@@ -11,12 +11,13 @@ require_relative 'util/index'
 require_relative 'util/processor'
 require_relative 'util/logger'
 
-confdir = ARGV[0] || '/etc/puppetlabs/puppet/common_events'
-logpath = ARGV[1] || '/var/log/puppetlabs/common_events/common_events.log'
+confdir   = ARGV[0] || '/etc/puppetlabs/puppet/common_events'
+logpath   = ARGV[1] || '/var/log/puppetlabs/common_events/common_events.log'
+lockdir   = ARGV[2] || '/opt/puppetlabs/common_events/cache/state'
 
-def main(confdir, logpath)
+def main(confdir, logpath, lockdir)
   log = CommonEvents::Logger.new(logpath)
-  lockfile = CommonEvents::Lockfile.new(confdir)
+  lockfile = CommonEvents::Lockfile.new(lockdir)
 
   if lockfile.already_running?
     log.warn('previous run is not complete')
@@ -70,5 +71,5 @@ ensure
 end
 
 if $PROGRAM_NAME == __FILE__
-  main(confdir, logpath)
+  main(confdir, logpath, lockdir)
 end
