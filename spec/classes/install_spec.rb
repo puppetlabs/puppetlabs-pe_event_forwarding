@@ -7,7 +7,6 @@ describe 'common_events::install' do
     context "on #{os}" do
       let(:confdir) { 'bluh' }
       let(:confdir_expectation) { File.join(Dir.pwd, 'bluh') }
-      let(:logdir) { "#{Puppet.settings.setting('logdir').value}/common_events/common_events.log" }
       let(:facts) do
         facts.merge(pe_server_version: '2019.8.7')
       end
@@ -61,9 +60,7 @@ describe 'common_events::install' do
 
         it {
           is_expected.to contain_cron('collect_common_events')
-            .with_command("#{confdir_expectation}/common_events/collect_api_events.rb" \
-            " #{confdir_expectation}/common_events" \
-            " #{logdir}")
+            .with_command(%r{collect_api_events.rb*.*common_events.log*.*\/state\/common_events\/cache\/state})
         }
       end
 
