@@ -4,6 +4,14 @@ require 'json'
 module CommonEvents
   # CommonEvents Logger class that inherits from Logger
   class Logger < ::Logger
+    LOG_LEVELS = {
+      'DEBUG' => Logger::DEBUG,
+      'INFO'  => Logger::INFO,
+      'WARN'  => Logger::WARN,
+      'ERROR' => Logger::ERROR,
+      'FATAL' => Logger::FATAL
+    }.freeze
+
     def initialize(log_path = '/var/log/puppetlabs/common_events.json')
       super(log_path)
       self.datetime_format = '%Y-%m-%d %H:%M:%S'

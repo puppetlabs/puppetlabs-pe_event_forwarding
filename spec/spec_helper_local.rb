@@ -64,3 +64,15 @@ def events_data(**extra_data)
 
   template.merge(extra_data).to_json
 end
+
+def default_settings_hash
+  {
+    'pe_username' => 'username',
+    'pe_password' => 'password',
+    'log_level' => 'WARN',
+  }
+end
+
+def mock_settings_file(settings_hash)
+  allow(YAML).to receive(:load_file).with(%r{event_collection\.yaml}).and_return(settings_hash)
+end

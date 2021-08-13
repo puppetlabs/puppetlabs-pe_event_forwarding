@@ -1,3 +1,4 @@
+require 'spec_helper'
 require_relative '../../../../files/util/logger'
 
 describe CommonEvents::Logger do
@@ -5,8 +6,15 @@ describe CommonEvents::Logger do
 
   let(:io) { StringIO.new }
   let(:json_io) { JSON.parse(io.string) }
+  let(:settings_hash) { default_settings_hash }
+
+  before(:each) do
+    mock_settings_file(settings_hash)
+  end
 
   context '.info' do
+    let(:settings_hash) { super().merge('log_level' => 'INFO') }
+
     it 'has correct default source' do
       io_logger.info('blah')
       expect(json_io['source']).to eql('common_events')
@@ -31,9 +39,16 @@ describe CommonEvents::Logger do
       io_logger.info('test msg')
       expect(json_io['severity']).to eql('INFO')
     end
+
+    it 'log level set to INFO; gets correct numerical translation' do
+      io_logger.level = CommonEvents::Logger::LOG_LEVELS[settings_hash['log_level']]
+      expect(io_logger.level).to eq(1)
+    end
   end
 
   context '.fatal' do
+    let(:settings_hash) { super().merge('log_level' => 'FATAL') }
+
     it 'has correct default source' do
       io_logger.fatal('blah')
       expect(json_io['source']).to eql('common_events')
@@ -58,9 +73,16 @@ describe CommonEvents::Logger do
       io_logger.fatal('fatal message')
       expect(json_io['severity']).to eql('FATAL')
     end
+
+    it 'log level set to FATAL; gets correct numerical translation' do
+      io_logger.level = CommonEvents::Logger::LOG_LEVELS[settings_hash['log_level']]
+      expect(io_logger.level).to eq(4)
+    end
   end
 
   context '.warn' do
+    let(:settings_hash) { super().merge('log_level' => 'WARN') }
+
     it 'has correct default source' do
       io_logger.warn('blah')
       expect(json_io['source']).to eql('common_events')
@@ -84,6 +106,11 @@ describe CommonEvents::Logger do
     it 'has correct severity (WARN)' do
       io_logger.warn('fatal message')
       expect(json_io['severity']).to eql('WARN')
+    end
+
+    it 'log level set to WARN; gets correct numerical translation' do
+      io_logger.level = CommonEvents::Logger::LOG_LEVELS[settings_hash['log_level']]
+      expect(io_logger.level).to eq(2)
     end
   end
 end

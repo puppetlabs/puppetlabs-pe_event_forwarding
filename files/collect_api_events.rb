@@ -26,6 +26,7 @@ def main(confdir, logpath, lockdir)
 
   lockfile.write_lockfile
   settings = YAML.safe_load(File.read("#{confdir}/events_collection.yaml"))
+  log.level = CommonEvents::Logger::LOG_LEVELS[settings['log_level']]
   index = CommonEvents::Index.new(confdir)
   data = {}
 
