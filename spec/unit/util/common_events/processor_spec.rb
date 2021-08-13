@@ -27,7 +27,7 @@ describe CommonEvents::Processor do
         end
 
         it 'returns correct number of processors' do
-          expect(described_class.find_each(procs_dir).count).to eq(4)
+          expect(described_class.find_each(procs_dir).count).to eq(2)
         end
 
         it 'returns correct object types' do
