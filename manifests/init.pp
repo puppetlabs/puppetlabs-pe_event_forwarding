@@ -17,6 +17,7 @@ class common_events (
   Optional[String]                                $cron_monthday = '*',
   Optional[String]                                $log_path      = undef,
   Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'] $log_level     = 'WARN',
+  Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation  = 'NONE',
 ){
   include common_events::install
 }

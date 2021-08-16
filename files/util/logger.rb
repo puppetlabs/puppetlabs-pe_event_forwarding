@@ -12,8 +12,9 @@ module CommonEvents
       'FATAL' => Logger::FATAL
     }.freeze
 
-    def initialize(log_path = '/var/log/puppetlabs/common_events.json')
-      super(log_path)
+    def initialize(log_path, shift_age)
+      shift_age = shift_age == 'NONE' ? 0 : shift_age.downcase
+      super(log_path, shift_age)
       self.datetime_format = '%Y-%m-%d %H:%M:%S'
 
       self.formatter = proc do |severity, datetime, progname, msg|

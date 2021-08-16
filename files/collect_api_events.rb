@@ -16,7 +16,8 @@ logpath   = ARGV[1] || '/var/log/puppetlabs/common_events/common_events.log'
 lockdir   = ARGV[2] || '/opt/puppetlabs/common_events/cache/state'
 
 def main(confdir, logpath, lockdir)
-  log = CommonEvents::Logger.new(logpath)
+  settings = YAML.safe_load(File.read("#{confdir}/events_collection.yaml"))
+  log = CommonEvents::Logger.new(logpath, settings['log_rotation'])
   lockfile = CommonEvents::Lockfile.new(lockdir)
 
   if lockfile.already_running?
@@ -25,7 +26,6 @@ def main(confdir, logpath, lockdir)
   end
 
   lockfile.write_lockfile
-  settings = YAML.safe_load(File.read("#{confdir}/events_collection.yaml"))
   log.level = CommonEvents::Logger::LOG_LEVELS[settings['log_level']]
   index = CommonEvents::Index.new(confdir)
   data = {}
