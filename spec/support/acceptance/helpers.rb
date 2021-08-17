@@ -38,20 +38,33 @@ class Target
       m.bind(self).call(*args, &block)
     end
   end
+
+  def file_exists?(file_path)
+    ENV['TARGET_HOST'] = uri
+    command = "test -f #{file_path} && echo 'true'"
+    result = run_shell(command, expect_failures: true).stdout
+    result.include?('true')
+  end
+
+  def directory_exists?(file_path)
+    ENV['TARGET_HOST'] = uri
+    command = "test -d #{file_path} && echo 'true'"
+    result = run_shell(command, expect_failures: true).stdout
+    result.include?('true')
+  end
 end
 
 class TargetNotFoundError < StandardError; end
 
 module TargetHelpers
-  def server
-    target('server', 'launch:provision_vms', 'server')
+  def puppetserver
+    target('puppetserver', 'acceptance:provision_vms', 'server')
   end
-  module_function :server
+  module_function :puppetserver
 
-  def agent
-    target('agent', 'launch:provision_vms', 'agent')
+  def localhost
+    target('localhost', 'acceptance:provision_vms', 'localhost')
   end
-  module_function :agent
 
   def target(name, setup_task, role)
     @targets ||= {}

@@ -1,5 +1,4 @@
 require_relative '../util/pe_http'
-require_relative '../util/index'
 
 module CommonEvents
   # module Orchestrator this module provides the API specific code for accessing the orchestrator

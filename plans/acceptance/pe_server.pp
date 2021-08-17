@@ -8,6 +8,10 @@ plan common_events::acceptance::pe_server(
   Optional[String] $version = '2019.8.7',
   Optional[Hash] $pe_settings = {password => 'puppetlabs'}
 ) {
+  # machines are not yet ready at time of installing the puppetserver, so we wait 15s
+  $localhost = get_targets('localhost')
+  run_command('sleep 15s', $localhost)
+
   #identify pe server node
   $puppet_server =  get_targets('*').filter |$n| { $n.vars['role'] == 'server' }
 
