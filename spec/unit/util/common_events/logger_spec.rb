@@ -8,10 +8,6 @@ describe CommonEvents::Logger do
   let(:json_io) { JSON.parse(io.string) }
   let(:settings_hash) { default_settings_hash }
 
-  before(:each) do
-    mock_settings_file(settings_hash)
-  end
-
   context '.info' do
     let(:settings_hash) { super().merge('log_level' => 'INFO') }
 
