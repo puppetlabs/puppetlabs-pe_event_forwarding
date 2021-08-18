@@ -72,7 +72,3 @@ def default_settings_hash
     'log_level' => 'WARN',
   }
 end
-
-def mock_settings_file(settings_hash)
-  allow(YAML).to receive(:load_file).with(%r{event_collection\.yaml}).and_return(settings_hash)
-end
