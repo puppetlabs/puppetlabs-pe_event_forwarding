@@ -53,5 +53,21 @@ module CommonEvents
       }.to_json
       super(source) { message }
     end
+
+    def debug(msg, exit_code: 0, source: 'common_events')
+      message = {
+        message: msg,
+        exit_code: exit_code
+      }.to_json
+      super(source) { message }
+    end
+
+    def error(msg, exit_code: 0, source: 'common_events')
+      message = {
+        message: msg,
+        exit_code: exit_code
+      }.to_json
+      super(source) { message }
+    end
   end
 end
