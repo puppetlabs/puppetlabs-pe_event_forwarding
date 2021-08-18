@@ -2,7 +2,7 @@ require 'spec_helper'
 require_relative '../../../../files/util/logger'
 
 describe CommonEvents::Logger do
-  subject(:io_logger) { described_class.new(io) }
+  subject(:io_logger) { described_class.new(io, 'NONE') }
 
   let(:io) { StringIO.new }
   let(:json_io) { JSON.parse(io.string) }

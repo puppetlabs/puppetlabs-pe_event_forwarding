@@ -12,3 +12,6 @@
 <% if $common_events::log_level{ -%>
 "log_level" : "<%= $common_events::log_level %>"
 <% } -%>
+<% if $common_events::log_rotation{ -%>
+"log_rotation" : "<%= $common_events::log_rotation %>"
+<% } -%>
