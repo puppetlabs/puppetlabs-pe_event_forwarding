@@ -28,7 +28,7 @@ namespace :acceptance do
   desc 'Upload Test Processors'
   task :upload_processors do
     ['proc1.sh', 'proc2.rb'].each do |processor|
-      proc_path = "spec/support/acceptance/#{processor}"
+      proc_path = "spec/support/acceptance/processors/#{processor}"
       folder = '/etc/puppetlabs/puppet/common_events/processors.d'
       server.run_shell("mkdir -p #{folder}")
       server.bolt_upload_file(proc_path, folder)
