@@ -53,7 +53,7 @@ def main(confdir, logpath, lockdir)
       data[service] = activities.current_event_count(service)
     end
     index.save(data)
-    log.debug('First run. Recorded event count in #{index.filepath} and now exiting.')
+    log.debug("First run. Recorded event count in #{index.filepath} and now exiting.")
     exit
   end
 
