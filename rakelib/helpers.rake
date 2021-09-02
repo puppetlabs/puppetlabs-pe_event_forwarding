@@ -30,9 +30,9 @@ namespace :acceptance do
     ['proc1.sh', 'proc2.rb'].each do |processor|
       proc_path = "spec/support/acceptance/processors/#{processor}"
       folder = '/etc/puppetlabs/puppet/common_events/processors.d'
-      server.run_shell("mkdir -p #{folder}")
-      server.bolt_upload_file(proc_path, folder)
-      server.run_shell("chmod +x #{folder}/#{processor}")
+      puppetserver.run_shell("mkdir -p #{folder}")
+      puppetserver.bolt_upload_file(proc_path, folder)
+      puppetserver.run_shell("chmod +x #{folder}/#{processor}")
     end
   end
 
@@ -41,7 +41,7 @@ namespace :acceptance do
     if File.exist?('../spec/fixtures/litmus_inventory.yaml')
       # Check if a server VM's already been setup
       begin
-        uri = server.uri
+        uri = puppetserver.uri
         puts("A server VM at '#{uri}' has already been set up")
         next
       rescue TargetNotFoundError
@@ -51,6 +51,16 @@ namespace :acceptance do
 
     provision_list = ENV['PROVISION_LIST'] || 'acceptance'
     Rake::Task['litmus:provision_list'].invoke(provision_list)
+    Rake::Task['acceptance:add_localhost_target'].invoke
+  end
+
+  desc 'Add localhost target to inventory file'
+  task :add_localhost_target do
+    inventory = inventory_hash_from_inventory_file
+    localhost_group = localhost_inventory_hash['groups'][0]
+    localhost_group['targets'][0]['vars'] = {'role' => 'localhost'}
+    inventory['groups'] << localhost_group
+    write_to_inventory_file(inventory, 'spec/fixtures/litmus_inventory.yaml')
   end
 
   # TODO: This should be refactored to use the https://github.com/puppetlabs/puppetlabs-peadm
@@ -68,23 +78,23 @@ namespace :acceptance do
 
   desc 'Installs the module on the server'
   task :install_module do
-    Rake::Task['litmus:install_module'].invoke(server.uri)
+    Rake::Task['litmus:install_module'].invoke(puppetserver.uri)
   end
 
   desc 'Reloads puppetserver on the server'
   task :reload_module do
-    result = server.run_shell('/opt/puppetlabs/bin/puppetserver reload').stdout.chomp
+    result = puppetserver.run_shell('/opt/puppetlabs/bin/puppetserver reload').stdout.chomp
     puts "Error: #{result}" unless result == ''
   end
 
   desc 'Gets the puppetserver logs for service now'
   task :get_logs do
-    puts server.run_shell('tail -500 /var/log/puppetlabs/puppetserver/puppetserver.log').stdout.chomp
+    puts puppetserver.run_shell('tail -500 /var/log/puppetlabs/puppetserver/puppetserver.log').stdout.chomp
   end
 
   desc 'Do an agent run'
   task :agent_run do
-    puts server.run_shell('puppet agent -t').stdout.chomp
+    puts puppetserver.run_shell('puppet agent -t').stdout.chomp
   end
 
   desc 'Runs the tests'
@@ -103,6 +113,7 @@ namespace :acceptance do
     tasks = [
       :provision_vms,
       :setup_pe,
+      :add_localhost_target,
       :install_module,
     ]
 
@@ -117,7 +128,7 @@ namespace :acceptance do
   desc 'Teardown the setup'
   task :tear_down do
     puts("Tearing down the test infrastructure ...\n")
-    Rake::Task['litmus:tear_down'].invoke(server.uri)
+    Rake::Task['litmus:tear_down'].invoke(puppetserver.uri)
   end
 
   desc 'Task for CI'
