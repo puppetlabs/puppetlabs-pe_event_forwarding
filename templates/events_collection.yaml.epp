@@ -9,6 +9,9 @@
 <% if $common_events::pe_token{ -%>
 "pe_token" : "<%= $common_events::pe_token %>"
 <% } -%>
+<% if $common_events::pe_console{ -%>
+"pe_console" : "<%= $common_events::pe_console %>"
+<% } -%>
 <% if $common_events::log_level{ -%>
 "log_level" : "<%= $common_events::log_level %>"
 <% } -%>

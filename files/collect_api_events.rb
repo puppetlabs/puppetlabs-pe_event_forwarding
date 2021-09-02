@@ -43,8 +43,8 @@ def main(confdir, logpath, lockdir)
     ssl_verify:  false
   }
 
-  orchestrator = CommonEvents::Orchestrator.new('localhost', client_options)
-  activities = CommonEvents::Activity.new('localhost', client_options)
+  orchestrator = CommonEvents::Orchestrator.new(settings['pe_console'], client_options)
+  activities = CommonEvents::Activity.new(settings['pe_console'], client_options)
 
   if index.first_run?
     data[:orchestrator] = orchestrator.current_job_count
