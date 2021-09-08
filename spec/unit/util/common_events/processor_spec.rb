@@ -23,7 +23,7 @@ describe CommonEvents::Processor do
 
       context 'processors in the directory' do
         before(:each) do
-          allow(Find).to receive(:find).with(procs_dir).and_return(procs_paths)
+          allow(described_class).to receive(:dir_listing).with(procs_dir).and_return(procs_paths)
         end
 
         it 'returns correct number of processors' do

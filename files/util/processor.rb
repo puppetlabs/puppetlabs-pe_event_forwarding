@@ -23,12 +23,17 @@ module CommonEvents
 
     def self.find_each(dir)
       return [] unless File.exist? dir
-      Find.find(dir).select do |path|
+      dir_listing(dir).select do |path|
         unless FileTest.directory?(path)
           processor = CommonEvents::Processor.new(path)
           block_given? ? yield(processor) : processor
         end
       end
+    end
+
+    # Tiny little wrapper to make test mocks easier.
+    def self.dir_listing(dir)
+      Dir["#{dir}/*"]
     end
   end
 end
