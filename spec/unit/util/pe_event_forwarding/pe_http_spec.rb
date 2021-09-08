@@ -1,6 +1,6 @@
 require_relative '../../../../files/util/pe_http'
 
-describe CommonEvents::PeHttp do
+describe PeEventForwarding::PeHttp do
   it 'fails without a username/password or token' do
     expect { described_class.new('my_hostname') }.to raise_error(ArgumentError, 'Must specify username and password or token.')
     expect { described_class.new('my_hostname', username: 'admin') }.to raise_error(ArgumentError, 'Must specify username and password or token.')

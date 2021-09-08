@@ -1,6 +1,6 @@
 require 'json'
 
-module CommonEvents
+module PeEventForwarding
   # Manages the Lockfile.
   class Lockfile
     attr_accessor :filepath

@@ -3,8 +3,8 @@ require 'uri'
 require 'json'
 require 'openssl'
 
-module CommonEvents
-  # class CommonEventsHttp contains the http utilties for the common gem
+module PeEventForwarding
+  # class PeEventForwardingHttp contains the http utilties for the common gem
   class Http
     attr_accessor :hostname, :port, :username, :password, :ssl_verify, :ca_cert_path
 

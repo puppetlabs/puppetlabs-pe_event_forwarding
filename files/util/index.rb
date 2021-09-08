@@ -1,10 +1,10 @@
-module CommonEvents
-  # CommonEvents Index utility class for storing and tracking index numbers
+module PeEventForwarding
+  # PeEventForwarding Index utility class for storing and tracking index numbers
   class Index
     attr_accessor :filepath
     def initialize(statedir)
       require 'yaml'
-      @filepath = "#{statedir}/common_events_indexes.yaml"
+      @filepath = "#{statedir}/pe_event_forwarding_indexes.yaml"
       @first_run = false
 
       new_index_file unless File.exist? @filepath

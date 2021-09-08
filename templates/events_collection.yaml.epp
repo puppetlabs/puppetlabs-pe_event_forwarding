@@ -1,20 +1,20 @@
-# managed by common_events module
+# managed by pe_event_forwarding module
 ---
-<% if $common_events::pe_username{ -%>
-"pe_username" : "<%= $common_events::pe_username %>"
+<% if $pe_event_forwarding::pe_username{ -%>
+"pe_username" : "<%= $pe_event_forwarding::pe_username %>"
 <% } -%>
-<% if $common_events::pe_password{ -%>
-"pe_password" : "<%= $common_events::pe_password.unwrap %>"
+<% if $pe_event_forwarding::pe_password{ -%>
+"pe_password" : "<%= $pe_event_forwarding::pe_password.unwrap %>"
 <% } -%>
-<% if $common_events::pe_token{ -%>
-"pe_token" : "<%= $common_events::pe_token %>"
+<% if $pe_event_forwarding::pe_token{ -%>
+"pe_token" : "<%= $pe_event_forwarding::pe_token %>"
 <% } -%>
-<% if $common_events::pe_console{ -%>
-"pe_console" : "<%= $common_events::pe_console %>"
+<% if $pe_event_forwarding::pe_console{ -%>
+"pe_console" : "<%= $pe_event_forwarding::pe_console %>"
 <% } -%>
-<% if $common_events::log_level{ -%>
-"log_level" : "<%= $common_events::log_level %>"
+<% if $pe_event_forwarding::log_level{ -%>
+"log_level" : "<%= $pe_event_forwarding::log_level %>"
 <% } -%>
-<% if $common_events::log_rotation{ -%>
-"log_rotation" : "<%= $common_events::log_rotation %>"
+<% if $pe_event_forwarding::log_rotation{ -%>
+"log_rotation" : "<%= $pe_event_forwarding::log_rotation %>"
 <% } -%>

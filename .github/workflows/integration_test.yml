@@ -65,7 +65,7 @@ jobs:
           echo STEP_START=$(date +%s) >> $GITHUB_ENV
       - name: Provision test environment
         run: |
-          buildevents cmd $TRACE_ID $STEP_ID 'bolt plan run common_events::acceptance::provision_machines' -- bundle exec bolt --modulepath spec/fixtures/modules plan run common_events::acceptance::provision_machines using='provision_service' image='${{ matrix.platform }}'
+          buildevents cmd $TRACE_ID $STEP_ID 'bolt plan run pe_event_forwarding::acceptance::provision_machines' -- bundle exec bolt --modulepath spec/fixtures/modules plan run pe_event_forwarding::acceptance::provision_machines using='provision_service' image='${{ matrix.platform }}'
           echo ::group::=== REQUEST ===
           cat request.json || true
           echo
@@ -81,7 +81,7 @@ jobs:
           echo INVENTORY_PATH=$FILE >> $GITHUB_ENV
       - name: Install server
         run: |
-          buildevents cmd $TRACE_ID $STEP_ID 'bolt plan run common_events::acceptance::pe_server' -- bundle exec bolt --modulepath spec/fixtures/modules plan run common_events::acceptance::pe_server version='${{ matrix.pe_version }}' -i ./$INVENTORY_PATH
+          buildevents cmd $TRACE_ID $STEP_ID 'bolt plan run pe_event_forwarding::acceptance::pe_server' -- bundle exec bolt --modulepath spec/fixtures/modules plan run pe_event_forwarding::acceptance::pe_server version='${{ matrix.pe_version }}' -i ./$INVENTORY_PATH
 
       - name: Add localhost target to inventory
         run: |

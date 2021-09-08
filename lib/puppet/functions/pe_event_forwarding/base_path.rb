@@ -1,4 +1,4 @@
-Puppet::Functions.create_function(:'common_events::base_path') do
+Puppet::Functions.create_function(:'pe_event_forwarding::base_path') do
   def base_path(str, path)
     # No specific path is provided, going to use default path from logdir
     if path.nil?

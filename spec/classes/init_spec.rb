@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'common_events' do
+describe 'pe_event_forwarding' do
   let(:params) do
     {
       pe_token: 'blah',
@@ -21,46 +21,46 @@ describe 'common_events' do
 
       context 'with cron enabled' do
         it {
-          is_expected.to contain_file("#{confdir_expectation}/common_events")
+          is_expected.to contain_file("#{confdir_expectation}/pe_event_forwarding")
             .with(
             ensure: 'directory',
           )
         }
 
         it {
-          is_expected.to contain_file("#{confdir_expectation}/common_events/api")
+          is_expected.to contain_file("#{confdir_expectation}/pe_event_forwarding/api")
             .with(
             ensure: 'directory',
           )
         }
 
         it {
-          is_expected.to contain_file("#{confdir_expectation}/common_events/util")
+          is_expected.to contain_file("#{confdir_expectation}/pe_event_forwarding/util")
             .with(
             ensure: 'directory',
           )
         }
 
         it {
-          is_expected.to contain_file("#{confdir_expectation}/common_events/events_collection.yaml")
+          is_expected.to contain_file("#{confdir_expectation}/pe_event_forwarding/events_collection.yaml")
             .with(
             ensure: 'file',
-            require: "File[#{confdir_expectation}/common_events]",
+            require: "File[#{confdir_expectation}/pe_event_forwarding]",
           )
         }
 
         it {
-          is_expected.to contain_file("#{confdir_expectation}/common_events/collect_api_events.rb")
+          is_expected.to contain_file("#{confdir_expectation}/pe_event_forwarding/collect_api_events.rb")
             .with(
             ensure: 'file',
             mode: '0755',
-            require: "File[#{confdir_expectation}/common_events]",
+            require: "File[#{confdir_expectation}/pe_event_forwarding]",
           )
         }
 
         it {
-          is_expected.to contain_cron('collect_common_events')
-            .with_command(%r{collect_api_events.rb*.*common_events.log*.*\/state\/common_events\/cache\/state})
+          is_expected.to contain_cron('collect_pe_events')
+            .with_command(%r{collect_api_events.rb*.*pe_event_forwarding.log*.*\/state\/pe_event_forwarding\/cache\/state})
         }
       end
 
@@ -73,7 +73,7 @@ describe 'common_events' do
         end
 
         it {
-          is_expected.to contain_cron('collect_common_events')
+          is_expected.to contain_cron('collect_pe_events')
             .with(
             ensure: 'absent',
           )

@@ -29,7 +29,7 @@ namespace :acceptance do
   task :upload_processors do
     ['proc1.sh', 'proc2.rb'].each do |processor|
       proc_path = "spec/support/acceptance/processors/#{processor}"
-      folder = '/etc/puppetlabs/puppet/common_events/processors.d'
+      folder = '/etc/puppetlabs/puppet/pe_event_forwarding/processors.d'
       puppetserver.run_shell("mkdir -p #{folder}")
       puppetserver.bolt_upload_file(proc_path, folder)
       puppetserver.run_shell("chmod +x #{folder}/#{processor}")
@@ -73,7 +73,7 @@ namespace :acceptance do
 
     config = { 'modulepath' => File.join(Dir.pwd, 'spec', 'fixtures', 'modules') }
 
-    bolt_result = run_plan('common_events::acceptance::pe_server', {}, config: config, inventory: inventory_hash.clone)
+    bolt_result = run_plan('pe_event_forwarding::acceptance::pe_server', {}, config: config, inventory: inventory_hash.clone)
   end
 
   desc 'Installs the module on the server'
