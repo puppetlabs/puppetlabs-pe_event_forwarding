@@ -5,7 +5,7 @@ require 'support/acceptance/helpers.rb'
 include PuppetLitmus
 PuppetLitmus.configure!
 
-CONFDIR = '/etc/puppetlabs/puppet'.freeze
+CONFDIR = '/etc/puppetlabs'.freeze
 LOGDIR  = '/var/log/puppetlabs/common_events'.freeze
 LOCKFILEDIR = '/opt/puppetlabs/common_events/cache/state'.freeze
 

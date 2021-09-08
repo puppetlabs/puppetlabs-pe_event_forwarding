@@ -18,7 +18,7 @@ class common_events (
   Optional[String]                                $cron_monthday    = '*',
   Optional[String]                                $log_path         = undef,
   Optional[String]                                $lock_path        = undef,
-  Optional[String]                                $confdir          = "${settings::confdir}/common_events",
+  Optional[String]                                $confdir          = "${common_events::base_path($settings::confdir,undef)}/common_events",
   Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'] $log_level        = 'WARN',
   Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation     = 'NONE',
 ){
