@@ -11,7 +11,7 @@ require_relative 'util/index'
 require_relative 'util/processor'
 require_relative 'util/logger'
 
-confdir   = ARGV[0] || '/etc/puppetlabs/puppet/common_events'
+confdir   = ARGV[0] || '/etc/puppetlabs/common_events'
 logpath   = ARGV[1] || '/var/log/puppetlabs/common_events/common_events.log'
 lockdir   = ARGV[2] || '/opt/puppetlabs/common_events/cache/state'
 

@@ -2,7 +2,7 @@ Puppet::Functions.create_function(:'common_events::base_path') do
   def base_path(str, path)
     # No specific path is provided, going to use default path from logdir
     if path.nil?
-      base = str[%r{^(.*?)puppetlabs}]
+      base = str[%r{^(.*?)\/puppetlabs\/}]
       !base.nil? ? base : str
     # A specfic path is provided
     else
