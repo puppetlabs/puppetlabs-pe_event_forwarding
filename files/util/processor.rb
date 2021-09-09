@@ -1,4 +1,4 @@
-module CommonEvents
+module PeEventForwarding
   # A class for finding processors and then invoking them.
   # This class should also capture output streams for later logging.
   class Processor
@@ -25,7 +25,7 @@ module CommonEvents
       return [] unless File.exist? dir
       dir_listing(dir).select do |path|
         unless FileTest.directory?(path)
-          processor = CommonEvents::Processor.new(path)
+          processor = PeEventForwarding::Processor.new(path)
           block_given? ? yield(processor) : processor
         end
       end

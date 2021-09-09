@@ -1,8 +1,8 @@
 require_relative 'http'
 
-module CommonEvents
+module PeEventForwarding
   # Include methods to secure a token and construct auth headers
-  class PeHttp < CommonEvents::Http
+  class PeHttp < PeEventForwarding::Http
     attr_accessor :hostname, :port, :username, :pe_username, :pe_password, :password, :token, :ssl_verify, :ca_cert_path
 
     def initialize(hostname, port: nil, username: nil, password: nil, token: nil, ssl_verify: true, ca_cert_path: nil)

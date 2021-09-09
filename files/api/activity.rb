@@ -1,6 +1,6 @@
 require_relative '../util/pe_http'
 
-module CommonEvents
+module PeEventForwarding
   # module Events This contains the API specific code for the events API
   class Activity
     SERVICE_NAMES = [:classifier, :rbac, :'pe-console', :'code-manager' ].freeze
@@ -8,7 +8,7 @@ module CommonEvents
     attr_accessor :pe_client
 
     def initialize(pe_console, username: nil, password: nil, token: nil, ssl_verify: true)
-      @pe_client = CommonEvents::PeHttp.new(pe_console, port: 4433, username: username, password: password, token: token, ssl_verify: ssl_verify)
+      @pe_client = PeEventForwarding::PeHttp.new(pe_console, port: 4433, username: username, password: password, token: token, ssl_verify: ssl_verify)
     end
 
     def get_events(service: nil, offset: nil, limit: nil, order: 'asc')

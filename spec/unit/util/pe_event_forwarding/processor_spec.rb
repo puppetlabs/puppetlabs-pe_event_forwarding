@@ -4,7 +4,7 @@ require 'open3'
 require 'find'
 require 'tempfile'
 
-describe CommonEvents::Processor do
+describe PeEventForwarding::Processor do
   subject(:processor) { described_class.new(path) }
 
   let(:path)           { '/tmp/blah/processors.d/proc1.sh' }

@@ -1,6 +1,6 @@
 require_relative '../../../../files/util/lockfile'
 
-describe CommonEvents::Lockfile do
+describe PeEventForwarding::Lockfile do
   let(:basepath) { '/tmp' }
   let(:path) { File.join('/tmp', 'events_collection_run.lock') }
   let(:new_lockfile) { described_class.new(basepath) }

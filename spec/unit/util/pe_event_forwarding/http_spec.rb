@@ -1,6 +1,6 @@
 require_relative '../../../../files/util/http'
 
-describe CommonEvents::Http do
+describe PeEventForwarding::Http do
   it 'fails without a hostname' do
     expect { described_class.new }.to raise_error(ArgumentError, 'wrong number of arguments (given 0, expected 1)')
   end

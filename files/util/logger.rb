@@ -1,8 +1,8 @@
 require 'logger'
 require 'json'
 
-module CommonEvents
-  # CommonEvents Logger class that inherits from Logger
+module PeEventForwarding
+  # PeEventForwarding Logger class that inherits from Logger
   class Logger < ::Logger
     LOG_LEVELS = {
       'DEBUG' => Logger::DEBUG,
@@ -30,7 +30,7 @@ module CommonEvents
       end
     end
 
-    def info(msg, exit_code: 0, source: 'common_events')
+    def info(msg, exit_code: 0, source: 'pe_event_forwarding')
       message = {
         message: msg,
         exit_code: exit_code
@@ -38,7 +38,7 @@ module CommonEvents
       super(source) { message }
     end
 
-    def fatal(msg, exit_code: 0, source: 'common_events')
+    def fatal(msg, exit_code: 0, source: 'pe_event_forwarding')
       message = {
         message: msg,
         exit_code: exit_code
@@ -46,7 +46,7 @@ module CommonEvents
       super(source) { message }
     end
 
-    def warn(msg, exit_code: 0, source: 'common_events')
+    def warn(msg, exit_code: 0, source: 'pe_event_forwarding')
       message = {
         message: msg,
         exit_code: exit_code
@@ -54,7 +54,7 @@ module CommonEvents
       super(source) { message }
     end
 
-    def debug(msg, exit_code: 0, source: 'common_events')
+    def debug(msg, exit_code: 0, source: 'pe_event_forwarding')
       message = {
         message: msg,
         exit_code: exit_code
@@ -62,7 +62,7 @@ module CommonEvents
       super(source) { message }
     end
 
-    def error(msg, exit_code: 0, source: 'common_events')
+    def error(msg, exit_code: 0, source: 'pe_event_forwarding')
       message = {
         message: msg,
         exit_code: exit_code

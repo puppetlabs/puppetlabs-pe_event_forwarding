@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require_relative '../../common_events/files/api/orchestrator.rb'
+require_relative '../../pe_event_forwarding/files/api/orchestrator.rb'
 require_relative '../../ruby_task_helper/files/task_helper.rb'
 
-# common_events::orchestrator
+# pe_event_forwarding::orchestrator
 #
 # A class for running orchestrator tasks using the orchestrator API.
 # Currently the class is only capable of running the 'facts' task. Additional
@@ -41,7 +41,7 @@ class OrchestratorTask < TaskHelper
   )
 
     begin
-      orchestrator_client = CommonEvents::Orchestrator.new(console_host, username: username, password: password, token: token, ssl_verify: false)
+      orchestrator_client = PeEventForwarding::Orchestrator.new(console_host, username: username, password: password, token: token, ssl_verify: false)
     rescue => exception
       raise TaskHelper::Error.new('Failed to create orchestrator client',
         'orchestator/client-create-error',

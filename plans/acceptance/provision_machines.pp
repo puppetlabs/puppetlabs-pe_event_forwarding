@@ -4,7 +4,7 @@
 #   provision service
 # @param [Optional[String]] image
 #   os image
-plan common_events::acceptance::provision_machines(
+plan pe_event_forwarding::acceptance::provision_machines(
   Optional[String] $using = 'abs',
   Optional[String] $image = 'centos-7-x86_64'
 ) {

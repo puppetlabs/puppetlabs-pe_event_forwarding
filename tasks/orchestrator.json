@@ -34,9 +34,9 @@
   },
   "input_method": "stdin",
   "files": [
-    "common_events/files/util/pe_http.rb",
-    "common_events/files/util/http.rb",
-    "common_events/files/api/orchestrator.rb",
+    "pe_event_forwarding/files/util/pe_http.rb",
+    "pe_event_forwarding/files/util/http.rb",
+    "pe_event_forwarding/files/api/orchestrator.rb",
     "ruby_task_helper/files/task_helper.rb"
   ]
 }

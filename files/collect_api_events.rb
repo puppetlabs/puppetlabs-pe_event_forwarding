@@ -11,16 +11,16 @@ require_relative 'util/index'
 require_relative 'util/processor'
 require_relative 'util/logger'
 
-confdir   = ARGV[0] || '/etc/puppetlabs/common_events'
-logpath   = ARGV[1] || '/var/log/puppetlabs/common_events/common_events.log'
-lockdir   = ARGV[2] || '/opt/puppetlabs/common_events/cache/state'
+confdir   = ARGV[0] || '/etc/puppetlabs/pe_event_forwarding'
+logpath   = ARGV[1] || '/var/log/puppetlabs/pe_event_forwarding/pe_event_forwarding.log'
+lockdir   = ARGV[2] || '/opt/puppetlabs/pe_event_forwarding/cache/state'
 
 def main(confdir, logpath, lockdir)
   common_event_start_time = Time.now
   settings = YAML.safe_load(File.read("#{confdir}/events_collection.yaml"))
-  log = CommonEvents::Logger.new(logpath, settings['log_rotation'])
-  log.level = CommonEvents::Logger::LOG_LEVELS[settings['log_level']]
-  lockfile = CommonEvents::Lockfile.new(lockdir)
+  log = PeEventForwarding::Logger.new(logpath, settings['log_rotation'])
+  log.level = PeEventForwarding::Logger::LOG_LEVELS[settings['log_level']]
+  lockfile = PeEventForwarding::Lockfile.new(lockdir)
 
   if lockfile.already_running?
     log.warn('previous run is not complete')
@@ -33,7 +33,7 @@ def main(confdir, logpath, lockdir)
   else
     log.error('Lockfile creation failed.')
   end
-  index = CommonEvents::Index.new(confdir)
+  index = PeEventForwarding::Index.new(confdir)
   data = {}
 
   client_options = {
@@ -43,12 +43,12 @@ def main(confdir, logpath, lockdir)
     ssl_verify:  false
   }
 
-  orchestrator = CommonEvents::Orchestrator.new(settings['pe_console'], client_options)
-  activities = CommonEvents::Activity.new(settings['pe_console'], client_options)
+  orchestrator = PeEventForwarding::Orchestrator.new(settings['pe_console'], client_options)
+  activities = PeEventForwarding::Activity.new(settings['pe_console'], client_options)
 
   if index.first_run?
     data[:orchestrator] = orchestrator.current_job_count
-    CommonEvents::Activity::SERVICE_NAMES.each do |service|
+    PeEventForwarding::Activity::SERVICE_NAMES.each do |service|
       log.debug("Starting #{service} for first run with #{index.count(service)} event(s)")
       data[service] = activities.current_event_count(service)
     end
@@ -59,13 +59,13 @@ def main(confdir, logpath, lockdir)
 
   data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator))
 
-  CommonEvents::Activity::SERVICE_NAMES.each do |service|
+  PeEventForwarding::Activity::SERVICE_NAMES.each do |service|
     data[service] = activities.new_data(service, index.count(service))
     log.debug("Starting #{service} with #{index.count(service)} event(s)")
   end
 
   if data.any? { |_k, v| !v.nil? }
-    CommonEvents::Processor.find_each("#{confdir}/processors.d") do |processor|
+    PeEventForwarding::Processor.find_each("#{confdir}/processors.d") do |processor|
       start_time = Time.now
       processor.invoke(data)
       duration = Time.now - start_time

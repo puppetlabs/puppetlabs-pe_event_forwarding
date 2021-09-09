@@ -1,12 +1,12 @@
 require_relative '../util/pe_http'
 
-module CommonEvents
+module PeEventForwarding
   # module Orchestrator this module provides the API specific code for accessing the orchestrator
   class Orchestrator
     attr_accessor :pe_client
 
     def initialize(pe_console, username: nil, password: nil, token: nil, ssl_verify: true)
-      @pe_client = CommonEvents::PeHttp.new(pe_console, port: 8143, username: username, password: password, token: token, ssl_verify: ssl_verify)
+      @pe_client = PeEventForwarding::PeHttp.new(pe_console, port: 8143, username: username, password: password, token: token, ssl_verify: ssl_verify)
     end
 
     def get_jobs(limit: nil, offset: nil, order: 'asc', order_by: 'name')
@@ -45,7 +45,7 @@ module CommonEvents
     end
 
     def self.get_id_from_response(response)
-      res = CommonEvents::Http.response_to_hash(response)
+      res = PeEventForwarding::Http.response_to_hash(response)
       res['job']['name']
     end
 

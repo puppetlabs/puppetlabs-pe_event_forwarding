@@ -1,12 +1,12 @@
 require 'spec_helper'
 require_relative '../../../../files/util/index'
 
-describe CommonEvents::Index do
+describe PeEventForwarding::Index do
   subject(:index) { described_class.new(statedir) }
 
   let(:statedir)   { 'blah' }
   let(:index_type) { 'foo' }
-  let(:filepath)   { "#{statedir}/common_events_indexes.yaml" }
+  let(:filepath)   { "#{statedir}/pe_event_forwarding_indexes.yaml" }
 
   before(:each) do
     allow(File).to receive(:exist?).with(filepath).and_return(true)

@@ -6,8 +6,8 @@ include PuppetLitmus
 PuppetLitmus.configure!
 
 CONFDIR = '/etc/puppetlabs'.freeze
-LOGDIR  = '/var/log/puppetlabs/common_events'.freeze
-LOCKFILEDIR = '/opt/puppetlabs/common_events/cache/state'.freeze
+LOGDIR  = '/var/log/puppetlabs/pe_event_forwarding'.freeze
+LOCKFILEDIR = '/opt/puppetlabs/pe_event_forwarding/cache/state'.freeze
 
 RSpec.configure do |config|
   include TargetHelpers
@@ -21,7 +21,7 @@ RSpec.configure do |config|
 end
 
 def acceptance_setup
-  set_sitepp_content(declare('class', 'common_events', { 'pe_token' => auth_token, 'disabled' => true }))
+  set_sitepp_content(declare('class', 'pe_event_forwarding', { 'pe_token' => auth_token, 'disabled' => true }))
   trigger_puppet_run(puppetserver)
 end
 
@@ -74,7 +74,7 @@ end
 
 def setup_manifest(pe_token, cron_disabled: true)
   <<-MANIFEST
-  class { 'common_events':
+  class { 'pe_event_forwarding':
     pe_token => '#{pe_token}',
     disabled => '#{cron_disabled}',
   }

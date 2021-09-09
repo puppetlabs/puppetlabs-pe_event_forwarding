@@ -3,8 +3,8 @@
 # Install PE Server
 #
 # @example
-#   common_events::acceptance::pe_server
-plan common_events::acceptance::pe_server(
+#   pe_event_forwarding::acceptance::pe_server
+plan pe_event_forwarding::acceptance::pe_server(
   Optional[String] $version = '2019.8.7',
   Optional[Hash] $pe_settings = {password => 'puppetlabs'}
 ) {

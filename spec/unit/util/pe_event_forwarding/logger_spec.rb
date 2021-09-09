@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../../../../files/util/logger'
 
-describe CommonEvents::Logger do
+describe PeEventForwarding::Logger do
   subject(:io_logger) { described_class.new(io, 'NONE') }
 
   let(:io) { StringIO.new }
@@ -13,7 +13,7 @@ describe CommonEvents::Logger do
 
     it 'has correct default source' do
       io_logger.info('blah')
-      expect(json_io['source']).to eql('common_events')
+      expect(json_io['source']).to eql('pe_event_forwarding')
     end
 
     it 'has correct custom source' do
@@ -37,7 +37,7 @@ describe CommonEvents::Logger do
     end
 
     it 'log level set to INFO; gets correct numerical translation' do
-      io_logger.level = CommonEvents::Logger::LOG_LEVELS[settings_hash['log_level']]
+      io_logger.level = PeEventForwarding::Logger::LOG_LEVELS[settings_hash['log_level']]
       expect(io_logger.level).to eq(1)
     end
   end
@@ -47,7 +47,7 @@ describe CommonEvents::Logger do
 
     it 'has correct default source' do
       io_logger.fatal('blah')
-      expect(json_io['source']).to eql('common_events')
+      expect(json_io['source']).to eql('pe_event_forwarding')
     end
 
     it 'has correct custom source' do
@@ -71,7 +71,7 @@ describe CommonEvents::Logger do
     end
 
     it 'log level set to FATAL; gets correct numerical translation' do
-      io_logger.level = CommonEvents::Logger::LOG_LEVELS[settings_hash['log_level']]
+      io_logger.level = PeEventForwarding::Logger::LOG_LEVELS[settings_hash['log_level']]
       expect(io_logger.level).to eq(4)
     end
   end
@@ -81,7 +81,7 @@ describe CommonEvents::Logger do
 
     it 'has correct default source' do
       io_logger.warn('blah')
-      expect(json_io['source']).to eql('common_events')
+      expect(json_io['source']).to eql('pe_event_forwarding')
     end
 
     it 'has correct custom source' do
@@ -105,7 +105,7 @@ describe CommonEvents::Logger do
     end
 
     it 'log level set to WARN; gets correct numerical translation' do
-      io_logger.level = CommonEvents::Logger::LOG_LEVELS[settings_hash['log_level']]
+      io_logger.level = PeEventForwarding::Logger::LOG_LEVELS[settings_hash['log_level']]
       expect(io_logger.level).to eq(2)
     end
   end

@@ -4,8 +4,8 @@
 # It also creates the event management script in the required directory.
 #
 # @example
-#   include common_events
-class common_events (
+#   include pe_event_forwarding
+class pe_event_forwarding (
   Optional[String]                                $pe_username      = undef,
   Optional[Sensitive[String]]                     $pe_password      = undef,
   Optional[String]                                $pe_token         = undef,
@@ -18,7 +18,7 @@ class common_events (
   Optional[String]                                $cron_monthday    = '*',
   Optional[String]                                $log_path         = undef,
   Optional[String]                                $lock_path        = undef,
-  Optional[String]                                $confdir          = "${common_events::base_path($settings::confdir,undef)}/common_events",
+  Optional[String]                                $confdir          = "${pe_event_forwarding::base_path($settings::confdir,undef)}/pe_event_forwarding",
   Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'] $log_level        = 'WARN',
   Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation     = 'NONE',
 ){
@@ -52,13 +52,13 @@ class common_events (
     $cron_ensure = absent
   }
 
-  $logfile_basepath = common_events::base_path($settings::logdir, $log_path)
-  $lockdir_basepath = common_events::base_path($settings::statedir, $lock_path)
-  $conf_dirs        = [$confdir, "${logfile_basepath}/common_events", "${lockdir_basepath}/common_events", "${lockdir_basepath}/common_events/cache/", "${lockdir_basepath}/common_events/cache/state"]
+  $logfile_basepath = pe_event_forwarding::base_path($settings::logdir, $log_path)
+  $lockdir_basepath = pe_event_forwarding::base_path($settings::statedir, $lock_path)
+  $conf_dirs        = [$confdir, "${logfile_basepath}/pe_event_forwarding", "${lockdir_basepath}/pe_event_forwarding", "${lockdir_basepath}/pe_event_forwarding/cache/", "${lockdir_basepath}/pe_event_forwarding/cache/state"]
 
-  cron { 'collect_common_events':
+  cron { 'collect_pe_events':
     ensure   => $cron_ensure,
-    command  => "${confdir}/collect_api_events.rb ${confdir} ${logfile_basepath}/common_events/common_events.log ${lockdir_basepath}/common_events/cache/state",
+    command  => "${confdir}/collect_api_events.rb ${confdir} ${logfile_basepath}/pe_event_forwarding/pe_event_forwarding.log ${lockdir_basepath}/pe_event_forwarding/cache/state",
     user     => 'root',
     minute   => $cron_minute,
     hour     => $cron_hour,
@@ -82,7 +82,7 @@ class common_events (
     owner   => $owner,
     group   => $group,
     recurse => 'remote',
-    source  => 'puppet:///modules/common_events/api',
+    source  => 'puppet:///modules/pe_event_forwarding/api',
   }
 
   file { "${confdir}/util":
@@ -90,7 +90,7 @@ class common_events (
     owner   => $owner,
     group   => $group,
     recurse => 'remote',
-    source  => 'puppet:///modules/common_events/util',
+    source  => 'puppet:///modules/pe_event_forwarding/util',
   }
 
   file { "${confdir}/events_collection.yaml":
@@ -99,7 +99,7 @@ class common_events (
     group   => $group,
     mode    => '0640',
     require => File[$confdir],
-    content => epp('common_events/events_collection.yaml'),
+    content => epp('pe_event_forwarding/events_collection.yaml'),
   }
 
   file { "${confdir}/collect_api_events.rb":
@@ -108,6 +108,6 @@ class common_events (
     group   => $group,
     mode    => '0755',
     require => File[$confdir],
-    source  => 'puppet:///modules/common_events/collect_api_events.rb',
+    source  => 'puppet:///modules/pe_event_forwarding/collect_api_events.rb',
   }
 }
