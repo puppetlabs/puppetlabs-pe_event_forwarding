@@ -11,27 +11,48 @@ module PeEventForwarding
       @pe_client = PeEventForwarding::PeHttp.new(pe_console, port: 4433, username: username, password: password, token: token, ssl_verify: ssl_verify)
     end
 
-    def get_events(service: nil, offset: nil, limit: nil, order: 'asc')
+    def get_events(service: nil, offset: 0, order: 'asc', api_window_size: nil)
       params = {
         service_id: service,
-        limit:      limit,
+        limit:      api_window_size,
         offset:     offset,
         order:      order,
       }
-      response = pe_client.pe_get_request('activity-api/v2/events', params)
+
+      api_window_size = api_window_size.to_i
+      response_items = []
+      response       = ''
+      total_count    = 0
+      loop do
+        response       = pe_client.pe_get_request('activity-api/v2/events', params)
+        response_body  = JSON.parse(response.body)
+        total_count    = response_body['pagination']['total']
+        response_items << response_body['items']
+
+        break if response_items.count != api_window_size
+        params[:offset] += api_window_size
+      end
       raise 'Events API request failed' unless response.code == '200'
-      JSON.parse(response.body)
+      { 'pagination' => { 'total' => total_count }, 'items' => response_items }
     end
 
     def current_event_count(service_name)
-      events_count_for_service = get_events(service: service_name, limit: 1)
+      params = {
+        service_id: service_name,
+        limit:      1,
+        offset:     0,
+        order:      'asc',
+      }
+      response = pe_client.pe_get_request('activity-api/v2/events', params)
+      raise 'Events API request failed' unless response.code == '200'
+      events_count_for_service = JSON.parse(response.body)
       events_count_for_service['pagination']['total'] || 0
     end
 
-    def new_data(service, last_count)
+    def new_data(service, last_count, api_window_size)
       new_count = current_event_count(service) - last_count
       return unless new_count > 0
-      get_events(service: service, offset: last_count, limit: new_count)
+      get_events(service: service, offset: last_count, api_window_size: api_window_size)
     end
   end
 end

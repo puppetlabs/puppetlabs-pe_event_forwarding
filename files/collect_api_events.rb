@@ -57,10 +57,10 @@ def main(confdir, logpath, lockdir)
     exit
   end
 
-  data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator))
+  data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator), settings['api_window_size'])
 
   PeEventForwarding::Activity::SERVICE_NAMES.each do |service|
-    data[service] = activities.new_data(service, index.count(service))
+    data[service] = activities.new_data(service, index.count(service), settings['api_window_size'])
     log.debug("Starting #{service} with #{index.count(service)} event(s)")
   end
 

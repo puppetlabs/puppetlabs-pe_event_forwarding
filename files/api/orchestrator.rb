@@ -9,16 +9,29 @@ module PeEventForwarding
       @pe_client = PeEventForwarding::PeHttp.new(pe_console, port: 8143, username: username, password: password, token: token, ssl_verify: ssl_verify)
     end
 
-    def get_jobs(limit: nil, offset: nil, order: 'asc', order_by: 'name')
+    def get_jobs(offset: 0, order: 'asc', order_by: 'name', api_window_size: nil)
       params = {
-        limit:    limit,
+        limit:    api_window_size,
         offset:   offset,
         order:    order,
         order_by: order_by,
       }
-      response = pe_client.pe_get_request('orchestrator/v1/jobs', params)
+
+      api_window_size = api_window_size.to_i
+      response_items  = []
+      response        = ''
+      total_count     = 0
+      loop do
+        response       = pe_client.pe_get_request('orchestrator/v1/jobs', params)
+        response_body  = JSON.parse(response.body)
+        total_count    = response_body['pagination']['total']
+        response_items << response_body['items']
+
+        break if response_items.count != api_window_size
+        params[:offset] += api_window_size
+      end
       raise 'Orchestrator API request failed' unless response.code == '200'
-      JSON.parse(response.body)
+      { 'pagination' => { 'total' => total_count }, 'items' => response_items }
     end
 
     def run_facts_task(nodes)
@@ -50,14 +63,22 @@ module PeEventForwarding
     end
 
     def current_job_count
-      jobs = get_jobs(limit: 1)
+      params = {
+        limit:    1,
+        offset:   0,
+        order:    'asc',
+        order_by: 'name',
+      }
+      response = pe_client.pe_get_request('orchestrator/v1/jobs', params)
+      raise 'Orchestrator API request failed' unless response.code == '200'
+      jobs = JSON.parse(response.body)
       jobs['pagination']['total'] || 0
     end
 
-    def new_data(last_count)
+    def new_data(last_count, api_window_size)
       new_job_count = current_job_count - last_count
       return unless new_job_count > 0
-      get_jobs(limit: new_job_count, offset: last_count)
+      get_jobs(offset: last_count, api_window_size: api_window_size)
     end
   end
 end
