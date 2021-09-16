@@ -54,7 +54,14 @@ class pe_event_forwarding (
 
   $logfile_basepath = pe_event_forwarding::base_path($settings::logdir, $log_path)
   $lockdir_basepath = pe_event_forwarding::base_path($settings::statedir, $lock_path)
-  $conf_dirs        = [$confdir, "${logfile_basepath}/pe_event_forwarding", "${lockdir_basepath}/pe_event_forwarding", "${lockdir_basepath}/pe_event_forwarding/cache/", "${lockdir_basepath}/pe_event_forwarding/cache/state"]
+  $conf_dirs        = [
+    $confdir,
+    "${confdir}/processors.d",
+    "${logfile_basepath}/pe_event_forwarding",
+    "${lockdir_basepath}/pe_event_forwarding",
+    "${lockdir_basepath}/pe_event_forwarding/cache/",
+    "${lockdir_basepath}/pe_event_forwarding/cache/state"
+  ]
 
   cron { 'collect_pe_events':
     ensure   => $cron_ensure,

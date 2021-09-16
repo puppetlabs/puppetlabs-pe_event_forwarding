@@ -32,6 +32,11 @@ describe 'Verify the minimum install' do
       script_file = "#{CONFDIR}/pe_event_forwarding/collect_api_events.rb"
       expect(puppetserver.file_exists?(script_file)).to be true
     end
+
+    it 'processors.d folder' do
+      script_file = "#{CONFDIR}/pe_event_forwarding/processors.d"
+      expect(puppetserver.directory_exists?(script_file)).to be true
+    end
   end
 
   describe 'configures cron' do

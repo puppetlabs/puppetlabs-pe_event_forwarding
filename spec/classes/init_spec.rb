@@ -42,6 +42,13 @@ describe 'pe_event_forwarding' do
         }
 
         it {
+          is_expected.to contain_file("#{confdir_expectation}/pe_event_forwarding/processors.d")
+            .with(
+            ensure: 'directory',
+          )
+        }
+
+        it {
           is_expected.to contain_file("#{confdir_expectation}/pe_event_forwarding/events_collection.yaml")
             .with(
             ensure: 'file',
