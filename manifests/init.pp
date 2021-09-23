@@ -19,6 +19,7 @@ class pe_event_forwarding (
   Optional[String]                                $log_path         = undef,
   Optional[String]                                $lock_path        = undef,
   Optional[String]                                $confdir          = "${pe_event_forwarding::base_path($settings::confdir,undef)}/pe_event_forwarding",
+  Optional[Integer]                               $api_window_size  = undef,
   Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'] $log_level        = 'WARN',
   Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation     = 'NONE',
 ){
