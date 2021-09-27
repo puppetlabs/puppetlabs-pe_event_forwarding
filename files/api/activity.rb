@@ -27,13 +27,13 @@ module PeEventForwarding
         response       = pe_client.pe_get_request('activity-api/v2/events', params)
         response_body  = JSON.parse(response.body)
         total_count    = response_body['pagination']['total']
-        response_items << response_body['items']
+        response_body['commits']&.map { |commit| response_items << commit }
 
-        break if response_items.count != api_window_size
+        break if response_body['commits'].nil? || response_body['commits'].count != api_window_size
         params[:offset] += api_window_size
       end
       raise 'Events API request failed' unless response.code == '200'
-      { 'pagination' => { 'total' => total_count }, 'items' => response_items }
+      { 'pagination' => { 'total' => total_count }, 'commits' => response_items }
     end
 
     def current_event_count(service_name)

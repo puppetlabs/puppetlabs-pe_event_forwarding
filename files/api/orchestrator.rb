@@ -25,9 +25,9 @@ module PeEventForwarding
         response       = pe_client.pe_get_request('orchestrator/v1/jobs', params)
         response_body  = JSON.parse(response.body)
         total_count    = response_body['pagination']['total']
-        response_items << response_body['items']
+        response_body['items']&.map { |item| response_items << item }
 
-        break if response_items.count != api_window_size
+        break if response_body['items'].nil? || response_body['items'].count != api_window_size
         params[:offset] += api_window_size
       end
       raise 'Orchestrator API request failed' unless response.code == '200'
