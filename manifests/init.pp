@@ -5,6 +5,45 @@
 #
 # @example
 #   include pe_event_forwarding
+#
+# @param [Optional[String]] pe_username
+#   PE username
+# @param [Optional[Sensitive[String]]] pe_password
+#   PE password
+# @param [Optional[String]] pe_token
+#   PE token
+# @param [Optional[String]] pe_console
+#   PE console
+# @param [Optional[Boolean]] disabled
+#   When true, removes cron job
+# @param [Optional[String]] cron_minute
+#   Sets cron minute (0-59)
+# @param [Optional[String]] cron_hour
+#   Sets cron hour (0-23)
+# @param [Optional[String]] cron_weekday
+#   Sets cron day of the week (0-6)
+# @param [Optional[String]] cron_month
+#   Sets cron month (1-12)
+# @param [Optional[String]] cron_monthday
+#   Sets cron day of the month (1-31)
+# @param [Optional[String]] log_path
+#   Should be a directory; base path to desired location for log files
+#   `/pe_event_forwarding/pe_event_forwarding.log` will be appended to this param
+# @param [Optional[String]] lock_path
+#   Should be a directory; base path to desired location for lock file
+#   `/pe_event_forwarding/cache/state/events_collection_run.lock` will be appended to this param
+# @param [Optional[String]] confdir
+#   Path to directory where pe_event_forwarding exists
+# @param [Optional[Integer]] api_window_size
+#   Sets max number of events retrieved per API call
+# @param [Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']] log_level
+#   Determines the severity of logs to be written to log file:
+#    - level debug will only log debug-level log messages
+#    - level info will log info, warn, and fatal-level log messages
+#    - level warn will log warn and fatal-level log messages
+#    - level fatal will only log fatal-level log messages
+# @param [Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']] log_rotation
+#   Determines rotation time for log files
 class pe_event_forwarding (
   Optional[String]                                $pe_username      = undef,
   Optional[Sensitive[String]]                     $pe_password      = undef,
