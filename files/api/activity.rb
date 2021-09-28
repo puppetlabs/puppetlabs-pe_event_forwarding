@@ -33,7 +33,7 @@ module PeEventForwarding
         params[:offset] += api_page_size
       end
       raise 'Events API request failed' unless response.code == '200'
-      { 'pagination' => { 'total' => total_count }, 'commits' => response_items }
+      { 'api_total_count' => total_count, 'events' => response_items }
     end
 
     def current_event_count(service_name)

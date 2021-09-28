@@ -31,7 +31,7 @@ module PeEventForwarding
         params[:offset] += api_page_size
       end
       raise 'Orchestrator API request failed' unless response.code == '200'
-      { 'pagination' => { 'total' => total_count }, 'items' => response_items }
+      { 'api_total_count' => total_count, 'events' => response_items }
     end
 
     def run_facts_task(nodes)
