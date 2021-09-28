@@ -4,6 +4,11 @@
 #
 # @example
 #   pe_event_forwarding::acceptance::pe_server
+#
+# @param version
+#   PE version
+# @param pe_settings
+#   Hash with key `password` and value of PE console password for admin user
 plan pe_event_forwarding::acceptance::pe_server(
   Optional[String] $version = '2019.8.7',
   Optional[Hash] $pe_settings = {password => 'puppetlabs'}
