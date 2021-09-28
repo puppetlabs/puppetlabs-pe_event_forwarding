@@ -18,6 +18,6 @@
 <% if $pe_event_forwarding::log_rotation{ -%>
 "log_rotation" : "<%= $pe_event_forwarding::log_rotation %>"
 <% } -%>
-<% if $pe_event_forwarding::api_window_size{ -%>
-"api_window_size" : "<%= $pe_event_forwarding::api_window_size %>"
+<% if $pe_event_forwarding::api_page_size{ -%>
+"api_page_size" : "<%= $pe_event_forwarding::api_page_size %>"
 <% } -%>

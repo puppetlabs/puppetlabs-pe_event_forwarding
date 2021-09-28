@@ -54,7 +54,7 @@ The following parameters are available in the `pe_event_forwarding` class:
 * [`log_path`](#log_path)
 * [`lock_path`](#lock_path)
 * [`confdir`](#confdir)
-* [`api_window_size`](#api_window_size)
+* [`api_page_size`](#api_page_size)
 * [`log_level`](#log_level)
 * [`log_rotation`](#log_rotation)
 
@@ -164,7 +164,7 @@ Path to directory where pe_event_forwarding exists
 
 Default value: `"${pe_event_forwarding::base_path($settings::confdir,undef)}/pe_event_forwarding"`
 
-##### <a name="api_window_size"></a>`api_window_size`
+##### <a name="api_page_size"></a>`api_page_size`
 
 Data type: `Optional[Integer]`
 
