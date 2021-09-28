@@ -9,15 +9,15 @@ module PeEventForwarding
       @pe_client = PeEventForwarding::PeHttp.new(pe_console, port: 8143, username: username, password: password, token: token, ssl_verify: ssl_verify)
     end
 
-    def get_jobs(offset: 0, order: 'asc', order_by: 'name', api_window_size: nil)
+    def get_jobs(offset: 0, order: 'asc', order_by: 'name', api_page_size: nil)
       params = {
-        limit:    api_window_size,
+        limit:    api_page_size,
         offset:   offset,
         order:    order,
         order_by: order_by,
       }
 
-      api_window_size = api_window_size.to_i
+      api_page_size = api_page_size.to_i
       response_items  = []
       response        = ''
       total_count     = 0
@@ -27,8 +27,8 @@ module PeEventForwarding
         total_count    = response_body['pagination']['total']
         response_body['items']&.map { |item| response_items << item }
 
-        break if response_body['items'].nil? || response_body['items'].count != api_window_size
-        params[:offset] += api_window_size
+        break if response_body['items'].nil? || response_body['items'].count != api_page_size
+        params[:offset] += api_page_size
       end
       raise 'Orchestrator API request failed' unless response.code == '200'
       { 'pagination' => { 'total' => total_count }, 'items' => response_items }
@@ -75,10 +75,10 @@ module PeEventForwarding
       jobs['pagination']['total'] || 0
     end
 
-    def new_data(last_count, api_window_size)
+    def new_data(last_count, api_page_size)
       new_job_count = current_job_count - last_count
       return unless new_job_count > 0
-      get_jobs(offset: last_count, api_window_size: api_window_size)
+      get_jobs(offset: last_count, api_page_size: api_page_size)
     end
   end
 end

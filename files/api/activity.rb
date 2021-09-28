@@ -11,15 +11,15 @@ module PeEventForwarding
       @pe_client = PeEventForwarding::PeHttp.new(pe_console, port: 4433, username: username, password: password, token: token, ssl_verify: ssl_verify)
     end
 
-    def get_events(service: nil, offset: 0, order: 'asc', api_window_size: nil)
+    def get_events(service: nil, offset: 0, order: 'asc', api_page_size: nil)
       params = {
         service_id: service,
-        limit:      api_window_size,
+        limit:      api_page_size,
         offset:     offset,
         order:      order,
       }
 
-      api_window_size = api_window_size.to_i
+      api_page_size = api_page_size.to_i
       response_items = []
       response       = ''
       total_count    = 0
@@ -29,8 +29,8 @@ module PeEventForwarding
         total_count    = response_body['pagination']['total']
         response_body['commits']&.map { |commit| response_items << commit }
 
-        break if response_body['commits'].nil? || response_body['commits'].count != api_window_size
-        params[:offset] += api_window_size
+        break if response_body['commits'].nil? || response_body['commits'].count != api_page_size
+        params[:offset] += api_page_size
       end
       raise 'Events API request failed' unless response.code == '200'
       { 'pagination' => { 'total' => total_count }, 'commits' => response_items }
@@ -49,10 +49,10 @@ module PeEventForwarding
       events_count_for_service['pagination']['total'] || 0
     end
 
-    def new_data(service, last_count, api_window_size)
+    def new_data(service, last_count, api_page_size)
       new_count = current_event_count(service) - last_count
       return unless new_count > 0
-      get_events(service: service, offset: last_count, api_window_size: api_window_size)
+      get_events(service: service, offset: last_count, api_page_size: api_page_size)
     end
   end
 end

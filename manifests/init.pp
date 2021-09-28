@@ -34,7 +34,7 @@
 #   `/pe_event_forwarding/cache/state/events_collection_run.lock` will be appended to this param
 # @param [Optional[String]] confdir
 #   Path to directory where pe_event_forwarding exists
-# @param [Optional[Integer]] api_window_size
+# @param [Optional[Integer]] api_page_size
 #   Sets max number of events retrieved per API call
 # @param [Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']] log_level
 #   Determines the severity of logs to be written to log file:
@@ -58,7 +58,7 @@ class pe_event_forwarding (
   Optional[String]                                $log_path         = undef,
   Optional[String]                                $lock_path        = undef,
   Optional[String]                                $confdir          = "${pe_event_forwarding::base_path($settings::confdir,undef)}/pe_event_forwarding",
-  Optional[Integer]                               $api_window_size  = undef,
+  Optional[Integer]                               $api_page_size  = undef,
   Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'] $log_level        = 'WARN',
   Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation     = 'NONE',
 ){
