@@ -195,6 +195,8 @@ This module will allow administators to use `pe_username` and `pe_password` para
 
 To prevent these unnecessary events, it is recommended that administrators create a dedicated user in the console and [generate a long lived token][4] to use with the `pe_token` parameter instead. Using a pre-generated token will prevent these unwanted events from being generated.
 
+Also note that the `pe_password` parameter is a [`Sensitive`][8] parameter. The value for this parameter cannot be assigned through the console. You can use the `Sensitive()` function in a manifest to provide a value, or you can use [`lookup_options` in Hiera][9] to assign the value.
+
 ## Resources Placed On The Machine
 
 When this module is classified to a Puppet Server it will create a set of resources on the system.
@@ -296,3 +298,5 @@ Set the interval for creating new log files. Administrators are still responsibl
 [5]: #resources-placed-on-the-machine
 [6]: https://puppet.com/docs/pe/2019.8/orchestrator_api_jobs_endpoint.html#get_jobs-response-format
 [7]: https://puppet.com/docs/pe/2019.8/activity_api_events.html#response-format
+[8]: https://puppet.com/docs/puppet/7/lang_data_sensitive.html
+[9]: https://puppet.com/docs/puppet/6/securing-sensitive-data.html#securing_sensitive_data-lookup-options

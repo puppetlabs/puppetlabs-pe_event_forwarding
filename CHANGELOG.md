@@ -6,6 +6,10 @@ All notable changes to this project will be documented in this file. The format 
 
 [Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v1.0.1..main)
 
+### Added
+
+- (MAINT) Readme update to document Sensitive data typed `pe_password` parameter. [#90](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/90)
+
 ## [v1.0.1](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.0.1) (2021-09-30)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v1.0.0..v1.0.1)
