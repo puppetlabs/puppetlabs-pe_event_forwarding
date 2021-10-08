@@ -26,6 +26,10 @@ This module gathers events from the [Puppet Jobs API][1] and the [Activities API
 
 3. Install a module that implements a PE Event Forwarding processor such as the [Splunk_hec][3] module, and enable its Event Forwarding feature as detailed in that module's documentation.
 
+### Forwarding from non server nodes
+
+This module is capable of gathering events data and invoking processors from non Puppet Server nodes. If you want do to this, ensure that you set the `pe_console` parameter to the fully qualified domain name of the Puppet Server running the Orchestrator and Activies APIs. Often using the `$settings::server` for this parameter will work.
+
 ## How it works
 
 1. The cron job executes the collection script at the configured interval.
