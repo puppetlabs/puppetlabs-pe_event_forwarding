@@ -50,6 +50,12 @@ This module is capable of gathering events data and invoking processors from non
 
 9. The script exits.
 
+## Compatible PE Versions
+
+This module is compatible with PE versions in the 2019 range starting at 2019.8.7 and above, and then 2021 versions from 2021.2 and above.
+
+Versions in the PE 2019 series below 2019.8.7 and in the 2021 series in versions below 2021.2 did not recieve an update to some of the API methods in PE that are required for this module to function properly.
+
 ## Writing an Event Forwarding Processor
 
 An event forwarding processor is any script or executable binary that:
