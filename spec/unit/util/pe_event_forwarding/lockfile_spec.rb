@@ -72,7 +72,7 @@ describe PeEventForwarding::Lockfile do
   it 'removes the lock if validate_command fails' do
     lockfile = new_lockfile
     bogus_body = {
-      pid:          555,
+      pid:          9999,
       program_name: 'test',
     }
     File.write(path, bogus_body.to_json)
