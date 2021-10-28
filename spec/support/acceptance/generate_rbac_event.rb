@@ -4,9 +4,8 @@ require 'net/https'
 require 'uri'
 require 'json'
 
-def generate_rbac_event(count = 1)
+def generate_rbac_event(count, token)
   uri       = URI.parse('https://localhost:4433/rbac-api/v1/users')
-  token     = `puppet access show`.chomp
   rbac_user = Net::HTTP.start(
       uri.host,
       uri.port,
@@ -19,12 +18,6 @@ def generate_rbac_event(count = 1)
     response      = http.request request
     data_response = JSON.parse(response.body)
     data_response.find { |user| user['login'] == 'admin' }
-  end
-
-  begin
-    count = ARGV[0].to_i
-  rescue => exception
-    puts "Could not convert to integer: #{exception}"
   end
 
   (1..count).each do |i|
@@ -49,4 +42,16 @@ def generate_rbac_event(count = 1)
   end
 end
 
-generate_rbac_event
+begin
+  count = ARGV[0].nil? ? 1 : ARGV[0].to_i
+rescue => exception
+  puts "Could not convert to integer: #{exception}"
+end
+
+begin
+  token = `puppet access show`.chomp
+rescue => exception
+  throw "Could not find access token: #{exception}"
+end
+
+generate_rbac_event(count, token)
