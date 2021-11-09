@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding)
 
-[Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v1.0.2..main)
+[Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v1.0.3..main)
+
+
+## [v1.0.3](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.0.3) (2021-11-09)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v1.0.2..v1.0.3)
+
+- Document Forwarding from Non Server Nodes [#93](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/93)
 
 ## [v1.0.2](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.0.2) (2021-10-04)
 
