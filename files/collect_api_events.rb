@@ -40,7 +40,8 @@ def main(confdir, logpath, lockdir)
     username:    settings['pe_username'],
     password:    settings['pe_password'],
     token:       settings['pe_token'],
-    ssl_verify:  false
+    ssl_verify:  false,
+    log: log
   }
 
   orchestrator = PeEventForwarding::Orchestrator.new(settings['pe_console'], client_options)
@@ -57,29 +58,37 @@ def main(confdir, logpath, lockdir)
     exit
   end
 
+  log.debug("Orchestrator: Starting count: #{index.count(:orchestrator)}")
   data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator), settings['api_page_size'])
 
   PeEventForwarding::Activity::SERVICE_NAMES.each do |service|
+    log.debug("#{service}: Starting count #{index.count(service)} event(s)")
     data[service] = activities.new_data(service, index.count(service), settings['api_page_size'])
-    log.debug("Starting #{service} with #{index.count(service)} event(s)")
+  end
+
+  combined_keys = PeEventForwarding::Activity::SERVICE_NAMES.dup << :orchestrator
+  events_counts = {}
+  combined_keys.map do |key|
+    events_counts[key] = data[key].count unless data[key].nil?
   end
 
   if data.any? { |_k, v| !v.nil? }
     PeEventForwarding::Processor.find_each("#{confdir}/processors.d") do |processor|
+      log.info("#{processor.name} starting with events: #{events_counts}")
       start_time = Time.now
       processor.invoke(data)
       duration = Time.now - start_time
-      log.debug(processor.stdout, source: processor.name)
+      log.info(processor.stdout, source: processor.name) unless processor.stdout.length.zero?
       log.warn(processor.stderr, source: processor.name, exit_code: processor.exitcode) unless processor.stderr.length.zero? && processor.exitcode == 0
-      log.debug("Invoked #{processor.name} took #{duration} second(s) to complete.")
+      log.info("#{processor.name} finished: #{duration} second(s) to complete.")
     end
     index.save(data)
-    log.debug("Total execution time is: #{Time.now - common_event_start_time} second(s)")
   end
+  log.info("Event Forwarding total execution time: #{Time.now - common_event_start_time} second(s)")
 rescue => exception
   puts exception
   puts exception.backtrace
-  log.error("Caught an exception #{exception}")
+  log.error("Caught an exception #{exception}: #{exception.backtrace}")
 ensure
   lockfile.remove_lockfile
 end

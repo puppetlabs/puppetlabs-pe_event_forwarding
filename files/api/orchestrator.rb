@@ -3,10 +3,11 @@ require_relative '../util/pe_http'
 module PeEventForwarding
   # module Orchestrator this module provides the API specific code for accessing the orchestrator
   class Orchestrator
-    attr_accessor :pe_client
+    attr_accessor :pe_client, :log
 
-    def initialize(pe_console, username: nil, password: nil, token: nil, ssl_verify: true)
-      @pe_client = PeEventForwarding::PeHttp.new(pe_console, port: 8143, username: username, password: password, token: token, ssl_verify: ssl_verify)
+    def initialize(pe_console, username: nil, password: nil, token: nil, ssl_verify: true, log: nil)
+      @pe_client = PeEventForwarding::PeHttp.new(pe_console, port: 8143, username: username, password: password, token: token, ssl_verify: ssl_verify, log: log)
+      @log = log
     end
 
     def get_jobs(offset: 0, order: 'asc', order_by: 'name', api_page_size: nil)
@@ -30,6 +31,7 @@ module PeEventForwarding
         break if response_body['items'].nil? || response_body['items'].count != api_page_size
         params[:offset] += api_page_size
       end
+      log.debug("PE Get Jobs Items Found: #{response_items.count}")
       raise 'Orchestrator API request failed' unless response.code == '200'
       { 'api_total_count' => total_count, 'events' => response_items }
     end
@@ -77,6 +79,7 @@ module PeEventForwarding
 
     def new_data(last_count, api_page_size)
       new_job_count = current_job_count - last_count
+      log.debug("New Job Count: Orchestrator: #{new_job_count}")
       return unless new_job_count > 0
       get_jobs(offset: last_count, api_page_size: api_page_size)
     end

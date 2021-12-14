@@ -3,9 +3,9 @@ require_relative 'http'
 module PeEventForwarding
   # Include methods to secure a token and construct auth headers
   class PeHttp < PeEventForwarding::Http
-    attr_accessor :hostname, :port, :username, :pe_username, :pe_password, :password, :token, :ssl_verify, :ca_cert_path
+    attr_accessor :hostname, :port, :username, :pe_username, :pe_password, :password, :token, :ssl_verify, :ca_cert_path, :log
 
-    def initialize(hostname, port: nil, username: nil, password: nil, token: nil, ssl_verify: true, ca_cert_path: nil)
+    def initialize(hostname, port: nil, username: nil, password: nil, token: nil, ssl_verify: true, ca_cert_path: nil, log: nil)
       validate_pe_http_class(username, password, token)
       super(hostname,
             port: port,
@@ -20,6 +20,7 @@ module PeEventForwarding
       @pe_password = password
       # Tokens are not stored in the parent class since OAuth is passed in as a header.
       @token = token ? token : get_pe_token
+      @log = log
     end
 
     def validate_pe_http_class(username, password, token)
@@ -29,6 +30,7 @@ module PeEventForwarding
 
     # Wrapper method for get_request that includes a token auth header for PE.
     def pe_get_request(uri, params, headers = {}, timeout = 60)
+      log.debug("PE Get Request: #{uri} params: #{params}")
       uri = Http.make_params(uri, params)
       get_request(uri, headers.merge(pe_auth_header), timeout)
     end
