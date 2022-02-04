@@ -283,7 +283,7 @@ By default this folder will be placed at `/etc/puppetlabs/p_event_forwarding`. T
 
 --------------------------------------------------------------------------------
 
-`api_window_size`
+`api_page_size`
 
 The size of the pages to fetch from the PE API. All unprocessed events will still be gathered from the API on each collection cycle, but this parameter allows administrators to control the size of the individual requests to the PE API, to prevent too many events from being returned in a single API call.
 
