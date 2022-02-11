@@ -31,9 +31,15 @@ module PeEventForwarding
       File.write(filepath, body.to_json)
     end
 
-    def remove_lockfile
+    def same_pid_as_lockfile?
+      info['pid'] == Process.pid
+    end
+
+    # The force argument will delete the lockfile even if it does not belong to the current process.
+    # This is useful if we have confirmed the process is no longer running.
+    def remove_lockfile(force: false)
       raise 'Cannot delete Lockfile. Does not exist.' unless lockfile_exists?
-      File.delete(filepath)
+      File.delete(filepath) if force || same_pid_as_lockfile?
     end
 
     def already_running?
@@ -46,7 +52,7 @@ module PeEventForwarding
       !info['program_name'].match(%r{#{command}}).nil?
     rescue
       # Remove lock if the process is no longer running.
-      remove_lockfile
+      remove_lockfile(force: true)
       false
     end
   end
