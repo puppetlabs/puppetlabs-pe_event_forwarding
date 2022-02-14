@@ -71,6 +71,7 @@ describe PeEventForwarding::Lockfile do
 
   it 'removes the lock if validate_command fails' do
     lockfile = new_lockfile
+    # Process 9999 should not be running so validate_command should delete the lockfile.
     bogus_body = {
       pid:          9999,
       program_name: 'test',
@@ -78,6 +79,21 @@ describe PeEventForwarding::Lockfile do
     File.write(path, bogus_body.to_json)
     expect(lockfile.already_running?).to be(false)
     expect(lockfile.lockfile_exists?).to be(false)
+  end
+
+  it 'does not remove another processes lockfile' do
+    lockfile = new_lockfile
+    # Stub validate_command to suggest that pid 9999 is currently running.
+    allow(lockfile).to receive(:validate_command).and_return(true)
+    lockfile_data = {
+      pid:          9999,
+      program_name: 'test',
+    }
+    File.write(path, lockfile_data.to_json)
+    # Lockfile should not be removed since 9999 is not the current PID.
+    lockfile.remove_lockfile
+    expect(lockfile.already_running?).to be(true)
+    expect(lockfile.lockfile_exists?).to be(true)
   end
 
   context 'checks if the process id is already running' do
