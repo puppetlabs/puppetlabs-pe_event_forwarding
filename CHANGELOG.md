@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding)
 
-[Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v1.0.4..main)
+[Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v1.0.5..main)
+
+## [v1.0.5](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.0.5) (2022-02-14)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v1.0.4..v1.0.5)
+
+- Fixed bug where stacking cron jobs can delete lockfiles that belong to another job. [#104](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/104)
 
 ## [v1.0.4](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.0.4) (2022-01-04)
 
