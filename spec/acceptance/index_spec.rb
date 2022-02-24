@@ -28,4 +28,34 @@ describe 'index file' do
     updated_value = index[:orchestrator]
     expect(updated_value).to eql(current_value + 1)
   end
+
+  it 'when disabled_rbac is set to false (default), updates the index' do
+    current_value = get_service_index(:rbac)
+    upload_rbac_script
+    puppetserver.run_shell("#{CONFDIR}/pe_event_forwarding/generate_rbac_event.rb")
+    puppetserver.run_shell("#{CONFDIR}/pe_event_forwarding/collect_api_events.rb")
+    updated_value = get_service_index(:rbac)
+    expect(updated_value).to eql(current_value + 1)
+  end
+
+  it 'when disabled_rbac is set to true, does NOT update the index' do
+    disable_rbac_events
+    puppetserver.run_shell("#{CONFDIR}/pe_event_forwarding/generate_rbac_event.rb")
+    puppetserver.run_shell("#{CONFDIR}/pe_event_forwarding/collect_api_events.rb")
+    updated_value = get_service_index(:rbac)
+    expect(updated_value).to be(-1)
+  end
+
+  it 'when rbac re-enabled, resets the rbac index' do
+    enable_rbac_events
+    original_rbac_index = get_service_index(:rbac)
+    disable_rbac_events
+    puppetserver.run_shell("#{CONFDIR}/pe_event_forwarding/generate_rbac_event.rb")
+    puppetserver.run_shell("#{CONFDIR}/pe_event_forwarding/collect_api_events.rb")
+    enable_rbac_events
+    puppetserver.run_shell("#{CONFDIR}/pe_event_forwarding/collect_api_events.rb")
+    updated_rbac_index = get_service_index(:rbac)
+    # assert the index is updated to ignore recent rbac events
+    expect(updated_rbac_index).to eql(original_rbac_index)
+  end
 end

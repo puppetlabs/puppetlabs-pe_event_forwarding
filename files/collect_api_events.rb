@@ -47,9 +47,11 @@ def main(confdir, logpath, lockdir)
   orchestrator = PeEventForwarding::Orchestrator.new(settings['pe_console'], client_options)
   activities = PeEventForwarding::Activity.new(settings['pe_console'], client_options)
 
+  service_names = settings['disable_rbac'] == 'false' ? PeEventForwarding::Activity::SERVICE_NAMES_WITH_RBAC : PeEventForwarding::Activity::SERVICE_NAMES_WITHOUT_RBAC
+
   if index.first_run?
     data[:orchestrator] = orchestrator.current_job_count
-    PeEventForwarding::Activity::SERVICE_NAMES.each do |service|
+    service_names.each do |service|
       log.debug("Starting #{service} for first run with #{index.count(service)} event(s)")
       data[service] = activities.current_event_count(service)
     end
@@ -61,18 +63,35 @@ def main(confdir, logpath, lockdir)
   log.debug("Orchestrator: Starting count: #{index.count(:orchestrator)}")
   data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator), settings['api_page_size'])
 
-  PeEventForwarding::Activity::SERVICE_NAMES.each do |service|
-    log.debug("#{service}: Starting count #{index.count(service)} event(s)")
-    data[service] = activities.new_data(service, index.count(service), settings['api_page_size'])
+  # We mark the rbac index with -1 to signify that it has been disabled.
+  # This is neccesary because upon re-enablement we want to make sure we
+  # only re-initialize the rbac index so the others continue as normal, and
+  # we don't pull in a large amount of rbac events that have accumulated in the
+  # interim.
+  data[:rbac] = -1 if settings['disable_rbac'] == 'true'
+
+  service_names.each do |service|
+    if (service == :rbac) && (index.count(service) == -1)
+      # At this point we know rbac is newly re-enabled.
+      # Reinitialize the rbac event count and exit.
+      # Next run will continue as usual.
+      data[service] = activities.current_event_count(service)
+      index.save(data)
+      log.debug("RBAC events collection reenabled. First run. Recorded event count in #{index.filepath} and now exiting.")
+      exit
+    else
+      log.debug("#{service}: Starting count #{index.count(service)} event(s)")
+      data[service] = activities.new_data(service, index.count(service), settings['api_page_size'])
+    end
   end
 
-  combined_keys = PeEventForwarding::Activity::SERVICE_NAMES.dup << :orchestrator
+  combined_keys = service_names.dup << :orchestrator
   events_counts = {}
   combined_keys.map do |key|
     events_counts[key] = data[key].count unless data[key].nil?
   end
 
-  if data.any? { |_k, v| !v.nil? }
+  if data.any? { |_k, v| !v.nil? || (v != -1) }
     PeEventForwarding::Processor.find_each("#{confdir}/processors.d") do |processor|
       log.info("#{processor.name} starting with events: #{events_counts}")
       start_time = Time.now

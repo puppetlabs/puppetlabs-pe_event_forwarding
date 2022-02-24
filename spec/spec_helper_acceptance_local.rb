@@ -90,3 +90,25 @@ def cron_schedule
     cron_monthday: '6',
   }
 end
+
+def upload_rbac_script
+  file_path = 'spec/support/acceptance/generate_rbac_event.rb'
+  puppetserver.bolt_upload_file(file_path, "#{CONFDIR}/pe_event_forwarding/")
+  puppetserver.run_shell("chmod +x #{CONFDIR}/pe_event_forwarding/generate_rbac_event.rb")
+end
+
+def get_service_index(service_symbol)
+  index_contents = puppetserver.run_shell("#{CONFDIR}/pe_event_forwarding/collect_api_events.rb ; cat #{CONFDIR}/pe_event_forwarding/pe_event_forwarding_indexes.yaml").stdout
+  index = YAML.safe_load(index_contents, [Symbol])
+  index[service_symbol]
+end
+
+def disable_rbac_events
+  set_sitepp_content(declare('class', 'pe_event_forwarding', { 'pe_token' => auth_token, 'disabled' => true, 'disable_rbac' => true, }))
+  trigger_puppet_run(puppetserver)
+end
+
+def enable_rbac_events
+  set_sitepp_content(declare('class', 'pe_event_forwarding', { 'pe_token' => auth_token, 'disabled' => true, 'disable_rbac' => false, }))
+  trigger_puppet_run(puppetserver)
+end
