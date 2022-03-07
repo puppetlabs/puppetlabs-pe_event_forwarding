@@ -257,6 +257,12 @@ Setting this variable to true will prevent events collection from executing. No 
 
 --------------------------------------------------------------------------------
 
+`disable_rbac`
+
+Setting this variable to true will skip all rbac events. This is useful for instances where there is a large enough quantity of rbac data to create a performance issue. When disabled, the rbac index will show as `-1` in the `pe_event_forwarding_indexes.yaml` file. When re-enabling the `disable_rbac` variable, only new rbac events will be processed moving forward. It will take one run of the cron job (of the `collect_api_events.rb`) to resume event processing and recreate the rbac index. All other event types will be unaffected.
+
+--------------------------------------------------------------------------------
+
 `cron_[minute|hour|weekday|month|monthday]`
 
 Use these parameters to set a custom schedule for gathering events and executing processors. This schedule is enforced for the overall PE Event Forwarding feature. This means that all processors will be executing on this schedule, and the individual platform processors have no control over how often they are invoked. The default parameter values result in a cron schedule that invokes events collection every two minutes `*/2 * * * *`. Administators can use this parameter set to reduce the cycle interval to every minute, or to increase the interval to collect less often.

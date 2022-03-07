@@ -3,8 +3,9 @@ require_relative '../util/pe_http'
 module PeEventForwarding
   # module Events This contains the API specific code for the events API
   class Activity
-    SERVICE_NAMES = [:classifier, :rbac, :'pe-console', :'code-manager' ].freeze
-    API_END_POINT = 'activity-api/v2/events'.freeze
+    SERVICE_NAMES_WITH_RBAC    = [:classifier, :rbac, :'pe-console', :'code-manager' ].freeze
+    SERVICE_NAMES_WITHOUT_RBAC = [:classifier, :'pe-console', :'code-manager' ].freeze
+    API_END_POINT              = 'activity-api/v2/events'.freeze
 
     attr_accessor :pe_client, :log
 
