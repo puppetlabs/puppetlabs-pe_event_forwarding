@@ -57,7 +57,7 @@ class pe_event_forwarding (
   Optional[String]                                $cron_monthday          = '*',
   Optional[String]                                $log_path               = undef,
   Optional[String]                                $lock_path              = undef,
-  Optional[String]                                $confdir                = "${pe_event_forwarding::base_path($settings::confdir,undef)}/pe_event_forwarding",
+  Optional[String]                                $confdir                = undef,
   Optional[Integer]                               $api_page_size          = undef,
   Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'] $log_level              = 'WARN',
   Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation           = 'NONE',
@@ -95,9 +95,17 @@ class pe_event_forwarding (
 
   $logfile_basepath = pe_event_forwarding::base_path($settings::logdir, $log_path)
   $lockdir_basepath = pe_event_forwarding::base_path($settings::statedir, $lock_path)
+
+  if $confdir == undef {
+    $full_confdir = "${pe_event_forwarding::base_path($settings::confdir,undef)}/pe_event_forwarding"
+  }
+  else {
+    $full_confdir = "${confdir}/pe_event_forwarding"
+  }
+
   $conf_dirs        = [
-    $confdir,
-    "${confdir}/processors.d",
+    $full_confdir,
+    "${full_confdir}/processors.d",
     "${logfile_basepath}/pe_event_forwarding",
     "${lockdir_basepath}/pe_event_forwarding",
     "${lockdir_basepath}/pe_event_forwarding/cache/",
@@ -106,7 +114,7 @@ class pe_event_forwarding (
 
   cron { 'collect_pe_events':
     ensure   => $cron_ensure,
-    command  => "${confdir}/collect_api_events.rb ${confdir} ${logfile_basepath}/pe_event_forwarding/pe_event_forwarding.log ${lockdir_basepath}/pe_event_forwarding/cache/state",
+    command  => "${full_confdir}/collect_api_events.rb ${full_confdir} ${logfile_basepath}/pe_event_forwarding/pe_event_forwarding.log ${lockdir_basepath}/pe_event_forwarding/cache/state",
     user     => 'root',
     minute   => $cron_minute,
     hour     => $cron_hour,
@@ -114,7 +122,7 @@ class pe_event_forwarding (
     month    => $cron_month,
     monthday => $cron_monthday,
     require  => [
-      File["${confdir}/events_collection.yaml"],
+      File["${full_confdir}/events_collection.yaml"],
       File[$conf_dirs]
     ],
   }
@@ -125,7 +133,7 @@ class pe_event_forwarding (
     group  => $group,
   }
 
-  file { "${confdir}/api":
+  file { "${full_confdir}/api":
     ensure  => directory,
     owner   => $owner,
     group   => $group,
@@ -133,7 +141,7 @@ class pe_event_forwarding (
     source  => 'puppet:///modules/pe_event_forwarding/api',
   }
 
-  file { "${confdir}/util":
+  file { "${full_confdir}/util":
     ensure  => directory,
     owner   => $owner,
     group   => $group,
@@ -141,21 +149,21 @@ class pe_event_forwarding (
     source  => 'puppet:///modules/pe_event_forwarding/util',
   }
 
-  file { "${confdir}/events_collection.yaml":
+  file { "${full_confdir}/events_collection.yaml":
     ensure  => file,
     owner   => $owner,
     group   => $group,
     mode    => '0640',
-    require => File[$confdir],
+    require => File[$full_confdir],
     content => epp('pe_event_forwarding/events_collection.yaml'),
   }
 
-  file { "${confdir}/collect_api_events.rb":
+  file { "${full_confdir}/collect_api_events.rb":
     ensure  => file,
     owner   => $owner,
     group   => $group,
     mode    => '0755',
-    require => File[$confdir],
+    require => File[$full_confdir],
     source  => 'puppet:///modules/pe_event_forwarding/collect_api_events.rb',
   }
 }
