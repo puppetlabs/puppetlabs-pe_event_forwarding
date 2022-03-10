@@ -4,7 +4,21 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding)
 
-[Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v1.0.5..main)
+[Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v1.1.0..main)
+
+## [v1.1.0](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.1.0) (2022-03-10)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v1.0.5..v1.1.0)
+
+### Added
+
+- Added a parameter to disable rbac events for increased performance for users with a large amount of rbac events. [#106](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/106)
+
+### Fixed
+
+- Support logfile_basepath and lockdir_bathpath outside of /etc/puppetlabs. [#107](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/107)
+
+- Properly support custom confdirs. [#108](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/108)
 
 ## [v1.0.5](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.0.5) (2022-02-14)
 
