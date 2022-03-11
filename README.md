@@ -22,7 +22,7 @@ This module gathers events from the [Puppet Jobs API][1] and the [Activities API
 
 1. Install the module in your environment
 
-2. Classify a node with the `pe_event_forwarding` class and provide a value for the `pe_token` parameter. We recommend providing an api token generated for a console user created for use with this module. See [rbac token vs username/password ](#token-vs-username-password-authentication) below for details. Also see [Advanced Configuration Options](#advanced-configuration-options) below for details on other configuration options.
+2. Classify a node with the `pe_event_forwarding` class and provide a value for the `pe_token` parameter. We recommend providing an api token generated for a console user created for use with this module. The user minimially requires the [Job orchestrator permission](https://puppet.com/docs/pe/latest/rbac_permissions_intro.html#user_permissions). See [rbac token vs username/password ](#token-vs-username-password-authentication) below for details. Also see [Advanced Configuration Options](#advanced-configuration-options) below for details on other configuration options.
 
 3. Install a module that implements a PE Event Forwarding processor such as the [Splunk_hec][3] module, and enable its Event Forwarding feature as detailed in that module's documentation.
 
