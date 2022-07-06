@@ -18,8 +18,8 @@
   },
   "input_method": "environment",
   "files": [
-    "pe_event_forwarding_library/lib/pe_event_forwarding_library/util/pe_http.rb",
-    "pe_event_forwarding_library/lib/pe_event_forwarding_library/util/pe_event_forwarding_http.rb",
-    "pe_event_forwarding_library/lib/pe_event_forwarding_library/api/activity.rb"
+    "pe_event_forwarding/files/util/pe_http.rb",
+    "pe_event_forwarding/files/util/http.rb",
+    "pe_event_forwarding/files/api/activity.rb"
   ]
 }

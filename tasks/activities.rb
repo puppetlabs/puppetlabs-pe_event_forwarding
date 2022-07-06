@@ -1,4 +1,4 @@
-require_relative '../lib/pe_event_forwarding_library/api/activity.rb'
+require_relative '../files/api/activity.rb'
 
 PE_CONSOLE = ENV['PT_pe_console']
 USERNAME = ENV['PT_pe_username'] || 'admin'
