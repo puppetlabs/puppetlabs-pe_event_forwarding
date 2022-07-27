@@ -4,8 +4,8 @@
   "author": "Puppet, Inc.",
   "summary": "A module that contains support for integration event reporting",
   "license": "Apache-2.0",
-  "source": "http://github.com/puppetlabs/pe_event_forwarding",
-  "project_page": "http://github.com/puppetlabs/puppetlabs-pe_event_forwarding",
+  "source": "https://github.com/puppetlabs/puppetlabs-pe_event_forwarding",
+  "project_page": "https://github.com/puppetlabs/puppetlabs-pe_event_forwarding",
   "issues_url": "https://tickets.puppetlabs.com/projects/PIE/issues",
   "dependencies": [
     {
