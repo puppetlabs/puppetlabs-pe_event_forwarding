@@ -115,7 +115,7 @@ class pe_event_forwarding (
   cron { 'collect_pe_events':
     ensure   => $cron_ensure,
     command  => "${full_confdir}/collect_api_events.rb ${full_confdir} ${logfile_basepath}/pe_event_forwarding/pe_event_forwarding.log ${lockdir_basepath}/pe_event_forwarding/cache/state",
-    user     => 'root',
+    user     => $owner,
     minute   => $cron_minute,
     hour     => $cron_hour,
     weekday  => $cron_weekday,

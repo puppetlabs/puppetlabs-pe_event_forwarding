@@ -10,7 +10,7 @@
 # @param pe_settings
 #   Hash with key `password` and value of PE console password for admin user
 plan pe_event_forwarding::acceptance::pe_server(
-  Optional[String] $version = '2019.8.7',
+  Optional[String] $version = '2019.8.9',
   Optional[Hash] $pe_settings = {password => 'puppetlabs'}
 ) {
   # machines are not yet ready at time of installing the puppetserver, so we wait 15s
