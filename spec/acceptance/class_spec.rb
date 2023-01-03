@@ -41,12 +41,12 @@ describe 'Verify the minimum install' do
 
   describe 'configures cron' do
     it 'enables cron' do
-      result = puppetserver.run_shell('crontab -l', expect_failures: true).stdout
+      result = puppetserver.run_shell('crontab -u pe-puppet -l', expect_failures: true).stdout
       expect(result.include?('collect_api_events.rb')).to be true
     end
 
     it 'applies the correct schedule' do
-      result = puppetserver.run_shell('crontab -l', expect_failures: true).stdout
+      result = puppetserver.run_shell('crontab -u pe-puppet -l', expect_failures: true).stdout
       expect(result.include?('10 9 6 7 3')).to be true
     end
   end
