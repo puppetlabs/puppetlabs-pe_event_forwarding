@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file. The format 
 
 [Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v1.1.0..main)
 
+## [v1.1.1](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.1.1) (2023-01-31)
+
+### Fixed
+
+- User for the crontab entry now defaults to internal `$owner` variable. [#115](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/115)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v1.0.5..v1.1.0)
+
 ## [v1.1.0](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.1.0) (2022-03-10)
 
 [Full Changelog](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v1.0.5..v1.1.0)
