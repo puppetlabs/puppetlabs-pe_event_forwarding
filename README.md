@@ -3,20 +3,23 @@
 #### Table of Contents
 
 
-1. [Intro](#intro)
-2. [Usage](#usage)
-3. [How it works](#how-it-works)
-4. [Writing an Event Forwarding Processor](#writing-an-event-forwarding-processor)
-5. [Installing A Processor](#installing-a-processor)
-6. [Token vs Username Password Authentication](#token-vs-username-password-authentication)
-7. [Resources Placed On The Machine](#resources-placed-on-the-machine)
-8. [Logging](#logging)
-9. [Advanced Configuration Options](#advanced-configuration-options)
+- [puppetlabs-pe\_event\_forwarding](#puppetlabs-pe_event_forwarding)
+      - [Table of Contents](#table-of-contents)
+  - [Intro](#intro)
+  - [Usage](#usage)
+    - [Forwarding from non server nodes](#forwarding-from-non-server-nodes)
+  - [How it works](#how-it-works)
+  - [Compatible PE Versions](#compatible-pe-versions)
+  - [Writing an Event Forwarding Processor](#writing-an-event-forwarding-processor)
+  - [Installing A Processor](#installing-a-processor)
+  - [Token vs Username Password Authentication](#token-vs-username-password-authentication)
+  - [Resources Placed On The Machine](#resources-placed-on-the-machine)
+  - [Logging](#logging)
+  - [Advanced Configuration Options](#advanced-configuration-options)
 
 ## Intro
 
 This module gathers events from the [Puppet Jobs API][1] and the [Activities API][2] using a script executed by a cron job. This data is provided to any available processor scripts during each run. The scripts are provided by any modules that want to make use of this data such as the [puppetlabs-splunk_hec][3] module. These processor scripts then handle the data they are given and forward it on to their respective platforms.
-
 
 ## Usage
 
@@ -52,9 +55,9 @@ This module is capable of gathering events data and invoking processors from non
 
 ## Compatible PE Versions
 
-This module is compatible with PE versions in the 2019 range starting at 2019.8.7 and above, and then 2021 versions from 2021.2 and above.
+This module is compatible with PE versions `>= 2021.2`.
 
-Versions in the PE 2019 series below 2019.8.7 and in the 2021 series in versions below 2021.2 did not recieve an update to some of the API methods in PE that are required for this module to function properly.
+> Starting with **`v2.0.0`, this module no longer supports PE 2019.8.12**.
 
 ## Writing an Event Forwarding Processor
 

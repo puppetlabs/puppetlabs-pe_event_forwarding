@@ -44,17 +44,19 @@
 #    - level fatal will only log fatal-level log messages
 # @param [Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']] log_rotation
 #   Determines rotation time for log files
+# @param [Boolean] disable_rbac
+#   When true, all RBAC events will be skipped from collection
 class pe_event_forwarding (
   Optional[String]                                $pe_username            = undef,
   Optional[Sensitive[String]]                     $pe_password            = undef,
   Optional[String]                                $pe_token               = undef,
-  Optional[String]                                $pe_console             = 'localhost',
-  Optional[Boolean]                               $disabled               = false,
-  Optional[String]                                $cron_minute            = '*/2',
-  Optional[String]                                $cron_hour              = '*',
-  Optional[String]                                $cron_weekday           = '*',
-  Optional[String]                                $cron_month             = '*',
-  Optional[String]                                $cron_monthday          = '*',
+  String                                          $pe_console             = 'localhost',
+  Boolean                                         $disabled               = false,
+  String                                          $cron_minute            = '*/2',
+  String                                          $cron_hour              = '*',
+  String                                          $cron_weekday           = '*',
+  String                                          $cron_month             = '*',
+  String                                          $cron_monthday          = '*',
   Optional[String]                                $log_path               = undef,
   Optional[String]                                $lock_path              = undef,
   Optional[String]                                $confdir                = undef,
@@ -62,18 +64,18 @@ class pe_event_forwarding (
   Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'] $log_level              = 'WARN',
   Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation           = 'NONE',
   Boolean                                         $disable_rbac           = false,
-){
-
+) {
+  # Ensure required credential params are configured
   if (
     ($pe_token == undef)
     and
     ($pe_username == undef or $pe_password == undef)
   ) {
     $authorization_failure_message = @(MESSAGE/L)
-    Please set both 'pe_username' and 'pe_password' \
-    if you are not using a pre generated PE authorization \
-    token in the 'pe_token' parameter
-    |-MESSAGE
+      Please set both 'pe_username' and 'pe_password' \
+      if you are not using a pre generated PE authorization \
+      token in the 'pe_token' parameter
+      |-MESSAGE
     fail($authorization_failure_message)
   }
 
@@ -109,7 +111,7 @@ class pe_event_forwarding (
     "${logfile_basepath}/pe_event_forwarding",
     "${lockdir_basepath}/pe_event_forwarding",
     "${lockdir_basepath}/pe_event_forwarding/cache/",
-    "${lockdir_basepath}/pe_event_forwarding/cache/state"
+    "${lockdir_basepath}/pe_event_forwarding/cache/state",
   ]
 
   cron { 'collect_pe_events':

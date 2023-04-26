@@ -13,7 +13,7 @@ module PeEventForwarding
     }.freeze
 
     def initialize(log_path, shift_age)
-      shift_age = shift_age == 'NONE' ? 0 : shift_age.downcase
+      shift_age = (shift_age == 'NONE') ? 0 : shift_age.downcase
       super(log_path, shift_age)
       self.datetime_format = '%Y-%m-%d %H:%M:%S'
 
