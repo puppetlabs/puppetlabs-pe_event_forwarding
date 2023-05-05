@@ -32,7 +32,7 @@ def index_data(**custom_count)
 end
 
 def index_yaml(**custom_count)
-  index_data(custom_count).to_yaml
+  index_data(**custom_count).to_yaml
 end
 
 def events_data(**extra_data)

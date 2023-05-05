@@ -47,7 +47,7 @@ def main(confdir, logpath, lockdir)
   orchestrator = PeEventForwarding::Orchestrator.new(settings['pe_console'], client_options)
   activities = PeEventForwarding::Activity.new(settings['pe_console'], client_options)
 
-  service_names = settings['disable_rbac'] == 'false' ? PeEventForwarding::Activity::SERVICE_NAMES_WITH_RBAC : PeEventForwarding::Activity::SERVICE_NAMES_WITHOUT_RBAC
+  service_names = (settings['disable_rbac'] == 'false') ? PeEventForwarding::Activity::SERVICE_NAMES_WITH_RBAC : PeEventForwarding::Activity::SERVICE_NAMES_WITHOUT_RBAC
 
   if index.first_run?
     data[:orchestrator] = orchestrator.current_job_count
@@ -97,8 +97,8 @@ def main(confdir, logpath, lockdir)
       start_time = Time.now
       processor.invoke(data)
       duration = Time.now - start_time
-      log.info(processor.stdout, source: processor.name) unless processor.stdout.length.zero?
-      log.warn(processor.stderr, source: processor.name, exit_code: processor.exitcode) unless processor.stderr.length.zero? && processor.exitcode == 0
+      log.info(processor.stdout, source: processor.name) unless processor.stdout.empty?
+      log.warn(processor.stderr, source: processor.name, exit_code: processor.exitcode) unless processor.stderr.empty? && processor.exitcode == 0
       log.info("#{processor.name} finished: #{duration} second(s) to complete.")
     end
     index.save(data)

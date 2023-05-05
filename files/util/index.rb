@@ -26,9 +26,9 @@ module PeEventForwarding
 
     def counts(refresh: false)
       if refresh
-        @counts = YAML.safe_load(File.read(filepath), [Symbol])
+        @counts = YAML.safe_load(File.read(filepath), permitted_classes: [Symbol])
       end
-      @counts ||= YAML.safe_load(File.read(filepath), [Symbol])
+      @counts ||= YAML.safe_load(File.read(filepath), permitted_classes: [Symbol])
     end
 
     def count(service)

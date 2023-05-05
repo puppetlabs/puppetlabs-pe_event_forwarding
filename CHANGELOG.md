@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file. The format 
 
 [Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v1.1.0..main)
 
+## [v2.0.0](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v2.0.0) (2023-05-XX)
+
+### Fixed
+
+- Utilize kwargs over positional args for Ruby 3 compatibility. [#119](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/119)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v1.1.0..v2.0.0)
+
 ## [v1.1.1](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.1.1) (2023-01-31)
 
 ### Fixed

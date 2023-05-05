@@ -22,7 +22,7 @@ describe 'index file' do
     index_contents = puppetserver.run_shell("cat #{CONFDIR}/pe_event_forwarding/pe_event_forwarding_indexes.yaml").stdout
     index          = YAML.safe_load(index_contents, [Symbol])
     current_value  = index[:orchestrator]
-    puppetserver.run_shell("puppet task run facts --nodes #{console_host_fqdn}")
+    puppetserver.run_shell("LC_ALL=en_US.UTF-8 puppet task run facts --nodes #{console_host_fqdn}")
     index_contents = puppetserver.run_shell("#{CONFDIR}/pe_event_forwarding/collect_api_events.rb ; cat #{CONFDIR}/pe_event_forwarding/pe_event_forwarding_indexes.yaml").stdout
     index = YAML.safe_load(index_contents, [Symbol])
     updated_value = index[:orchestrator]
