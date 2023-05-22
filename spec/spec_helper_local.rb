@@ -1,3 +1,7 @@
+CONFDIR = '/etc/puppetlabs/puppet'.freeze
+LOGDIR  = '/var/log/puppetlabs/puppet'.freeze
+LOCKFILEDIR = '/opt/puppetlabs/puppet/cache/state'.freeze
+
 RSpec.configure do |c|
   c.mock_with :rspec
 end
