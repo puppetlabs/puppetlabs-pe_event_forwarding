@@ -114,9 +114,15 @@ class pe_event_forwarding (
     "${lockdir_basepath}/pe_event_forwarding/cache/state",
   ]
 
+  $cron_command = @("COMMAND"/L)
+    ${full_confdir}/collect_api_events.rb ${full_confdir} \
+    ${logfile_basepath}/pe_event_forwarding/pe_event_forwarding.log \
+    ${lockdir_basepath}/pe_event_forwarding/cache/state
+    |-COMMAND
+
   cron { 'collect_pe_events':
     ensure   => $cron_ensure,
-    command  => "${full_confdir}/collect_api_events.rb ${full_confdir} ${logfile_basepath}/pe_event_forwarding/pe_event_forwarding.log ${lockdir_basepath}/pe_event_forwarding/cache/state",
+    command  => $cron_command,
     user     => $owner,
     minute   => $cron_minute,
     hour     => $cron_hour,

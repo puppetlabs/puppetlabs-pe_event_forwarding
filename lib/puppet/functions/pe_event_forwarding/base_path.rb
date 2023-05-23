@@ -8,13 +8,13 @@ Puppet::Functions.create_function(:'pe_event_forwarding::base_path') do
   # @example Calling the function
   #   pe_event_forwarding::base_path(default_path, desired_path)
   def base_path(str, path)
-    # No specific path is provided, going to use default path from logdir
+    # No specific path is provided, going to use default path from Puppet settings
     if path.nil?
       base = str.match(%r{^(.*?\/puppetlabs)\/})
       (!base.nil?) ? base[1] : str
     # A specfic path is provided
     else
-      path
+      path.chomp('/')
     end
   end
 end
