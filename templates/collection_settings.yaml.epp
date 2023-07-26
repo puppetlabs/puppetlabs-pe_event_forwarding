@@ -1,14 +1,5 @@
 # managed by pe_event_forwarding module
 ---
-<% if $pe_event_forwarding::pe_username{ -%>
-"pe_username" : "<%= $pe_event_forwarding::pe_username %>"
-<% } -%>
-<% if $pe_event_forwarding::pe_password{ -%>
-"pe_password" : "<%= $pe_event_forwarding::pe_password.unwrap %>"
-<% } -%>
-<% if $pe_event_forwarding::pe_token{ -%>
-"pe_token" : "<%= $pe_event_forwarding::pe_token %>"
-<% } -%>
 <% if $pe_event_forwarding::pe_console{ -%>
 "pe_console" : "<%= $pe_event_forwarding::pe_console %>"
 <% } -%>
