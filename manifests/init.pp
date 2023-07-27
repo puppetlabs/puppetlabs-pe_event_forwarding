@@ -79,6 +79,9 @@ class pe_event_forwarding (
     fail($authorization_failure_message)
   }
 
+  # Remove v1 settings file
+  include pe_event_forwarding::v2_cleanup
+
   # Secure credential data
   $pe_secrets = {
     'pe_token' => $pe_token,

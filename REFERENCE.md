@@ -6,7 +6,13 @@
 
 ### Classes
 
+#### Public Classes
+
 * [`pe_event_forwarding`](#pe_event_forwarding): Create the required cron job and scripts for sending Puppet Events
+
+#### Private Classes
+
+* `pe_event_forwarding::v2_cleanup`: A subclass to remove old settings file.
 
 ### Functions
 

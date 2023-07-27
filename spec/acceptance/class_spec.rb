@@ -23,8 +23,13 @@ describe 'Verify the minimum install' do
       expect(puppetserver.directory_exists?(directory)).to be true
     end
 
-    it 'events_collection.yaml' do
-      yaml_file = "#{CONFDIR}/pe_event_forwarding/events_collection.yaml"
+    it 'collection_settings.yaml' do
+      yaml_file = "#{CONFDIR}/pe_event_forwarding/collection_settings.yaml"
+      expect(puppetserver.file_exists?(yaml_file)).to be true
+    end
+
+    it 'collection_secrets.yaml' do
+      yaml_file = "#{CONFDIR}/pe_event_forwarding/collection_secrets.yaml"
       expect(puppetserver.file_exists?(yaml_file)).to be true
     end
 
@@ -36,6 +41,13 @@ describe 'Verify the minimum install' do
     it 'processors.d folder' do
       script_file = "#{CONFDIR}/pe_event_forwarding/processors.d"
       expect(puppetserver.directory_exists?(script_file)).to be true
+    end
+  end
+
+  describe 'it removes old settings file' do
+    it 'events_collection.yaml' do
+      yaml_file = "#{CONFDIR}/pe_event_forwarding/events_collection.yaml"
+      expect(puppetserver.file_exists?(yaml_file)).to be false
     end
   end
 

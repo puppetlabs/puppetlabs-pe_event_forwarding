@@ -14,7 +14,7 @@ describe 'pe_event_forwarding' do
       let(:confdir) { 'bluh' }
       let(:confdir_expectation) { File.join(Dir.pwd, 'bluh') }
       let(:facts) do
-        facts.merge(pe_server_version: '2019.8.7')
+        facts.merge(pe_server_version: '2021.7.4')
       end
 
       it { is_expected.to compile }
@@ -49,7 +49,15 @@ describe 'pe_event_forwarding' do
         }
 
         it {
-          is_expected.to contain_file("#{confdir_expectation}/pe_event_forwarding/events_collection.yaml")
+          is_expected.to contain_file("#{confdir_expectation}/pe_event_forwarding/collection_settings.yaml")
+            .with(
+            ensure: 'file',
+            require: "File[#{confdir_expectation}/pe_event_forwarding]",
+          )
+        }
+
+        it {
+          is_expected.to contain_file("#{confdir_expectation}/pe_event_forwarding/collection_secrets.yaml")
             .with(
             ensure: 'file',
             require: "File[#{confdir_expectation}/pe_event_forwarding]",
