@@ -8,7 +8,7 @@
 #
 # @param [Optional[String]] pe_username
 #   PE username
-# @param [Optional[Sensitive[String]]] pe_password
+# @param [Optional[String]] pe_password
 #   PE password
 # @param [Optional[String]] pe_token
 #   PE token
@@ -48,7 +48,7 @@
 #   When true, all RBAC events will be skipped from collection
 class pe_event_forwarding (
   Optional[String]                                $pe_username            = undef,
-  Optional[Sensitive[String]]                     $pe_password            = undef,
+  Optional[String]                                $pe_password            = undef,
   Optional[String]                                $pe_token               = undef,
   String                                          $pe_console             = 'localhost',
   Boolean                                         $disabled               = false,
@@ -78,6 +78,17 @@ class pe_event_forwarding (
       |-MESSAGE
     fail($authorization_failure_message)
   }
+
+  # Remove v1 settings file
+  include pe_event_forwarding::v2_cleanup
+
+  # Secure credential data
+  $pe_secrets = {
+    'pe_token' => $pe_token,
+    'pe_username' => $pe_username,
+    'pe_password' => $pe_password,
+  }
+  $secrets = Deferred('pe_event_forwarding::secure', [$pe_secrets])
 
   # Account for the differences in running on Primary Server or Agent Node
   if $facts[pe_server_version] != undef {
@@ -130,7 +141,8 @@ class pe_event_forwarding (
     month    => $cron_month,
     monthday => $cron_monthday,
     require  => [
-      File["${full_confdir}/events_collection.yaml"],
+      File["${full_confdir}/collection_settings.yaml"],
+      File["${full_confdir}/collection_secrets.yaml"],
       File[$conf_dirs]
     ],
   }
@@ -157,13 +169,22 @@ class pe_event_forwarding (
     source  => 'puppet:///modules/pe_event_forwarding/util',
   }
 
-  file { "${full_confdir}/events_collection.yaml":
+  file { "${full_confdir}/collection_settings.yaml":
     ensure  => file,
     owner   => $owner,
     group   => $group,
     mode    => '0640',
     require => File[$full_confdir],
-    content => epp('pe_event_forwarding/events_collection.yaml'),
+    content => epp('pe_event_forwarding/collection_settings.yaml'),
+  }
+
+  file { "${full_confdir}/collection_secrets.yaml":
+    ensure  => file,
+    owner   => $owner,
+    group   => $group,
+    mode    => '0600',
+    require => File[$full_confdir],
+    content => Deferred('inline_epp', [file('pe_event_forwarding/collection_secrets.yaml.epp'), $secrets]),
   }
 
   file { "${full_confdir}/collect_api_events.rb":

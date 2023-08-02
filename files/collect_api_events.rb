@@ -17,7 +17,8 @@ lockdir   = ARGV[2] || '/opt/puppetlabs/pe_event_forwarding/cache/state'
 
 def main(confdir, logpath, lockdir)
   common_event_start_time = Time.now
-  settings = YAML.safe_load(File.read("#{confdir}/events_collection.yaml"))
+  settings = YAML.safe_load(File.read("#{confdir}/collection_settings.yaml"))
+  secrets = YAML.safe_load(File.read("#{confdir}/collection_secrets.yaml"))
   log = PeEventForwarding::Logger.new(logpath, settings['log_rotation'])
   log.level = PeEventForwarding::Logger::LOG_LEVELS[settings['log_level']]
   lockfile = PeEventForwarding::Lockfile.new(lockdir)
@@ -37,9 +38,9 @@ def main(confdir, logpath, lockdir)
   data = {}
 
   client_options = {
-    username:    settings['pe_username'],
-    password:    settings['pe_password'],
-    token:       settings['pe_token'],
+    username:    secrets['pe_username'],
+    password:    secrets['pe_password'],
+    token:       secrets['pe_token'],
     ssl_verify:  false,
     log: log
   }
