@@ -45,8 +45,8 @@ def main(confdir, logpath, lockdir)
     log: log
   }
 
-  orchestrator = PeEventForwarding::Orchestrator.new(settings['pe_console'], client_options)
-  activities = PeEventForwarding::Activity.new(settings['pe_console'], client_options)
+  orchestrator = PeEventForwarding::Orchestrator.new(settings['pe_console'], **client_options)
+  activities = PeEventForwarding::Activity.new(settings['pe_console'], **client_options)
 
   service_names = (settings['disable_rbac'] == 'false') ? PeEventForwarding::Activity::SERVICE_NAMES_WITH_RBAC : PeEventForwarding::Activity::SERVICE_NAMES_WITHOUT_RBAC
 
@@ -56,7 +56,7 @@ def main(confdir, logpath, lockdir)
       log.debug("Starting #{service} for first run with #{index.count(service)} event(s)")
       data[service] = activities.current_event_count(service)
     end
-    index.save(data)
+    index.save(**data)
     log.debug("First run. Recorded event count in #{index.filepath} and now exiting.")
     exit
   end
@@ -77,7 +77,7 @@ def main(confdir, logpath, lockdir)
       # Reinitialize the rbac event count and exit.
       # Next run will continue as usual.
       data[service] = activities.current_event_count(service)
-      index.save(data)
+      index.save(**data)
       log.debug("RBAC events collection reenabled. First run. Recorded event count in #{index.filepath} and now exiting.")
       exit
     else
@@ -102,7 +102,7 @@ def main(confdir, logpath, lockdir)
       log.warn(processor.stderr, source: processor.name, exit_code: processor.exitcode) unless processor.stderr.empty? && processor.exitcode == 0
       log.info("#{processor.name} finished: #{duration} second(s) to complete.")
     end
-    index.save(data)
+    index.save(**data)
   end
   log.info("Event Forwarding total execution time: #{Time.now - common_event_start_time} second(s)")
 rescue => exception
