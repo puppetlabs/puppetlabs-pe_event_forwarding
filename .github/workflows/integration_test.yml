@@ -11,7 +11,8 @@ jobs:
         platforms:
           - centos-7
         pe_version:
-          - 2021.7.3
+          - 2021.7.5
+          - 2023.4.0
 
     env:
       PUPPET_GEM_VERSION: '~> 7.24'
