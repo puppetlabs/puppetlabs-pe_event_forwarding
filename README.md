@@ -139,6 +139,9 @@ events = []
 # Iterate over event types
 ['orchestrator', 'rbac', 'classifier', 'pe-console', 'code-manager'].each do |index|
     # Add each type's events to the array
+    # A nil value indicates that there were no new events.
+    # A negative value indicates that the sourcetype has been disabled from the pe_event_forwarding module.
+    next if data[index].nil? || data[index] == -1
     events << data[index]['events']
 end
 
@@ -260,9 +263,15 @@ Setting this variable to true will prevent events collection from executing. No 
 
 --------------------------------------------------------------------------------
 
-`disable_rbac`
+`skip_events`
 
-Setting this variable to true will skip all rbac events. This is useful for instances where there is a large enough quantity of rbac data to create a performance issue. When disabled, the rbac index will show as `-1` in the `pe_event_forwarding_indexes.yaml` file. When re-enabling the `disable_rbac` variable, only new rbac events will be processed moving forward. It will take one run of the cron job (of the `collect_api_events.rb`) to resume event processing and recreate the rbac index. All other event types will be unaffected.
+During event collection, this optional array will be considered to determine if any event types should be skipped during collection. This is useful for instances where there is a large enough quantity of data being generated to create a performance issue. When event types are skipped, the index will show as `-1` in the `pe_event_forwarding_indexes.yaml` file. To re-enable, remove the event type from the array. It will take one run of the cron job (of the `collect_api_events.rb`) to resume event processing and recreate the index. Only new events will be processed moving forward.
+
+--------------------------------------------------------------------------------
+
+`skip_jobs`
+
+Setting this variable to true will skip all orchestrator events. This is useful for instances where there is a large enough quantity of orchestrator data to create a performance issue. When disabled, the orchestrator index will show as `-1` in the `pe_event_forwarding_indexes.yaml` file. When re-enabling the `skip_jobs` variable, only new orchestrator events will be processed moving forward. It will take one run of the cron job (of the `collect_api_events.rb`) to resume event processing and recreate the orchestrator index. All other event types will be unaffected.
 
 --------------------------------------------------------------------------------
 

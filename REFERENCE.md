@@ -16,8 +16,8 @@
 
 ### Functions
 
-* [`pe_event_forwarding::base_path`](#pe_event_forwardingbase_path): This custom function returns the base path of any given string argument. If a desired path is not passed in, it will match the default str ar
-* [`pe_event_forwarding::secure`](#pe_event_forwardingsecure): Custom function to mark sensitive data utilized by this module as Sensitive types in the Puppet language. Sensitive data is redacted from Pup
+* [`pe_event_forwarding::base_path`](#pe_event_forwarding--base_path): This custom function returns the base path of any given string argument. If a desired path is not passed in, it will match the default str ar
+* [`pe_event_forwarding::secure`](#pe_event_forwarding--secure): Custom function to mark sensitive data utilized by this module as Sensitive types in the Puppet language. Sensitive data is redacted from Pup
 
 ### Tasks
 
@@ -26,8 +26,8 @@
 
 ### Plans
 
-* [`pe_event_forwarding::acceptance::pe_server`](#pe_event_forwardingacceptancepe_server): Install PE Server
-* [`pe_event_forwarding::acceptance::provision_machines`](#pe_event_forwardingacceptanceprovision_machines): Provisions machines
+* [`pe_event_forwarding::acceptance::pe_server`](#pe_event_forwarding--acceptance--pe_server): Install PE Server
+* [`pe_event_forwarding::acceptance::provision_machines`](#pe_event_forwarding--acceptance--provision_machines): Provisions machines
 
 ## Classes
 
@@ -48,49 +48,50 @@ include pe_event_forwarding
 
 The following parameters are available in the `pe_event_forwarding` class:
 
-* [`pe_username`](#pe_username)
-* [`pe_password`](#pe_password)
-* [`pe_token`](#pe_token)
-* [`pe_console`](#pe_console)
-* [`disabled`](#disabled)
-* [`cron_minute`](#cron_minute)
-* [`cron_hour`](#cron_hour)
-* [`cron_weekday`](#cron_weekday)
-* [`cron_month`](#cron_month)
-* [`cron_monthday`](#cron_monthday)
-* [`log_path`](#log_path)
-* [`lock_path`](#lock_path)
-* [`confdir`](#confdir)
-* [`api_page_size`](#api_page_size)
-* [`log_level`](#log_level)
-* [`log_rotation`](#log_rotation)
-* [`disable_rbac`](#disable_rbac)
+* [`pe_username`](#-pe_event_forwarding--pe_username)
+* [`pe_password`](#-pe_event_forwarding--pe_password)
+* [`pe_token`](#-pe_event_forwarding--pe_token)
+* [`pe_console`](#-pe_event_forwarding--pe_console)
+* [`disabled`](#-pe_event_forwarding--disabled)
+* [`cron_minute`](#-pe_event_forwarding--cron_minute)
+* [`cron_hour`](#-pe_event_forwarding--cron_hour)
+* [`cron_weekday`](#-pe_event_forwarding--cron_weekday)
+* [`cron_month`](#-pe_event_forwarding--cron_month)
+* [`cron_monthday`](#-pe_event_forwarding--cron_monthday)
+* [`log_path`](#-pe_event_forwarding--log_path)
+* [`lock_path`](#-pe_event_forwarding--lock_path)
+* [`confdir`](#-pe_event_forwarding--confdir)
+* [`api_page_size`](#-pe_event_forwarding--api_page_size)
+* [`log_level`](#-pe_event_forwarding--log_level)
+* [`log_rotation`](#-pe_event_forwarding--log_rotation)
+* [`skip_events`](#-pe_event_forwarding--skip_events)
+* [`skip_jobs`](#-pe_event_forwarding--skip_jobs)
 
-##### <a name="pe_username"></a>`pe_username`
+##### <a name="-pe_event_forwarding--pe_username"></a>`pe_username`
 
 Data type: `Optional[String]`
 
 PE username
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="pe_password"></a>`pe_password`
+##### <a name="-pe_event_forwarding--pe_password"></a>`pe_password`
 
 Data type: `Optional[String]`
 
 PE password
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="pe_token"></a>`pe_token`
+##### <a name="-pe_event_forwarding--pe_token"></a>`pe_token`
 
 Data type: `Optional[String]`
 
 PE token
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="pe_console"></a>`pe_console`
+##### <a name="-pe_event_forwarding--pe_console"></a>`pe_console`
 
 Data type: `String`
 
@@ -98,15 +99,15 @@ PE console
 
 Default value: `'localhost'`
 
-##### <a name="disabled"></a>`disabled`
+##### <a name="-pe_event_forwarding--disabled"></a>`disabled`
 
 Data type: `Boolean`
 
 When true, removes cron job
 
-Default value: ``false``
+Default value: `false`
 
-##### <a name="cron_minute"></a>`cron_minute`
+##### <a name="-pe_event_forwarding--cron_minute"></a>`cron_minute`
 
 Data type: `String`
 
@@ -114,7 +115,7 @@ Sets cron minute (0-59)
 
 Default value: `'*/2'`
 
-##### <a name="cron_hour"></a>`cron_hour`
+##### <a name="-pe_event_forwarding--cron_hour"></a>`cron_hour`
 
 Data type: `String`
 
@@ -122,7 +123,7 @@ Sets cron hour (0-23)
 
 Default value: `'*'`
 
-##### <a name="cron_weekday"></a>`cron_weekday`
+##### <a name="-pe_event_forwarding--cron_weekday"></a>`cron_weekday`
 
 Data type: `String`
 
@@ -130,7 +131,7 @@ Sets cron day of the week (0-6)
 
 Default value: `'*'`
 
-##### <a name="cron_month"></a>`cron_month`
+##### <a name="-pe_event_forwarding--cron_month"></a>`cron_month`
 
 Data type: `String`
 
@@ -138,7 +139,7 @@ Sets cron month (1-12)
 
 Default value: `'*'`
 
-##### <a name="cron_monthday"></a>`cron_monthday`
+##### <a name="-pe_event_forwarding--cron_monthday"></a>`cron_monthday`
 
 Data type: `String`
 
@@ -146,41 +147,41 @@ Sets cron day of the month (1-31)
 
 Default value: `'*'`
 
-##### <a name="log_path"></a>`log_path`
+##### <a name="-pe_event_forwarding--log_path"></a>`log_path`
 
 Data type: `Optional[String]`
 
 Should be a directory; base path to desired location for log files
 `/pe_event_forwarding/pe_event_forwarding.log` will be appended to this param
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="lock_path"></a>`lock_path`
+##### <a name="-pe_event_forwarding--lock_path"></a>`lock_path`
 
 Data type: `Optional[String]`
 
 Should be a directory; base path to desired location for lock file
 `/pe_event_forwarding/cache/state/events_collection_run.lock` will be appended to this param
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="confdir"></a>`confdir`
+##### <a name="-pe_event_forwarding--confdir"></a>`confdir`
 
 Data type: `Optional[String]`
 
 Path to directory where pe_event_forwarding exists
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="api_page_size"></a>`api_page_size`
+##### <a name="-pe_event_forwarding--api_page_size"></a>`api_page_size`
 
 Data type: `Optional[Integer]`
 
 Sets max number of events retrieved per API call
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="log_level"></a>`log_level`
+##### <a name="-pe_event_forwarding--log_level"></a>`log_level`
 
 Data type: `Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']`
 
@@ -192,7 +193,7 @@ Determines the severity of logs to be written to log file:
 
 Default value: `'WARN'`
 
-##### <a name="log_rotation"></a>`log_rotation`
+##### <a name="-pe_event_forwarding--log_rotation"></a>`log_rotation`
 
 Data type: `Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']`
 
@@ -200,17 +201,26 @@ Determines rotation time for log files
 
 Default value: `'NONE'`
 
-##### <a name="disable_rbac"></a>`disable_rbac`
+##### <a name="-pe_event_forwarding--skip_events"></a>`skip_events`
 
-Data type: `Boolean`
+Data type: `Optional[Array]`
 
-When true, all RBAC events will be skipped from collection
+Array of event types that should be skipped during event collection from the Activity API.
+  Acceptable values are: `['classifier','code-manager','pe-console','rbac']`
 
-Default value: ``false``
+Default value: `undef`
+
+##### <a name="-pe_event_forwarding--skip_jobs"></a>`skip_jobs`
+
+Data type: `Optional[Boolean]`
+
+When true, event collection from the Orchestrator API is disabled.
+
+Default value: `undef`
 
 ## Functions
 
-### <a name="pe_event_forwardingbase_path"></a>`pe_event_forwarding::base_path`
+### <a name="pe_event_forwarding--base_path"></a>`pe_event_forwarding::base_path`
 
 Type: Ruby 4.x API
 
@@ -254,7 +264,7 @@ Data type: `Any`
 
 The desired path
 
-### <a name="pe_event_forwardingsecure"></a>`pe_event_forwarding::secure`
+### <a name="pe_event_forwarding--secure"></a>`pe_event_forwarding::secure`
 
 Type: Ruby 4.x API
 
@@ -356,7 +366,7 @@ Nodes to run facts on. Different from console host target
 
 ## Plans
 
-### <a name="pe_event_forwardingacceptancepe_server"></a>`pe_event_forwarding::acceptance::pe_server`
+### <a name="pe_event_forwarding--acceptance--pe_server"></a>`pe_event_forwarding::acceptance::pe_server`
 
 Install PE Server
 
@@ -372,26 +382,26 @@ pe_event_forwarding::acceptance::pe_server
 
 The following parameters are available in the `pe_event_forwarding::acceptance::pe_server` plan:
 
-* [`version`](#version)
-* [`pe_settings`](#pe_settings)
+* [`version`](#-pe_event_forwarding--acceptance--pe_server--version)
+* [`pe_settings`](#-pe_event_forwarding--acceptance--pe_server--pe_settings)
 
-##### <a name="version"></a>`version`
+##### <a name="-pe_event_forwarding--acceptance--pe_server--version"></a>`version`
 
 Data type: `Optional[String]`
 
 PE version
 
-Default value: `'2021.7.3'`
+Default value: `'2021.7.5'`
 
-##### <a name="pe_settings"></a>`pe_settings`
+##### <a name="-pe_event_forwarding--acceptance--pe_server--pe_settings"></a>`pe_settings`
 
 Data type: `Optional[Hash]`
 
 Hash with key `password` and value of PE console password for admin user
 
-Default value: `{ password => 'puppetlabspie' }`
+Default value: `{ password => 'puppetlabspie', configure_tuning => false }`
 
-### <a name="pe_event_forwardingacceptanceprovision_machines"></a>`pe_event_forwarding::acceptance::provision_machines`
+### <a name="pe_event_forwarding--acceptance--provision_machines"></a>`pe_event_forwarding::acceptance::provision_machines`
 
 Provisions machines
 
@@ -399,10 +409,10 @@ Provisions machines
 
 The following parameters are available in the `pe_event_forwarding::acceptance::provision_machines` plan:
 
-* [`using`](#using)
-* [`image`](#image)
+* [`using`](#-pe_event_forwarding--acceptance--provision_machines--using)
+* [`image`](#-pe_event_forwarding--acceptance--provision_machines--image)
 
-##### <a name="using"></a>`using`
+##### <a name="-pe_event_forwarding--acceptance--provision_machines--using"></a>`using`
 
 Data type: `Optional[String]`
 
@@ -410,7 +420,7 @@ provision service
 
 Default value: `'abs'`
 
-##### <a name="image"></a>`image`
+##### <a name="-pe_event_forwarding--acceptance--provision_machines--image"></a>`image`
 
 Data type: `Optional[String]`
 
