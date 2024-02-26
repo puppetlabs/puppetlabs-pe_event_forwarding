@@ -104,11 +104,11 @@ def get_service_index(service_symbol)
 end
 
 def disable_rbac_events
-  set_sitepp_content(declare('class', 'pe_event_forwarding', { 'pe_token' => auth_token, 'disabled' => true, 'disable_rbac' => true, }))
+  set_sitepp_content(declare('class', 'pe_event_forwarding', { 'pe_token' => auth_token, 'disabled' => true, 'skip_events' => ['rbac'], }))
   trigger_puppet_run(puppetserver)
 end
 
 def enable_rbac_events
-  set_sitepp_content(declare('class', 'pe_event_forwarding', { 'pe_token' => auth_token, 'disabled' => true, 'disable_rbac' => false, }))
+  set_sitepp_content(declare('class', 'pe_event_forwarding', { 'pe_token' => auth_token, 'disabled' => true, }))
   trigger_puppet_run(puppetserver)
 end

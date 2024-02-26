@@ -48,10 +48,18 @@ def main(confdir, logpath, lockdir)
   orchestrator = PeEventForwarding::Orchestrator.new(settings['pe_console'], **client_options)
   activities = PeEventForwarding::Activity.new(settings['pe_console'], **client_options)
 
-  service_names = (settings['disable_rbac'] == 'false') ? PeEventForwarding::Activity::SERVICE_NAMES_WITH_RBAC : PeEventForwarding::Activity::SERVICE_NAMES_WITHOUT_RBAC
+  service_names = if !settings['skip_events'].nil?
+                    PeEventForwarding::Activity::SERVICE_NAMES.reject do |service|
+                      settings['skip_events'].include?(service.to_s)
+                    end
+                  else
+                    PeEventForwarding::Activity::SERVICE_NAMES
+                  end
 
   if index.first_run?
-    data[:orchestrator] = orchestrator.current_job_count
+    if settings['skip_jobs'].nil?
+      data[:orchestrator] = orchestrator.current_job_count
+    end
     service_names.each do |service|
       log.debug("Starting #{service} for first run with #{index.count(service)} event(s)")
       data[service] = activities.current_event_count(service)
@@ -61,35 +69,58 @@ def main(confdir, logpath, lockdir)
     exit
   end
 
-  log.debug("Orchestrator: Starting count: #{index.count(:orchestrator)}")
-  data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator), settings['api_page_size'])
+  # We mark the index with -1 for any event types that are skipped to signify that
+  # they have been disabled. This is neccesary because upon re-enablement we want to
+  # make sure we only re-initialize the index for the re-enabled services. This ensures
+  # the other services continue as normal, and we don't pull in a large amount of events
+  # that have accumulated in the interim.
+  settings['skip_events']&.each do |service|
+    next if !PeEventForwarding::Activity::SERVICE_NAMES.include?(service.to_sym)
+    data[service.to_sym] = -1
+  end
 
-  # We mark the rbac index with -1 to signify that it has been disabled.
-  # This is neccesary because upon re-enablement we want to make sure we
-  # only re-initialize the rbac index so the others continue as normal, and
-  # we don't pull in a large amount of rbac events that have accumulated in the
-  # interim.
-  data[:rbac] = -1 if settings['disable_rbac'] == 'true'
-
+  if settings['skip_jobs']
+    data[:orchestrator] = -1
+  elsif settings['skip_jobs'].nil? && index.count(:orchestrator) == -1
+    # At this point we know orchestrator is newly re-enabled.
+    # Reinitialize the orchestrator event count and exit.
+    # Next run will continue as usual.
+    data[:orchestrator] = orchestrator.current_job_count
+    index.save(**data)
+    log.debug("Orchestration jobs collection reenabled. First run. Recorded event count in #{index.filepath}.")
+    # The index is now saved, so to ensure that the count does not get passed to any
+    # processors (which should be written to check for `nil` or `-1`) we set it to nil.
+    data[:orchestrator] = nil
+  else
+    log.debug("Orchestrator: Starting count: #{index.count(:orchestrator)}")
+    data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator), settings['api_page_size'])
+  end
+  
   service_names.each do |service|
-    if (service == :rbac) && (index.count(service) == -1)
-      # At this point we know rbac is newly re-enabled.
-      # Reinitialize the rbac event count and exit.
+    if index.count(service) == -1
+      # At this point we know the service is newly re-enabled.
+      # Reinitialize the event count and exit.
       # Next run will continue as usual.
       data[service] = activities.current_event_count(service)
       index.save(**data)
-      log.debug("RBAC events collection reenabled. First run. Recorded event count in #{index.filepath} and now exiting.")
-      exit
+      log.debug("Collection of #{service} events reenabled. First run. Recorded event count in #{index.filepath}.")
+      # The index is now saved, so to ensure that the count does not get passed to any
+      # processors (which should be written to check for `nil` or `-1`) we set it to nil.
+      data[service] = nil
     else
       log.debug("#{service}: Starting count #{index.count(service)} event(s)")
       data[service] = activities.new_data(service, index.count(service), settings['api_page_size'])
     end
   end
 
-  combined_keys = service_names.dup << :orchestrator
+  combined_keys = if settings['skip_jobs'].nil?
+                    service_names.dup << :orchestrator
+                  else
+                    service_names.dup
+                  end
   events_counts = {}
   combined_keys.map do |key|
-    events_counts[key] = data[key].count unless data[key].nil?
+    events_counts[key] = data[key].count unless data[key].nil? || data[key].is_a?(Integer)
   end
 
   if data.any? { |_k, v| !v.nil? || (v != -1) }

@@ -12,4 +12,9 @@
 <% if $pe_event_forwarding::api_page_size{ -%>
 "api_page_size" : "<%= $pe_event_forwarding::api_page_size %>"
 <% } -%>
-"disable_rbac" : "<%= $pe_event_forwarding::disable_rbac %>"
+<% if $pe_event_forwarding::skip_events{ -%>
+"skip_events" : <%= $pe_event_forwarding::skip_events %>
+<% } -%>
+<% if $pe_event_forwarding::skip_jobs{ -%>
+"skip_jobs" : <%= $pe_event_forwarding::skip_jobs %>
+<% } -%>

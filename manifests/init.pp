@@ -44,8 +44,11 @@
 #    - level fatal will only log fatal-level log messages
 # @param [Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']] log_rotation
 #   Determines rotation time for log files
-# @param [Boolean] disable_rbac
-#   When true, all RBAC events will be skipped from collection
+# @param [Optional[Array]] skip_events
+#   Array of event types that should be skipped during event collection from the Activity API.
+#     Acceptable values are: ['classifier','code-manager','pe-console','rbac']
+# @param [Optional[Boolean]] skip_jobs
+#   When true, event collection from the Orchestrator API is disabled.
 class pe_event_forwarding (
   Optional[String]                                $pe_username            = undef,
   Optional[String]                                $pe_password            = undef,
@@ -63,7 +66,8 @@ class pe_event_forwarding (
   Optional[Integer]                               $api_page_size          = undef,
   Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'] $log_level              = 'WARN',
   Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation           = 'NONE',
-  Boolean                                         $disable_rbac           = false,
+  Optional[Array]                                 $skip_events            = undef,
+  Optional[Boolean]                               $skip_jobs              = undef,
 ) {
   # Ensure required credential params are configured
   if (
