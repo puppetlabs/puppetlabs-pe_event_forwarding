@@ -1,9 +1,12 @@
 require_relative '../util/pe_http'
+require_relative '../collect_api_events'
 
 module PeEventForwarding
   # module Orchestrator this module provides the API specific code for accessing the orchestrator
   class Orchestrator
     attr_accessor :pe_client, :log
+
+    timeout =  collection_settings()['timeout']
 
     def initialize(pe_console, username: nil, password: nil, token: nil, ssl_verify: true, log: nil)
       @pe_client = PeEventForwarding::PeHttp.new(pe_console, port: 8143, username: username, password: password, token: token, ssl_verify: ssl_verify, log: log)
@@ -23,7 +26,7 @@ module PeEventForwarding
       response        = ''
       total_count     = 0
       loop do
-        response       = pe_client.pe_get_request('orchestrator/v1/jobs', params)
+        response       = pe_client.pe_get_request('orchestrator/v1/jobs', params, {}, timeout)
         response_body  = JSON.parse(response.body)
         total_count    = response_body['pagination']['total']
         response_body['items']&.map { |item| response_items << item }
@@ -71,7 +74,7 @@ module PeEventForwarding
         order:    'asc',
         order_by: 'name',
       }
-      response = pe_client.pe_get_request('orchestrator/v1/jobs', params)
+      response = pe_client.pe_get_request('orchestrator/v1/jobs', params, {}, timeout)
       raise 'Orchestrator API request failed' unless response.code == '200'
       jobs = JSON.parse(response.body)
       jobs['pagination']['total'] || 0

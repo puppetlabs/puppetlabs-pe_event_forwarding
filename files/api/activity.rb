@@ -1,10 +1,13 @@
 require_relative '../util/pe_http'
+require_relative '../collect_api_events'
 
 module PeEventForwarding
   # module Events This contains the API specific code for the events API
   class Activity
     SERVICE_NAMES = [:classifier, :rbac, :'pe-console', :'code-manager' ].freeze
     API_END_POINT = 'activity-api/v2/events'.freeze
+
+    timeout =  collection_settings()['timeout']
 
     attr_accessor :pe_client, :log
 
@@ -26,7 +29,7 @@ module PeEventForwarding
       response       = ''
       total_count    = 0
       loop do
-        response       = pe_client.pe_get_request(API_END_POINT, params)
+        response       = pe_client.pe_get_request(API_END_POINT, params, {}, timeout)
         response_body  = JSON.parse(response.body)
         total_count    = response_body['pagination']['total']
         response_body['commits']&.map { |commit| response_items << commit }
@@ -46,7 +49,7 @@ module PeEventForwarding
         offset:     0,
         order:      'asc',
       }
-      response = pe_client.pe_get_request(API_END_POINT, params)
+      response = pe_client.pe_get_request(API_END_POINT, params, {}, timeout)
       raise 'Events API request failed' unless response.code == '200'
       events_count_for_service = JSON.parse(response.body)
       events_count_for_service['pagination']['total'] || 0

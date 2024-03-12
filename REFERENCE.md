@@ -66,6 +66,7 @@ The following parameters are available in the `pe_event_forwarding` class:
 * [`log_rotation`](#-pe_event_forwarding--log_rotation)
 * [`skip_events`](#-pe_event_forwarding--skip_events)
 * [`skip_jobs`](#-pe_event_forwarding--skip_jobs)
+* [`timeout`](#-pe_event_forwarding--timeout)
 
 ##### <a name="-pe_event_forwarding--pe_username"></a>`pe_username`
 
@@ -217,6 +218,13 @@ Data type: `Optional[Boolean]`
 When true, event collection from the Orchestrator API is disabled.
 
 Default value: `undef`
+##### <a name="-pe_event_forwarding--timeout"></a>`timeout`
+
+Data type: `Optional[Integer]`
+
+Set the timeout for the API calls
+
+Default value: `60`
 
 ## Functions
 

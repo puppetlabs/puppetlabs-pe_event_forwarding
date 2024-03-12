@@ -18,3 +18,6 @@
 <% if $pe_event_forwarding::skip_jobs{ -%>
 "skip_jobs" : <%= $pe_event_forwarding::skip_jobs %>
 <% } -%>
+<% if $pe_event_forwarding::timeout{ -%>
+"timeout" : <%= $pe_event_forwarding::timeout %>
+<% } -%>

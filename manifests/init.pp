@@ -49,6 +49,8 @@
 #     Acceptable values are: ['classifier','code-manager','pe-console','rbac']
 # @param [Optional[Boolean]] skip_jobs
 #   When true, event collection from the Orchestrator API is disabled.
+# @param [Optional[Integer]] timeout
+#   Set the timeout for the API calls
 class pe_event_forwarding (
   Optional[String]                                $pe_username            = undef,
   Optional[String]                                $pe_password            = undef,
@@ -68,6 +70,7 @@ class pe_event_forwarding (
   Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation           = 'NONE',
   Optional[Array]                                 $skip_events            = undef,
   Optional[Boolean]                               $skip_jobs              = undef,
+  Integer                                         $timeout                = 60,
 ) {
   # Ensure required credential params are configured
   if (

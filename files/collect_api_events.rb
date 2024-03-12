@@ -15,9 +15,14 @@ confdir   = ARGV[0] || '/etc/puppetlabs/pe_event_forwarding'
 logpath   = ARGV[1] || '/var/log/puppetlabs/pe_event_forwarding/pe_event_forwarding.log'
 lockdir   = ARGV[2] || '/opt/puppetlabs/pe_event_forwarding/cache/state'
 
+settings = YAML.safe_load(File.read("#{confdir}/collection_settings.yaml"))
+
+module Collect_API_Events
+    def self.collection_settings = settings
+end
+
 def main(confdir, logpath, lockdir)
   common_event_start_time = Time.now
-  settings = YAML.safe_load(File.read("#{confdir}/collection_settings.yaml"))
   secrets = YAML.safe_load(File.read("#{confdir}/collection_secrets.yaml"))
   log = PeEventForwarding::Logger.new(logpath, settings['log_rotation'])
   log.level = PeEventForwarding::Logger::LOG_LEVELS[settings['log_level']]
