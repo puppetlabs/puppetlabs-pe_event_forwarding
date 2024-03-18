@@ -45,6 +45,8 @@ def main(confdir, logpath, lockdir)
     log: log
   }
 
+  timeout = settings['timeout'] || 60
+
   orchestrator = PeEventForwarding::Orchestrator.new(settings['pe_console'], **client_options)
   activities = PeEventForwarding::Activity.new(settings['pe_console'], **client_options)
 
@@ -58,11 +60,11 @@ def main(confdir, logpath, lockdir)
 
   if index.first_run?
     if settings['skip_jobs'].nil?
-      data[:orchestrator] = orchestrator.current_job_count
+      data[:orchestrator] = orchestrator.current_job_count(timeout)
     end
     service_names.each do |service|
       log.debug("Starting #{service} for first run with #{index.count(service)} event(s)")
-      data[service] = activities.current_event_count(service)
+      data[service] = activities.current_event_count(service, timeout)
     end
     index.save(**data)
     log.debug("First run. Recorded event count in #{index.filepath} and now exiting.")
@@ -85,7 +87,7 @@ def main(confdir, logpath, lockdir)
     # At this point we know orchestrator is newly re-enabled.
     # Reinitialize the orchestrator event count and exit.
     # Next run will continue as usual.
-    data[:orchestrator] = orchestrator.current_job_count
+    data[:orchestrator] = orchestrator.current_job_count(timeout)
     index.save(**data)
     log.debug("Orchestration jobs collection reenabled. First run. Recorded event count in #{index.filepath}.")
     # The index is now saved, so to ensure that the count does not get passed to any
@@ -93,15 +95,15 @@ def main(confdir, logpath, lockdir)
     data[:orchestrator] = nil
   else
     log.debug("Orchestrator: Starting count: #{index.count(:orchestrator)}")
-    data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator), settings['api_page_size'])
+    data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator), settings['api_page_size'], timeout)
   end
-  
+
   service_names.each do |service|
     if index.count(service) == -1
       # At this point we know the service is newly re-enabled.
       # Reinitialize the event count and exit.
       # Next run will continue as usual.
-      data[service] = activities.current_event_count(service)
+      data[service] = activities.current_event_count(service, timeout)
       index.save(**data)
       log.debug("Collection of #{service} events reenabled. First run. Recorded event count in #{index.filepath}.")
       # The index is now saved, so to ensure that the count does not get passed to any
@@ -109,7 +111,7 @@ def main(confdir, logpath, lockdir)
       data[service] = nil
     else
       log.debug("#{service}: Starting count #{index.count(service)} event(s)")
-      data[service] = activities.new_data(service, index.count(service), settings['api_page_size'])
+      data[service] = activities.new_data(service, index.count(service), settings['api_page_size'], timeout)
     end
   end
 

@@ -29,10 +29,10 @@ module PeEventForwarding
     end
 
     # Wrapper method for get_request that includes a token auth header for PE.
-    def pe_get_request(uri, params, headers = {}, timeout = 60)
-      log.debug("PE Get Request: #{uri} params: #{params}")
+    def pe_get_request(uri, params, timeout, headers = {})
+      log.debug("PE Get Request: #{uri} params: #{params} request_timeout: #{timeout}")
       uri = Http.make_params(uri, params)
-      get_request(uri, headers.merge(pe_auth_header), timeout)
+      get_request(uri, timeout, headers.merge(pe_auth_header))
     end
 
     # Wrapper method for post_request that includes a token auth header for PE.

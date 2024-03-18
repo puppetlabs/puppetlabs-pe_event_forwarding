@@ -48,24 +48,76 @@ include pe_event_forwarding
 
 The following parameters are available in the `pe_event_forwarding` class:
 
-* [`pe_username`](#-pe_event_forwarding--pe_username)
-* [`pe_password`](#-pe_event_forwarding--pe_password)
-* [`pe_token`](#-pe_event_forwarding--pe_token)
-* [`pe_console`](#-pe_event_forwarding--pe_console)
-* [`disabled`](#-pe_event_forwarding--disabled)
-* [`cron_minute`](#-pe_event_forwarding--cron_minute)
-* [`cron_hour`](#-pe_event_forwarding--cron_hour)
-* [`cron_weekday`](#-pe_event_forwarding--cron_weekday)
-* [`cron_month`](#-pe_event_forwarding--cron_month)
-* [`cron_monthday`](#-pe_event_forwarding--cron_monthday)
-* [`log_path`](#-pe_event_forwarding--log_path)
-* [`lock_path`](#-pe_event_forwarding--lock_path)
-* [`confdir`](#-pe_event_forwarding--confdir)
-* [`api_page_size`](#-pe_event_forwarding--api_page_size)
-* [`log_level`](#-pe_event_forwarding--log_level)
-* [`log_rotation`](#-pe_event_forwarding--log_rotation)
-* [`skip_events`](#-pe_event_forwarding--skip_events)
-* [`skip_jobs`](#-pe_event_forwarding--skip_jobs)
+- [Reference](#reference)
+  - [Table of Contents](#table-of-contents)
+    - [Classes](#classes)
+      - [Public Classes](#public-classes)
+      - [Private Classes](#private-classes)
+    - [Functions](#functions)
+    - [Tasks](#tasks)
+    - [Plans](#plans)
+  - [Classes](#classes-1)
+    - [`pe_event_forwarding`](#pe_event_forwarding)
+      - [Examples](#examples)
+        - [](#)
+      - [Parameters](#parameters)
+        - [`pe_username`](#pe_username)
+        - [`pe_password`](#pe_password)
+        - [`pe_token`](#pe_token)
+        - [`pe_console`](#pe_console)
+        - [`disabled`](#disabled)
+        - [`cron_minute`](#cron_minute)
+        - [`cron_hour`](#cron_hour)
+        - [`cron_weekday`](#cron_weekday)
+        - [`cron_month`](#cron_month)
+        - [`cron_monthday`](#cron_monthday)
+        - [`timeout`](#timeout)
+        - [`log_path`](#log_path)
+        - [`lock_path`](#lock_path)
+        - [`confdir`](#confdir)
+        - [`api_page_size`](#api_page_size)
+        - [`log_level`](#log_level)
+        - [`log_rotation`](#log_rotation)
+        - [`skip_events`](#skip_events)
+        - [`skip_jobs`](#skip_jobs)
+  - [Functions](#functions-1)
+    - [`pe_event_forwarding::base_path`](#pe_event_forwardingbase_path)
+      - [Examples](#examples-1)
+        - [Calling the function](#calling-the-function)
+      - [`pe_event_forwarding::base_path(Any $str, Any $path)`](#pe_event_forwardingbase_pathany-str-any-path)
+        - [Examples](#examples-2)
+          - [Calling the function](#calling-the-function-1)
+        - [`str`](#str)
+        - [`path`](#path)
+    - [`pe_event_forwarding::secure`](#pe_event_forwardingsecure)
+      - [`pe_event_forwarding::secure(Hash $secrets)`](#pe_event_forwardingsecurehash-secrets)
+        - [`secrets`](#secrets)
+  - [Tasks](#tasks-1)
+    - [`activities`](#activities)
+      - [Parameters](#parameters-1)
+        - [`pe_console`](#pe_console-1)
+        - [`pe_username`](#pe_username-1)
+        - [`pe_password`](#pe_password-1)
+    - [`orchestrator`](#orchestrator)
+      - [Parameters](#parameters-2)
+        - [`console_host`](#console_host)
+        - [`username`](#username)
+        - [`password`](#password)
+        - [`token`](#token)
+        - [`operation`](#operation)
+        - [`body`](#body)
+        - [`nodes`](#nodes)
+  - [Plans](#plans-1)
+    - [`pe_event_forwarding::acceptance::pe_server`](#pe_event_forwardingacceptancepe_server)
+      - [Examples](#examples-3)
+        - [](#-1)
+      - [Parameters](#parameters-3)
+        - [`version`](#version)
+        - [`pe_settings`](#pe_settings)
+    - [`pe_event_forwarding::acceptance::provision_machines`](#pe_event_forwardingacceptanceprovision_machines)
+      - [Parameters](#parameters-4)
+        - [`using`](#using)
+        - [`image`](#image)
 
 ##### <a name="-pe_event_forwarding--pe_username"></a>`pe_username`
 
@@ -146,6 +198,15 @@ Data type: `String`
 Sets cron day of the month (1-31)
 
 Default value: `'*'`
+
+##### <a name="-pe_event_forwarding--timeout"></a>`timeout`
+
+Data type: `Optional[Integer]`
+
+Optional timeout limit for connect, read, and ssl sessions
+When set to `undef` the default of 60 seconds will be used
+
+Default value: `undef`
 
 ##### <a name="-pe_event_forwarding--log_path"></a>`log_path`
 

@@ -211,8 +211,6 @@ This module will allow administators to use `pe_username` and `pe_password` para
 
 To prevent these unnecessary events, it is recommended that administrators create a dedicated user in the console and [generate a long lived token][4] to use with the `pe_token` parameter instead. Using a pre-generated token will prevent these unwanted events from being generated.
 
-Also note that the `pe_password` parameter is a [`Sensitive`][8] parameter. The value for this parameter cannot be assigned through the console. You can use the `Sensitive()` function in a manifest to provide a value, or you can use [`lookup_options` in Hiera][9] to assign the value.
-
 ## Resources Placed On The Machine
 
 When this module is classified to a Puppet Server it will create a set of resources on the system.
@@ -229,7 +227,9 @@ Inside that directory will be:
 
 - The events collection script `collect_api_events.rb`.
 
-- A configuration settings file `events_collection.yaml`.
+- A configuration settings file `collection_settings.yaml`.
+
+- A credential settings file `collection_secrets.yaml`
 
 - An index tracking file `pe_event_forwarding_indexes.yaml`.
 
@@ -280,6 +280,14 @@ Setting this variable to true will skip all orchestrator events. This is useful 
 Use these parameters to set a custom schedule for gathering events and executing processors. This schedule is enforced for the overall PE Event Forwarding feature. This means that all processors will be executing on this schedule, and the individual platform processors have no control over how often they are invoked. The default parameter values result in a cron schedule that invokes events collection every two minutes `*/2 * * * *`. Administators can use this parameter set to reduce the cycle interval to every minute, or to increase the interval to collect less often.
 
 The Events Collection script can detect if a previous collection cycle is not complete. If this happens the script will log a message and exit to let the previous cycle finish. The log file (see below for log file placement) logs the amount of time each collection cycle took, and this duration can be used to adjust the cron interval to an appropriate value.
+
+--------------------------------------------------------------------------------
+
+`timeout`
+
+This optional parameter can be set to change the HTTP timeout used when collection events from the Activity and Orchestrator APIs. By default the timeout is `60` seconds.
+
+If configured, the timeout should not exceed the collection interval set with the `cron_minute` parameter.
 
 --------------------------------------------------------------------------------
 

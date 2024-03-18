@@ -26,6 +26,9 @@
 #   Sets cron month (1-12)
 # @param [Optional[String]] cron_monthday
 #   Sets cron day of the month (1-31)
+# @param [Optional[Integer]] timeout
+#   Optional timeout limit in seconds for connect, read, and ssl sessions
+#   When set to `undef` the default of 60 seconds will be used
 # @param [Optional[String]] log_path
 #   Should be a directory; base path to desired location for log files
 #   `/pe_event_forwarding/pe_event_forwarding.log` will be appended to this param
@@ -60,6 +63,7 @@ class pe_event_forwarding (
   String                                          $cron_weekday           = '*',
   String                                          $cron_month             = '*',
   String                                          $cron_monthday          = '*',
+  Optional[Integer]                               $timeout                = undef,
   Optional[String]                                $log_path               = undef,
   Optional[String]                                $lock_path              = undef,
   Optional[String]                                $confdir                = undef,
@@ -188,7 +192,7 @@ class pe_event_forwarding (
     group   => $group,
     mode    => '0600',
     require => File[$full_confdir],
-    content => Deferred('inline_epp', [file('pe_event_forwarding/collection_secrets.yaml.epp'), $secrets]),
+    content => Sensitive(Deferred('inline_epp', [file('pe_event_forwarding/collection_secrets.yaml.epp'), $secrets])),
   }
 
   file { "${full_confdir}/collect_api_events.rb":
