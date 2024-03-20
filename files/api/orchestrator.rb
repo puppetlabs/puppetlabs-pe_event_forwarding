@@ -10,7 +10,7 @@ module PeEventForwarding
       @log = log
     end
 
-    def get_jobs(offset: 0, order: 'asc', order_by: 'name', api_page_size: nil)
+    def get_jobs(offset: 0, order: 'asc', order_by: 'name', api_page_size: nil, timeout: nil)
       params = {
         limit:    api_page_size,
         offset:   offset,
@@ -23,7 +23,7 @@ module PeEventForwarding
       response        = ''
       total_count     = 0
       loop do
-        response       = pe_client.pe_get_request('orchestrator/v1/jobs', params)
+        response       = pe_client.pe_get_request('orchestrator/v1/jobs', params, timeout)
         response_body  = JSON.parse(response.body)
         total_count    = response_body['pagination']['total']
         response_body['items']&.map { |item| response_items << item }
@@ -64,24 +64,24 @@ module PeEventForwarding
       res['job']['name']
     end
 
-    def current_job_count
+    def current_job_count(timeout)
       params = {
         limit:    1,
         offset:   0,
         order:    'asc',
         order_by: 'name',
       }
-      response = pe_client.pe_get_request('orchestrator/v1/jobs', params)
+      response = pe_client.pe_get_request('orchestrator/v1/jobs', params, timeout)
       raise 'Orchestrator API request failed' unless response.code == '200'
       jobs = JSON.parse(response.body)
       jobs['pagination']['total'] || 0
     end
 
-    def new_data(last_count, api_page_size)
-      new_job_count = current_job_count - last_count
+    def new_data(last_count, api_page_size, timeout)
+      new_job_count = current_job_count(timeout) - last_count
       log.debug("New Job Count: Orchestrator: #{new_job_count}")
       return unless new_job_count > 0
-      get_jobs(offset: last_count, api_page_size: api_page_size)
+      get_jobs(offset: last_count, api_page_size: api_page_size, timeout: timeout)
     end
   end
 end

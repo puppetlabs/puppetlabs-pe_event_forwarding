@@ -45,7 +45,7 @@ module PeEventForwarding
 
     # post_request takes a uri(string), headers(optional(hash)), and a timeout(optional(int)).
     # Basic auth will be used if provided.
-    def get_request(uri, headers = {}, timeout = 60)
+    def get_request(uri, timeout, headers = {})
       headers['Content-Type'] = 'application/json' unless headers.key? 'Content-Type'
       url = URI.parse("#{hostname_with_port}/#{uri}")
       verify_mode = ssl_verify ? OpenSSL::SSL::VERIFY_PEER : OpenSSL::SSL::VERIFY_NONE
@@ -55,10 +55,10 @@ module PeEventForwarding
         use_ssl: url.scheme == 'https',
         verify_mode: verify_mode,
         ca_cert: ca_cert_path,
-        read_timeout:    timeout,
-        connect_timeout: timeout,
-        ssl_timeout:     timeout,
-        write_timeout:   timeout,
+        read_timeout:    timeout.to_i,
+        connect_timeout: timeout.to_i,
+        ssl_timeout:     timeout.to_i,
+        write_timeout:   timeout.to_i,
       )
       request = Net::HTTP::Get.new(url.request_uri, headers)
 

@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file. The format 
 
 ### Added
 
+- Added parameter `pe_event_forwarding::timeout` to configure optional HTTP timeout. [#126](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/126)
+
 - Added parameters `pe_event_forwarding::skip_events` and `pe_event_forwarding::skip_jobs` to disable collection by service. [#124](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/124)
 
 - Credential data provided to this module is now written to a separate settings file utilizing the `Sensitive` data type to ensure redaction from Puppet logs and reports. [#122](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/122)
