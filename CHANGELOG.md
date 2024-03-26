@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding)
 
+[Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v2.0.0..main)
+
+## [v2.0.0](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v2.0.0) (2024-03-27)
+
 ### Added
 
 - Added parameter `pe_event_forwarding::timeout` to configure optional HTTP timeout. [#126](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/126)
@@ -21,8 +25,6 @@ All notable changes to this project will be documented in this file. The format 
 - Utilize kwargs over positional args for Ruby 3 compatibility. [#119](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/119)
 
 - Internal `base_path` function now removes any trailing slash (`/`) from user provided config directories. [#118](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/118)
-
-[Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v1.1.1..main)
 
 ## [v1.1.1](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v1.1.1) (2023-01-31)
 
