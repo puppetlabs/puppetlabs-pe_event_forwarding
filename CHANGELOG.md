@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding)
 
-[Current Diff](https://github.com/puppetlabs/puppetlabs-splunk_hec/compare/v2.0.0..main)
+[Current Diff](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v2.0.1..main)
+
+## [v2.0.1](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v2.0.1) (2024-03-28)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v2.0.0..v2.0.1)
+
+### Fixed
+
+- Markdown format refactoring for `README.md`. [#128](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/128)
 
 ## [v2.0.0](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v2.0.0) (2024-03-27)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v1.1.1..v2.0.0)
 
 ### Added
 
