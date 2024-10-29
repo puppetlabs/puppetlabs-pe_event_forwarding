@@ -77,7 +77,6 @@ def main(confdir, logpath, lockdir)
   # the other services continue as normal, and we don't pull in a large amount of events
   # that have accumulated in the interim.
   settings['skip_events']&.each do |service|
-    next if !PeEventForwarding::Activity::SERVICE_NAMES.include?(service.to_sym)
     data[service.to_sym] = -1
   end
 
@@ -95,7 +94,7 @@ def main(confdir, logpath, lockdir)
     data[:orchestrator] = nil
   else
     log.debug("Orchestrator: Starting count: #{index.count(:orchestrator)}")
-    data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator), settings['api_page_size'], timeout)
+    data[:orchestrator] = orchestrator.new_data(index.count(:orchestrator), timeout)
   end
 
   service_names.each do |service|

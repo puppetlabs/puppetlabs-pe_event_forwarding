@@ -3,8 +3,37 @@
 require 'net/https'
 require 'uri'
 require 'json'
+require 'optparse'
 
-def generate_rbac_event(count, token)
+def create_rbac_user(login, token)
+  uri   = URI.parse('https://localhost:4433/rbac-api/v1/users')
+  user  = {
+    'login' => "#{login}",
+    'email' => '', 
+    'display_name' => "Integrations #{login}",
+    'role_ids' => [],
+  }
+    
+  Net::HTTP.start(
+      uri.host,
+      uri.port,
+      use_ssl: true,
+      verify_mode: OpenSSL::SSL::VERIFY_NONE,
+    ) do |http|
+    request = Net::HTTP::Post.new uri
+    request.add_field('X-Authentication', token)
+    request.add_field('Content-Type', 'application/json')
+    request.body = user.to_json
+
+    response = http.request request
+    if response.code != '303'
+      puts "Error: #{response.body}"
+      exit 1
+    end
+  end
+end
+
+def update_user_email(login, email, token)
   uri       = URI.parse('https://localhost:4433/rbac-api/v1/users')
   rbac_user = Net::HTTP.start(
       uri.host,
@@ -17,36 +46,50 @@ def generate_rbac_event(count, token)
 
     response      = http.request request
     data_response = JSON.parse(response.body)
-    data_response.find { |user| user['login'] == 'admin' }
+    data_response.find { |user| user['login'] == "#{login}" }
+  end
+  
+  if rbac_user.nil?
+    puts "Error: Unable to find user with login #{login}!"
+    exit 1
   end
 
-  (1..count).each do |i|
-    id                 = rbac_user['id']
-    rbac_user['email'] = "blah-#{i}@bar.com"
-    modified_user      = rbac_user.to_json
-    uri                = URI.parse("https://localhost:4433/rbac-api/v1/users/#{id}")
+  id                 = rbac_user['id']
+  rbac_user['email'] = "#{email}"
+  modified_user      = rbac_user.to_json
+  uri                = URI.parse("https://localhost:4433/rbac-api/v1/users/#{id}")
 
-    Net::HTTP.start(
-        uri.host,
-        uri.port,
-        use_ssl: true,
-        verify_mode: OpenSSL::SSL::VERIFY_NONE,
-      ) do |http|
-      request = Net::HTTP::Put.new uri
-      request.add_field('X-Authentication', token)
-      request.add_field('Content-Type', 'application/json')
-      request.body = modified_user
+  Net::HTTP.start(
+      uri.host,
+      uri.port,
+      use_ssl: true,
+      verify_mode: OpenSSL::SSL::VERIFY_NONE,
+    ) do |http|
+    request = Net::HTTP::Put.new uri
+    request.add_field('X-Authentication', token)
+    request.add_field('Content-Type', 'application/json')
+    request.body = modified_user
 
-      http.request request
+    response = http.request request
+    if response.code != '200'
+      puts "Error: #{response.body}"
+      exit 1
     end
   end
 end
 
-begin
-  count = ARGV[0].nil? ? 1 : ARGV[0].to_i
-rescue => exception
-  puts "Could not convert to integer: #{exception}"
-end
+options = {
+  login: 'pie_user',
+  email: 'integrations@example.com'
+}
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: generate_rbac_event.rb [--create [--login user]] [--update [--login user] [--email email]]"
+  opts.on('-c', '--create', TrueClass, 'Create PE RBAC user') {|o| options[:create] = o}
+  opts.on('-e', '--email [email]', String, 'RBAC user email address') {|o| options[:email] = o}
+  opts.on('-l', '--login [user]', String, 'The RBAC account to create/update') {|o| options[:login] = o}
+  opts.on('-u', '--update', TrueClass, 'Update RBAC user account') {|o| options[:update] = o}
+end.parse!
 
 begin
   token = `puppet access show`.chomp
@@ -54,4 +97,8 @@ rescue => exception
   throw "Could not find access token: #{exception}"
 end
 
-generate_rbac_event(count, token)
+if options[:create]
+  create_rbac_user(options[:login], token)
+elsif options[:update]
+  update_user_email(options[:login], options[:email], token)
+end

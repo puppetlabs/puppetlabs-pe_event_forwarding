@@ -15,35 +15,38 @@
   ],
   "operatingsystem_support": [
     {
-      "operatingsystem": "CentOS",
+      "operatingsystem": "AlmaLinux",
       "operatingsystemrelease": [
-        "7"
+        "8",
+        "9"
+      ]
+    },
+    {
+      "operatingsystem": "AmazonLinux",
+      "operatingsystemrelease": [
+        "2"
       ]
     },
     {
       "operatingsystem": "OracleLinux",
-      "operatingsystemrelease": [
-        "7"
-      ]
-    },
-    {
-      "operatingsystem": "RedHat",
       "operatingsystemrelease": [
         "7",
         "8"
       ]
     },
     {
-      "operatingsystem": "Scientific",
+      "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "7"
+        "7",
+        "8",
+        "9"
       ]
     },
     {
-      "operatingsystem": "Ubuntu",
+      "operatingsystem": "RockyLinux",
       "operatingsystemrelease": [
-        "20.04",
-        "18.04"
+        "8",
+        "9"
       ]
     },
     {
@@ -51,6 +54,14 @@
       "operatingsystemrelease": [
         "12",
         "15"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "18.04",
+        "20.04",
+        "22.04"
       ]
     }
   ],
@@ -60,7 +71,7 @@
       "version_requirement": ">= 7.8.0 < 9.0.0"
     }
   ],
-  "pdk-version": "2.7.1",
-  "template-url": "pdk-default#2.7.4",
-  "template-ref": "tags/2.7.4-0-g58edf57"
+  "pdk-version": "3.3.0",
+  "template-url": "pdk-default#3.3.0",
+  "template-ref": "tags/3.3.0-0-g5d17ec1"
 }

@@ -48,76 +48,25 @@ include pe_event_forwarding
 
 The following parameters are available in the `pe_event_forwarding` class:
 
-- [Reference](#reference)
-  - [Table of Contents](#table-of-contents)
-    - [Classes](#classes)
-      - [Public Classes](#public-classes)
-      - [Private Classes](#private-classes)
-    - [Functions](#functions)
-    - [Tasks](#tasks)
-    - [Plans](#plans)
-  - [Classes](#classes-1)
-    - [`pe_event_forwarding`](#pe_event_forwarding)
-      - [Examples](#examples)
-        - [](#)
-      - [Parameters](#parameters)
-        - [`pe_username`](#pe_username)
-        - [`pe_password`](#pe_password)
-        - [`pe_token`](#pe_token)
-        - [`pe_console`](#pe_console)
-        - [`disabled`](#disabled)
-        - [`cron_minute`](#cron_minute)
-        - [`cron_hour`](#cron_hour)
-        - [`cron_weekday`](#cron_weekday)
-        - [`cron_month`](#cron_month)
-        - [`cron_monthday`](#cron_monthday)
-        - [`timeout`](#timeout)
-        - [`log_path`](#log_path)
-        - [`lock_path`](#lock_path)
-        - [`confdir`](#confdir)
-        - [`api_page_size`](#api_page_size)
-        - [`log_level`](#log_level)
-        - [`log_rotation`](#log_rotation)
-        - [`skip_events`](#skip_events)
-        - [`skip_jobs`](#skip_jobs)
-  - [Functions](#functions-1)
-    - [`pe_event_forwarding::base_path`](#pe_event_forwardingbase_path)
-      - [Examples](#examples-1)
-        - [Calling the function](#calling-the-function)
-      - [`pe_event_forwarding::base_path(Any $str, Any $path)`](#pe_event_forwardingbase_pathany-str-any-path)
-        - [Examples](#examples-2)
-          - [Calling the function](#calling-the-function-1)
-        - [`str`](#str)
-        - [`path`](#path)
-    - [`pe_event_forwarding::secure`](#pe_event_forwardingsecure)
-      - [`pe_event_forwarding::secure(Hash $secrets)`](#pe_event_forwardingsecurehash-secrets)
-        - [`secrets`](#secrets)
-  - [Tasks](#tasks-1)
-    - [`activities`](#activities)
-      - [Parameters](#parameters-1)
-        - [`pe_console`](#pe_console-1)
-        - [`pe_username`](#pe_username-1)
-        - [`pe_password`](#pe_password-1)
-    - [`orchestrator`](#orchestrator)
-      - [Parameters](#parameters-2)
-        - [`console_host`](#console_host)
-        - [`username`](#username)
-        - [`password`](#password)
-        - [`token`](#token)
-        - [`operation`](#operation)
-        - [`body`](#body)
-        - [`nodes`](#nodes)
-  - [Plans](#plans-1)
-    - [`pe_event_forwarding::acceptance::pe_server`](#pe_event_forwardingacceptancepe_server)
-      - [Examples](#examples-3)
-        - [](#-1)
-      - [Parameters](#parameters-3)
-        - [`version`](#version)
-        - [`pe_settings`](#pe_settings)
-    - [`pe_event_forwarding::acceptance::provision_machines`](#pe_event_forwardingacceptanceprovision_machines)
-      - [Parameters](#parameters-4)
-        - [`using`](#using)
-        - [`image`](#image)
+* [`pe_username`](#-pe_event_forwarding--pe_username)
+* [`pe_password`](#-pe_event_forwarding--pe_password)
+* [`pe_token`](#-pe_event_forwarding--pe_token)
+* [`pe_console`](#-pe_event_forwarding--pe_console)
+* [`disabled`](#-pe_event_forwarding--disabled)
+* [`cron_minute`](#-pe_event_forwarding--cron_minute)
+* [`cron_hour`](#-pe_event_forwarding--cron_hour)
+* [`cron_weekday`](#-pe_event_forwarding--cron_weekday)
+* [`cron_month`](#-pe_event_forwarding--cron_month)
+* [`cron_monthday`](#-pe_event_forwarding--cron_monthday)
+* [`log_level`](#-pe_event_forwarding--log_level)
+* [`log_rotation`](#-pe_event_forwarding--log_rotation)
+* [`log_path`](#-pe_event_forwarding--log_path)
+* [`lock_path`](#-pe_event_forwarding--lock_path)
+* [`confdir`](#-pe_event_forwarding--confdir)
+* [`api_page_size`](#-pe_event_forwarding--api_page_size)
+* [`timeout`](#-pe_event_forwarding--timeout)
+* [`skip_jobs`](#-pe_event_forwarding--skip_jobs)
+* [`skip_events`](#-pe_event_forwarding--skip_events)
 
 ##### <a name="-pe_event_forwarding--pe_username"></a>`pe_username`
 
@@ -199,14 +148,25 @@ Sets cron day of the month (1-31)
 
 Default value: `'*'`
 
-##### <a name="-pe_event_forwarding--timeout"></a>`timeout`
+##### <a name="-pe_event_forwarding--log_level"></a>`log_level`
 
-Data type: `Optional[Integer]`
+Data type: `Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']`
 
-Optional timeout limit for connect, read, and ssl sessions
-When set to `undef` the default of 60 seconds will be used
+Determines the severity of logs to be written to log file:
+ - level debug will only log debug-level log messages
+ - level info will log info, warn, and fatal-level log messages
+ - level warn will log warn and fatal-level log messages
+ - level fatal will only log fatal-level log messages
 
-Default value: `undef`
+Default value: `'WARN'`
+
+##### <a name="-pe_event_forwarding--log_rotation"></a>`log_rotation`
+
+Data type: `Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']`
+
+Determines rotation time for log files
+
+Default value: `'NONE'`
 
 ##### <a name="-pe_event_forwarding--log_path"></a>`log_path`
 
@@ -239,35 +199,16 @@ Default value: `undef`
 Data type: `Optional[Integer]`
 
 Sets max number of events retrieved per API call
+Note: This parameter is only used for event collection from the Activity API.
 
 Default value: `undef`
 
-##### <a name="-pe_event_forwarding--log_level"></a>`log_level`
+##### <a name="-pe_event_forwarding--timeout"></a>`timeout`
 
-Data type: `Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']`
+Data type: `Optional[Integer]`
 
-Determines the severity of logs to be written to log file:
- - level debug will only log debug-level log messages
- - level info will log info, warn, and fatal-level log messages
- - level warn will log warn and fatal-level log messages
- - level fatal will only log fatal-level log messages
-
-Default value: `'WARN'`
-
-##### <a name="-pe_event_forwarding--log_rotation"></a>`log_rotation`
-
-Data type: `Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']`
-
-Determines rotation time for log files
-
-Default value: `'NONE'`
-
-##### <a name="-pe_event_forwarding--skip_events"></a>`skip_events`
-
-Data type: `Optional[Array]`
-
-Array of event types that should be skipped during event collection from the Activity API.
-  Acceptable values are: `['classifier','code-manager','pe-console','rbac']`
+Optional timeout limit in seconds for connect, read, and ssl sessions
+When set to `undef` the default of 60 seconds will be used
 
 Default value: `undef`
 
@@ -276,6 +217,23 @@ Default value: `undef`
 Data type: `Optional[Boolean]`
 
 When true, event collection from the Orchestrator API is disabled.
+
+Default value: `undef`
+
+##### <a name="-pe_event_forwarding--skip_events"></a>`skip_events`
+
+Data type:
+
+```puppet
+Optional[Array[Enum[
+        'classifier',
+        'code-manager',
+        'pe-console',
+  'rbac']]]
+```
+
+Array of event types that should be skipped during event collection from the Activity API.
+Acceptable values are: ['classifier','code-manager','pe-console','rbac']
 
 Default value: `undef`
 

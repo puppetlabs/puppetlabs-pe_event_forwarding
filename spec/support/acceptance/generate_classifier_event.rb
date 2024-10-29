@@ -25,7 +25,11 @@ def generate_classifier_event(count, token)
       request.add_field('Content-Type', 'application/json')
       request.body = node_group.to_json
 
-      http.request request
+      response = http.request request
+      if response.code != '201'
+        puts "Error: #{response.body}"
+        exit 1
+      end
     end
   end
 end
