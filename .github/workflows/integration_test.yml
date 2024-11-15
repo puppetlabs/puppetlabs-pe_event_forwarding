@@ -3,23 +3,58 @@ name: "Integration Testing"
 on: [pull_request]
 
 jobs:
-  Integration:
+  setup_matrix:
+    name: "Setup Test Matrix"
     runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        platforms:
-          - centos-7
-        pe_version:
-          - 2021.7.5
-          - 2023.4.0
+    outputs:
+      matrix: ${{ steps.build-matrix.outputs.matrix }}
 
     env:
       PUPPET_GEM_VERSION: '~> 7.24'
 
     steps:
     - name: Checkout Source
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
+      if: ${{ github.repository_owner == 'puppetlabs' }}
+
+    - name: Activate Ruby 2.7
+      uses: ruby/setup-ruby@v1
+      if: ${{ github.repository_owner == 'puppetlabs' }}
+      with:
+        ruby-version: "2.7"
+        bundler-cache: true
+    - name: Print bundle environment
+      if: ${{ github.repository_owner == 'puppetlabs' }}
+      run: |
+        echo ::group::bundler environment
+         bundle env
+        echo ::endgroup::
+    - name: Build Test Matrix
+      id: build-matrix
+      run: |
+        bundle exec matrix_from_metadata_v3 \
+        --provision-exclude docker \
+        --arch-exclude arm \
+        --platform-exclude debian \
+        --platform-exclude sles \
+        --platform-exclude ubuntu \
+        --puppet-exclude 7 \
+        --puppet-exclude 8 \
+        --pe-include
+
+  Integration:
+    name: "${{matrix.platforms.label}}, ${{matrix.collection}}"
+    needs:
+      - setup_matrix
+
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.setup_matrix.outputs.matrix) }}
+
+    steps:
+    - name: Checkout Source
+      uses: actions/checkout@v4
 
     - name: Activate Ruby 2.7
       uses: ruby/setup-ruby@v1
@@ -32,14 +67,16 @@ jobs:
         echo ::group::bundler environment
         bundle env
         echo ::endgroup::
+
     - name: Create the fixtures directory
       run: |
         echo ::group::Create the fixtures directory
         bundle exec rake spec_prep
         echo ::endgroup::
+
     - name: Provision test environment
       run: |
-        bundle exec bolt --modulepath spec/fixtures/modules plan run pe_event_forwarding::acceptance::provision_machines using='provision_service' image='${{ matrix.platforms }}'
+        bundle exec bolt --modulepath spec/fixtures/modules plan run pe_event_forwarding::acceptance::provision_machines using='provision_service' image='${{ matrix.platforms.image }}'
         echo ::group::=== REQUEST ===
         cat request.json || true
         echo
@@ -57,7 +94,7 @@ jobs:
         echo INVENTORY_PATH=$FILE >> $GITHUB_ENV
     - name: Install server
       run: |
-        bundle exec bolt --modulepath spec/fixtures/modules plan run pe_event_forwarding::acceptance::pe_server version='${{ matrix.pe_version }}' -i ./$INVENTORY_PATH --stream
+        bundle exec bolt --modulepath spec/fixtures/modules plan run pe_event_forwarding::acceptance::pe_server version='${{ matrix.collection }}' -i ./$INVENTORY_PATH --stream
     - name: Add localhost target to inventory
       run: |
         bundle exec rake 'acceptance:add_localhost_target'

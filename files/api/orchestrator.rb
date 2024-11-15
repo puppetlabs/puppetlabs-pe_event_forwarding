@@ -10,26 +10,31 @@ module PeEventForwarding
       @log = log
     end
 
-    def get_jobs(offset: 0, order: 'asc', order_by: 'name', api_page_size: nil, timeout: nil)
+    def get_jobs(limit: 500, offset: 0, order: 'desc', order_by: 'name', index_count: nil, new_jobs: nil, timeout: nil)
       params = {
-        limit:    api_page_size,
+        limit:    limit,
         offset:   offset,
         order:    order,
         order_by: order_by,
       }
 
-      api_page_size = api_page_size.to_i
       response_items  = []
       response        = ''
-      total_count     = 0
+      job_counter     = 0
+      total_count     = index_count + new_jobs
       loop do
         response       = pe_client.pe_get_request('orchestrator/v1/jobs', params, timeout)
         response_body  = JSON.parse(response.body)
-        total_count    = response_body['pagination']['total']
         response_body['items']&.map { |item| response_items << item }
 
-        break if response_body['items'].nil? || response_body['items'].count != api_page_size
-        params[:offset] += api_page_size
+        job_counter += response_body['items'].empty? ? 0 : response_body['items'].count
+        break if job_counter >= new_jobs
+        params[:offset] = job_counter
+        params[:limit] = if new_jobs - job_counter > limit
+                           limit
+                         else
+                           new_jobs - job_counter
+                         end
       end
       log.debug("PE Get Jobs Items Found: #{response_items.count}")
       raise 'Orchestrator API request failed' unless response.code == '200'
@@ -68,20 +73,24 @@ module PeEventForwarding
       params = {
         limit:    1,
         offset:   0,
-        order:    'asc',
+        order:    'desc',
         order_by: 'name',
       }
       response = pe_client.pe_get_request('orchestrator/v1/jobs', params, timeout)
       raise 'Orchestrator API request failed' unless response.code == '200'
       jobs = JSON.parse(response.body)
-      jobs['pagination']['total'] || 0
+      jobs['items'].empty? ? 0 : jobs['items'][0]['name'].to_i
     end
 
-    def new_data(last_count, api_page_size, timeout)
+    def new_data(last_count, timeout)
       new_job_count = current_job_count(timeout) - last_count
-      log.debug("New Job Count: Orchestrator: #{new_job_count}")
-      return unless new_job_count > 0
-      get_jobs(offset: last_count, api_page_size: api_page_size, timeout: timeout)
+      if new_job_count.zero? || new_job_count.negative?
+        log.debug('New Job Count: Orchestrator: data is current')
+        nil
+      else
+        log.debug("New Job Count: Orchestrator: #{new_job_count}")
+        get_jobs(index_count: last_count, new_jobs: new_job_count, timeout: timeout)
+      end
     end
   end
 end

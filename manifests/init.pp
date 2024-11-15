@@ -26,9 +26,14 @@
 #   Sets cron month (1-12)
 # @param [Optional[String]] cron_monthday
 #   Sets cron day of the month (1-31)
-# @param [Optional[Integer]] timeout
-#   Optional timeout limit in seconds for connect, read, and ssl sessions
-#   When set to `undef` the default of 60 seconds will be used
+# @param [Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']] log_level
+#   Determines the severity of logs to be written to log file:
+#    - level debug will only log debug-level log messages
+#    - level info will log info, warn, and fatal-level log messages
+#    - level warn will log warn and fatal-level log messages
+#    - level fatal will only log fatal-level log messages
+# @param [Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']] log_rotation
+#   Determines rotation time for log files
 # @param [Optional[String]] log_path
 #   Should be a directory; base path to desired location for log files
 #   `/pe_event_forwarding/pe_event_forwarding.log` will be appended to this param
@@ -39,39 +44,39 @@
 #   Path to directory where pe_event_forwarding exists
 # @param [Optional[Integer]] api_page_size
 #   Sets max number of events retrieved per API call
-# @param [Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL']] log_level
-#   Determines the severity of logs to be written to log file:
-#    - level debug will only log debug-level log messages
-#    - level info will log info, warn, and fatal-level log messages
-#    - level warn will log warn and fatal-level log messages
-#    - level fatal will only log fatal-level log messages
-# @param [Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']] log_rotation
-#   Determines rotation time for log files
-# @param [Optional[Array]] skip_events
-#   Array of event types that should be skipped during event collection from the Activity API.
-#     Acceptable values are: ['classifier','code-manager','pe-console','rbac']
+#   Note: This parameter is only used for event collection from the Activity API.
+# @param [Optional[Integer]] timeout
+#   Optional timeout limit in seconds for connect, read, and ssl sessions
+#   When set to `undef` the default of 60 seconds will be used
 # @param [Optional[Boolean]] skip_jobs
 #   When true, event collection from the Orchestrator API is disabled.
+# @param [Optional[Array]] skip_events
+#   Array of event types that should be skipped during event collection from the Activity API.
+#   Acceptable values are: ['classifier','code-manager','pe-console','rbac']
 class pe_event_forwarding (
-  Optional[String]                                $pe_username            = undef,
-  Optional[String]                                $pe_password            = undef,
-  Optional[String]                                $pe_token               = undef,
-  String                                          $pe_console             = 'localhost',
-  Boolean                                         $disabled               = false,
-  String                                          $cron_minute            = '*/2',
-  String                                          $cron_hour              = '*',
-  String                                          $cron_weekday           = '*',
-  String                                          $cron_month             = '*',
-  String                                          $cron_monthday          = '*',
-  Optional[Integer]                               $timeout                = undef,
-  Optional[String]                                $log_path               = undef,
-  Optional[String]                                $lock_path              = undef,
-  Optional[String]                                $confdir                = undef,
-  Optional[Integer]                               $api_page_size          = undef,
-  Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'] $log_level              = 'WARN',
-  Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation           = 'NONE',
-  Optional[Array]                                 $skip_events            = undef,
-  Optional[Boolean]                               $skip_jobs              = undef,
+  Optional[String]                                $pe_username   = undef,
+  Optional[String]                                $pe_password   = undef,
+  Optional[String]                                $pe_token      = undef,
+  String                                          $pe_console    = 'localhost',
+  Boolean                                         $disabled      = false,
+  String                                          $cron_minute   = '*/2',
+  String                                          $cron_hour     = '*',
+  String                                          $cron_weekday  = '*',
+  String                                          $cron_month    = '*',
+  String                                          $cron_monthday = '*',
+  Enum['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'] $log_level     = 'WARN',
+  Enum['NONE', 'DAILY', 'WEEKLY', 'MONTHLY']      $log_rotation  = 'NONE',
+  Optional[String]                                $log_path      = undef,
+  Optional[String]                                $lock_path     = undef,
+  Optional[String]                                $confdir       = undef,
+  Optional[Integer]                               $api_page_size = undef,
+  Optional[Integer]                               $timeout       = undef,
+  Optional[Boolean]                               $skip_jobs     = undef,
+  Optional[Array[Enum[
+        'classifier',
+        'code-manager',
+        'pe-console',
+  'rbac']]]                                       $skip_events   = undef,
 ) {
   # Ensure required credential params are configured
   if (
