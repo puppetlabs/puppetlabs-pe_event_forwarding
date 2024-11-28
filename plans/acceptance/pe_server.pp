@@ -11,7 +11,8 @@
 #   Hash with key `password` and value of PE console password for admin user
 plan pe_event_forwarding::acceptance::pe_server(
   Optional[String] $version = '2023.8.0',
-  Optional[Hash] $pe_settings = {password => 'puppetlabsPi3!', configure_tuning => false}) {
+  Optional[Hash] $pe_settings = { password => 'puppetlabsPi3!', configure_tuning => false }
+) {
   # machines are not yet ready at time of installing the puppetserver, so we wait 30s
   $localhost = get_targets('localhost')
   run_command('sleep 30s', $localhost)

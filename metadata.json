@@ -1,6 +1,6 @@
 {
   "name": "puppetlabs-pe_event_forwarding",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "author": "Puppet, Inc.",
   "summary": "A module that contains support for integration event reporting",
   "license": "Apache-2.0",

@@ -4,7 +4,15 @@ All notable changes to this project will be documented in this file. The format 
 
 ## [Unreleased](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding)
 
-[Current Diff](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v2.0.1..main)
+[Current Diff](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v2.1.0..main)
+
+## [v2.1.0](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v2.1.0) (2024-11-26)
+
+[Full Changelog](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/compare/v2.0.0..v2.0.1)
+
+### Fixed
+
+-  The `api_page_size` parameter no longer effects orchestrator events to correct an issue where the index is unable to properly track events once job pruning occurs. [#130](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/pull/130)
 
 ## [v2.0.1](https://github.com/puppetlabs/puppetlabs-pe_event_forwarding/tree/v2.0.1) (2024-03-28)
 
