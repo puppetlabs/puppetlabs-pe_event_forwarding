@@ -37,5 +37,9 @@ plan pe_event_forwarding::acceptance::pe_server(
     puppet agent -t
     | CMD
 
-  run_command($cmd, $puppet_server, '_catch_errors' => true)
+  $r = run_command($cmd, $puppet_server, '_catch_errors' => true)
+  $r.to_data.each |$result_hash| { notice($result_hash['result']['stdout']) }
+  unless $r.ok {
+    fail_plan("Running PE install failed on the targets ${r.error_set.names} with error ${r.error.message}")
+  }
 }
