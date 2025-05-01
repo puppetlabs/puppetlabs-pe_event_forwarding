@@ -24,3 +24,5 @@ jobs:
         uses: docker://puppet/pdk:nightly
         with:
           args: 'release publish --forge-token ${{ secrets.FORGE_API_KEY }} --force'
+       
+      - run: echo "bronach hello "
