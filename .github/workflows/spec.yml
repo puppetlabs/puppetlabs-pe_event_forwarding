@@ -6,72 +6,123 @@ on:
   workflow_dispatch:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   setup_matrix:
     name: "Setup Test Matrix"
     runs-on: ubuntu-latest
+    if: >-
+      github.event_name != 'pull_request_target' ||
+      github.event.pull_request.head.repo.fork != true ||
+      contains(github.event.pull_request.labels.*.name, 'allowed-for-ci')
     outputs:
       spec_matrix: ${{ steps.get-matrix.outputs.spec_matrix }}
 
+    env:
+      BUNDLE_WITHOUT: release_prep
+
     steps:
-    - name: Checkout Source
-      uses: actions/checkout@v6
-      if: ${{ github.repository_owner == 'puppetlabs' }}
+      - name: "Checkout"
+        uses: "actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10"  # v6.0.3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
-    - name: Activate Ruby 3.1
-      uses: ruby/setup-ruby@v1
-      if: ${{ github.repository_owner == 'puppetlabs' }}
-      with:
-        ruby-version: "3.1"
-        bundler-cache: true
+      - name: "Configure forge authentication"
+        env:
+          FORGE_TOKEN: ${{ secrets.PUPPET_FORGE_TOKEN || secrets.PUPPET_FORGE_TOKEN_PUBLIC }}
+        run: |
+          if [ -n "$FORGE_TOKEN" ]; then
+            echo "PUPPET_FORGE_TOKEN=$FORGE_TOKEN" >> $GITHUB_ENV
+            echo "BUNDLE_RUBYGEMS___PUPPETCORE__PUPPET__COM=forge-key:$FORGE_TOKEN" >> $GITHUB_ENV
+          fi
 
-    - name: Print bundle environment
-      if: ${{ github.repository_owner == 'puppetlabs' }}
-      run: |
-        echo ::group::bundler environment
-        bundle env
-        echo ::endgroup::
+      - name: "Setup ruby"
+        uses: "ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f"  # v1.310.0
+        with:
+          ruby-version: "3.1"
+          bundler-cache: true
 
-    - name: Setup Spec Test Matrix
-      id: get-matrix
-      if: ${{ github.repository_owner == 'puppetlabs' }}
-      run: |
+      - name: "Bundle environment"
+        run: |
+          echo ::group::bundler environment
+          bundle env
+          echo ::endgroup::
+
+      - name: "Setup Spec Test Matrix"
+        id: get-matrix
+        run: |
           bundle exec matrix_from_metadata_v3
 
-  Spec:
+  spec:
     name: "Spec Tests (Puppet: ${{matrix.puppet_version}}, Ruby Ver: ${{matrix.ruby_version}})"
-    needs:
-      - setup_matrix
-    if: ${{ needs.setup_matrix.outputs.spec_matrix != '{}' }}
-
+    needs: "setup_matrix"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix: ${{fromJson(needs.setup_matrix.outputs.spec_matrix)}}
+      matrix: ${{ fromJson(needs.setup_matrix.outputs.spec_matrix) }}
 
     env:
+      BUNDLE_WITHOUT: release_prep
       PUPPET_GEM_VERSION: ${{ matrix.puppet_version }}
-      FACTER_GEM_VERSION: 'https://github.com/puppetlabs/facter#main'
+      FACTER_GEM_VERSION: '~> 4.10'
+      PUPPET_GEM_SOURCE: ${{ secrets.PUPPET_GEM_SOURCE }}
+      TWINGATE_PUBLIC_REPO_KEY: ${{ secrets.TWINGATE_PUBLIC_REPO_KEY }}
 
     steps:
-    - name: Checkout Source
-      uses: actions/checkout@v6
+      - name: "Checkout"
+        uses: "actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10"  # v6.0.3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
-    - name: "Activate Ruby ${{ matrix.ruby_version }}"
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{matrix.ruby_version}}
-        bundler-cache: true
+      - name: "Configure forge authentication"
+        env:
+          FORGE_TOKEN: ${{ secrets.PUPPET_FORGE_TOKEN || secrets.PUPPET_FORGE_TOKEN_PUBLIC }}
+        run: |
+          if [ -n "$FORGE_TOKEN" ]; then
+            echo "PUPPET_FORGE_TOKEN=$FORGE_TOKEN" >> $GITHUB_ENV
+            echo "BUNDLE_RUBYGEMS___PUPPETCORE__PUPPET__COM=forge-key:$FORGE_TOKEN" >> $GITHUB_ENV
+          fi
 
-    - name: Print bundle environment
-      run: |
-        echo ::group::bundler environment
-        bundle env
-        echo ::endgroup::
-    - name: Run Static & Syntax Tests
-      if: ${{ github.repository_owner == 'puppetlabs' }}
-      run: |
-        bundle exec rake syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop
-    - name: Run parallel_spec tests
-      run: |
-        bundle exec rake parallel_spec
+      # The Puppet 9 lane resolves its gem from the internal Artifactory (PUPPET_GEM_SOURCE),
+      # which is only reachable over Twingate. Gated to the puppet9 lane + key presence, so
+      # Puppet 7/8 spec runs and repos without the key are completely unaffected.
+      - name: "Install Twingate"
+        if: matrix.puppet_version == '~> 9.0' && env.TWINGATE_PUBLIC_REPO_KEY != ''
+        uses: "twingate/github-action@f1e69fc5af67b737d8597b759e5c607f567e77f2"  # v1
+        with:
+          service-key: ${{ env.TWINGATE_PUBLIC_REPO_KEY }}
+
+      - name: "Fix DNS (Twingate)"
+        if: matrix.puppet_version == '~> 9.0' && env.TWINGATE_PUBLIC_REPO_KEY != ''
+        run: |
+          sudo resolvectl dns eth0 ""
+          sudo resolvectl dns sdwan0 100.95.0.251 100.95.0.252
+          sudo resolvectl domain sdwan0 delivery.puppetlabs.net
+          sudo resolvectl flush-caches
+          resolvectl status
+          nslookup artifactory.delivery.puppetlabs.net
+
+      - name: "Setup ruby"
+        uses: "ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f"  # v1.310.0
+        with:
+          ruby-version: ${{matrix.ruby_version}}
+          bundler-cache: true
+
+      - name: "Bundle environment"
+        run: |
+          echo ::group::bundler environment
+          bundle env
+          echo ::endgroup::
+
+      - name: "Run Static & Syntax Tests"
+        run: |
+          bundle exec rake syntax lint metadata_lint check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop
+          bundle exec dependency-checker metadata.json
+
+      - name: "Run tests"
+        run: |
+          bundle exec rake parallel_spec
