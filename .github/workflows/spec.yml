@@ -37,6 +37,8 @@ jobs:
           if [ -n "$FORGE_TOKEN" ]; then
             echo "PUPPET_FORGE_TOKEN=$FORGE_TOKEN" >> $GITHUB_ENV
             echo "BUNDLE_RUBYGEMS___PUPPETCORE__PUPPET__COM=forge-key:$FORGE_TOKEN" >> $GITHUB_ENV
+          else
+            echo "BUNDLE_GEMSOURCE__PUBLIC=true" >> $GITHUB_ENV
           fi
 
       - name: "Setup ruby"
@@ -85,6 +87,8 @@ jobs:
           if [ -n "$FORGE_TOKEN" ]; then
             echo "PUPPET_FORGE_TOKEN=$FORGE_TOKEN" >> $GITHUB_ENV
             echo "BUNDLE_RUBYGEMS___PUPPETCORE__PUPPET__COM=forge-key:$FORGE_TOKEN" >> $GITHUB_ENV
+          else
+            echo "BUNDLE_GEMSOURCE__PUBLIC=true" >> $GITHUB_ENV
           fi
 
       # The Puppet 9 lane resolves its gem from the internal Artifactory (PUPPET_GEM_SOURCE),
