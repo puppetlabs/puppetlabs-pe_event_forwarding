@@ -28,12 +28,6 @@ Layout/EmptyLineAfterGuardClause:
     - 'spec/spec_helper_acceptance_local.rb'
     - 'spec/support/acceptance/helpers.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Layout/EmptyLinesAfterModuleInclusion:
-  Exclude:
-    - 'spec/spec_helper_acceptance_local.rb'
-
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowAliasSyntax, AllowedMethods.
@@ -278,14 +272,6 @@ RSpec/MultipleExpectations:
 RSpec/NestedGroups:
   Max: 4
 
-# Offense count: 6
-# This cop supports unsafe autocorrection (--autocorrect-all).
-RSpec/Output:
-  Exclude:
-    - 'spec/support/acceptance/generate_classifier_event.rb'
-    - 'spec/support/acceptance/generate_rbac_event.rb'
-    - 'spec/support/acceptance/processors/proc2.rb'
-
 # Offense count: 25
 # This cop supports unsafe autocorrection (--autocorrect-all).
 RSpec/VerifiedDoubleReference:
@@ -313,13 +299,6 @@ Style/ClassAndModuleChildren:
     - 'files/util/pe_http.rb'
     - 'files/util/plan_index.rb'
     - 'files/util/processor.rb'
-
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/DirectiveScope:
-  Exclude:
-    - 'spec/unit/api/pe_event_forwarding/activity_spec.rb'
-    - 'spec/unit/api/pe_event_forwarding/orchestrator_spec.rb'
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
