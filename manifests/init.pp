@@ -79,7 +79,7 @@ class pe_event_forwarding (
     'classifier',
     'code-manager',
     'pe-console',
-    'rbac']]]                                     $skip_events   = undef,
+  'rbac']]]                                       $skip_events   = undef,
 ) {
   # Ensure required credential params are configured
   if (
